@@ -4,7 +4,7 @@
 > 日期：2026-08-25  
 > 文档状态：第一版收敛基线，尚未全部定稿  
 > 当前主线：先收敛 Gate1 V1，再衔接 Gate2；Gate3、Gate4 暂不展开实现  
-> 用途：作为后续讨论的唯一入口，区分当前有效结论、待确认问题、已被替代观点和暂不处理事项。
+> 用途：作为后续讨论的唯一入口，保存“当前有效状态”；重要决策的历史原因由 `docs/decisions/` 中的 Decision Record（DR）保存。
 
 ---
 
@@ -14,7 +14,7 @@
 
 | 状态 | 含义 | 后续处理 |
 |---|---|---|
-| `已确认` | 已在多轮讨论或现有交付件中形成稳定共识 | 除非出现新证据或反例，否则不重新讨论 |
+| `已确认` | 已形成稳定共识并作为当前设计输入 | 除非出现新证据、反例或新的 DR，否则不重新讨论 |
 | `待确认` | 已有较强候选结论，但尚未完成最终决策或仍有冲突 | 进入开放问题清单，按优先级闭合 |
 | `已被替代` | 曾经使用过，但已被更新结论或新版本取代 | 仅保留历史解释，不再作为设计输入 |
 | `暂不处理` | 有价值，但不进入当前阶段范围 | 放入后续路线图，不阻断当前工作 |
@@ -23,10 +23,20 @@
 
 1. 本文只保存“当前状态”，不复刻完整讨论过程。
 2. 同一结论只有一个当前状态；出现新结论时必须说明替代了什么。
-3. `已确认`结论默认不再重新论证，除非出现新证据、反例或范围变化。
+3. `已确认`结论默认不再重新论证，除非出现新证据、反例、范围变化或新的 Decision Record。
 4. `待确认`问题必须有具体决策问题，不能只写“后续完善”。
 5. 每次讨论结束后，至少更新：当前状态、开放问题、交付件索引、下一步。
 6. 聊天记录是探索过程，不是软件质量体系的事实源。
+7. 影响 Gate 边界、核心对象模型、Canonical Schema、Traceability Relationship、Gate Policy 或关键术语的语义变化，必须创建 Decision Record。
+8. Decision Record 回答“为什么这样决定”；Overview 回答“现在是什么”；Git PR / Commit 回答“具体改了什么”。
+9. Accepted DR 不通过改写历史理由来适配新结论；决策变化时创建新的 DR，并用 `Superseded by` 建立替代关系。
+
+### 0.3 Decision Record 入口
+
+- 决策索引与治理规则：`docs/decisions/README.md`
+- DR 模板：`docs/decisions/DR-TEMPLATE.md`
+- 历史补录清单：`docs/decisions/decision-backlog.md`
+- 当前首个正式决策：`DR-0001`——Verification Obligation 不作为 V1 一等追溯对象
 
 ---
 
@@ -193,8 +203,7 @@ Story
 
 **状态：已确认**
 
-当前采用 `feature_story_bundle` 作为 Canonical Requirement Source 的组织结构，使用
-`feature-stories.example.yaml` 作为团队填写和 Agent 消费的标准示例。
+当前采用 `feature_story_bundle` 作为 Canonical Requirement Source 的组织结构，使用 `feature-stories.example.yaml` 作为团队填写和 Agent 消费的标准示例。
 
 ### 3.4.1 文件组织
 
@@ -265,7 +274,7 @@ Canonical Requirement Source 不包含：
 
 ## 4.2 需求与验证主链
 
-**状态：已确认**
+**状态：已确认 · Decision: DR-0001**
 
 ```text
 Business Objective / Feature Goal
@@ -274,16 +283,13 @@ Feature
         ↓
 Story
         ↓
-Scenario
-        ↓
-AC / Rule / Transition / Invariant
-        ↓
-Verification Obligation
-        ↓
-Test
-        ↓
+Requirement Object
+(Scenario / AC / Rule / Transition / Invariant)
+        ↓ verified-by
+Test / Verification Activity
+        ↓ execution
 Execution
-        ↓
+        ↓ produces
 Evidence
         ↓
 Finding
@@ -295,10 +301,14 @@ Verdict
 
 说明：
 
-- Gate1 主要建立到 `Verification Obligation` 为止的需求和验证义务骨架。
+- Requirement Object 是“验证什么”的语义事实源。
+- Test / Verification Activity 是“如何验证”；Test 只是 Verification Activity 的一种。
+- Evidence 是“验证实际得到什么”。
+- Gate1 主要建立 Requirement Object、稳定关系和可验证性骨架；关键 Requirement 必须具备明确 Oracle / 可观察结果，但 Gate1 不要求 Test Implementation 或 Test Execution 已经存在。
 - Gate2 扩展到 Task、Change、Code、Developer Test 和合入证据。
 - Gate3 扩展到 Feature 业务验收 Evidence 和 Feature Verdict。
 - Gate4 扩展到 Release、真实环境信号、灰度 Evidence 和 Release Verdict。
+- `Verification Obligation` 仅保留为解释性概念，表示“Requirement 为被认为满足而必须得到证明的内容”，V1 不赋予独立 ID、Schema、存储位置和生命周期。详见 `DR-0001`。
 
 ## 4.3 Change Safety 链
 
@@ -331,8 +341,8 @@ Change Safety Verdict
 - Requirement ID 在语义修改后应保持身份稳定；删除的 ID 不复用。
 - Evidence 必须绑定 Requirement Revision、Code Commit / Build 和 Test Execution。
 - 旧 Evidence 不自动证明修改后的新 Requirement。
-- `Story → Scenario → Existing Tests` 是 Gate2 的主要正向导航关系。
-- `Test → AC / Rule` 用于表达精确覆盖，不应反向成为 Requirement Source。
+- `Story → Scenario → Existing Tests` 是 Gate2 的主要正向导航关系之一。
+- `Test → AC / Rule / Scenario / Transition / Invariant` 用于表达精确覆盖，不应反向成为 Requirement Source。
 
 ---
 
@@ -393,16 +403,14 @@ AND kind IN {
 
 **状态：待确认——这是当前综合判断，尚需正式确认**
 
-这四项不宜被理解为四个同层、彼此独立的业务目标。更合理的层次是：
-
 | 项目 | 在 Gate1 中的角色 | 建议判定 |
 |---|---|---|
 | 同源要求 | 确保权威来源唯一、身份稳定、无需求分叉，是 Gate1 能够可靠分析的确定性前置 | 违反唯一事实源、ID、版本或 canonical owner 约束时可直接 BLOCK |
-| 可追溯性要求 | 确保 Feature、Story、Scenario、AC/Rule 和 Verification Obligation 关系可遍历 | 必需关系断裂、引用悬空或无法定位验证义务时可直接 BLOCK |
+| 可追溯性要求 | 确保 Feature、Story 与 Requirement Object 关系可遍历，并能够定位后续需要验证的 Requirement | 必需关系断裂、引用悬空或 Requirement 无法定位时可直接 BLOCK |
 | 行为覆盖缺口 | 通过 Scenario、State、Rule、边界扰动等探针暴露 Known Unknown，是发现机制，不等于证明完整性 | 高置信且导致 Behavior/Oracle/Contract Unknown 才 BLOCK；其他情况 WARN |
 | 关键决策闭合 | Gate1 的最终阻断结果：实现是否仍需发明非局部、会产生材料影响的决定 | 未闭合的高置信关键决策 BLOCK |
 
-因此候选结构为：
+候选结构：
 
 ```text
 Gate1 业务目标
@@ -436,7 +444,7 @@ Gate1 业务目标
 
 1. 冻结评估范围和权威来源。
 2. 执行 SSOT 和稳定身份的确定性检查。
-3. 建立 Feature → Story → Scenario → AC/Rule → Verification Obligation 的最小追溯骨架。
+3. 建立 Feature → Story → Requirement Object（Scenario / AC / Rule / Transition / Invariant）的最小追溯骨架，并确认关键 Requirement 可以形成明确 Oracle / 验证目标。
 4. 抽取外部行为、状态转换、业务规则、数据语义、依赖边界、AC 和可测 NFR。
 5. 对相关决策面执行边界、状态、规则、失败、Oracle 和 Contract 探针。
 6. 搜索权威来源，区分有答案、冲突、缺失、模糊和未闭合。
@@ -672,7 +680,7 @@ Testing 不是“生成脚本并跑绿”，而是：
 - 测试脚本本身必须先证明可信；
 - 产品缺陷、脚本缺陷、环境缺陷必须区分；
 - Test 是产生 Evidence 的机制之一，不是 Gate Verdict 本身；
-- Gate 消费测试 Evidence，但必须依据覆盖义务、风险和策略作出裁决。
+- Gate 消费测试 Evidence，但必须依据需求覆盖、风险和策略作出裁决。
 
 ## 9.2 当前 Testing Skill 状态
 
@@ -684,7 +692,7 @@ Testing Q1–Q50 已作为后续 Testing Skill 的正式基线，但当前不与
 
 # 10. 已确认结论登记
 
-以下结论除非出现新证据，否则不再重新讨论。
+以下结论除非出现新证据或新的 Decision Record，否则不再重新讨论。
 
 | ID | 已确认结论 |
 |---|---|
@@ -702,10 +710,13 @@ Testing Q1–Q50 已作为后续 Testing Skill 的正式基线，但当前不与
 | C-012 | Gate2 评估一次 Change 是否可以进入共享基线，不是完整 Feature 提测门禁 |
 | C-013 | Gate2 必须区分 Change Correctness、Change Safety 和 Implementation Quality |
 | C-014 | Gate2 V1/V2 只使用已有测试；无测试时报告 TEST_ASSET_GAP，不在线生成测试 |
-| C-015 | 测试通过率不能直接等价于 Gate PASS；必须检查 Required Verification 和 Evidence Sufficiency |
+| C-015 | 测试通过率不能直接等价于 Gate PASS；必须检查 Required Requirement / Risk 和 Evidence Sufficiency |
 | C-016 | LLM 可生成 Finding 和辅助分析，但最终 Verdict 应由版本化的确定性 Policy Engine 产生 |
 | C-017 | Gate3 负责完整 Feature 业务行为验收，Gate4 负责版本、灰度和真实环境风险 |
 | C-018 | Testing 的最终目标是产生可信 Evidence 和 Behavior/Product Verdict，而不只是让测试跑绿 |
+| C-019 | Verification Obligation 在 V1 不作为独立 Traceability Object；Requirement Object 直接由 Test / Verification Activity 验证。Decision: DR-0001 |
+
+历史 C-001～C-018 的 DR 补录优先级见 `docs/decisions/decision-backlog.md`。
 
 ---
 
@@ -719,7 +730,7 @@ Testing Q1–Q50 已作为后续 Testing Skill 的正式基线，但当前不与
 | Q-002 | Gate1 是否拆成内部有依赖关系的 Gate1-R 和 Gate1-D | 推荐拆成两个检查点、一个对外 Gate1 Verdict | 决定输入、Owner 和执行时机 |
 | Q-003 | Gate1 V1 的最小 Canonical Input 是否固定为 Feature Scope + Requirement Source + 适用 UX/Technical/Contract | 采用；缺少强制输入时 CANNOT_EVALUATE | 决定 Skill 输入契约 |
 | Q-004 | Gate1 V1 强制的 SSOT / Traceability 规则具体是哪一组 | 从 `ssot_checklist.md` 选择 Gate1 阶段适用子集，暂不要求 Task/Test 已存在 | 决定确定性硬检查 |
-| Q-005 | 最小追溯链是否固定为 Feature → Story → Scenario → AC/Rule → Verification Obligation | 采用；Task/Code/Test/Evidence 不进入 Gate1 强制链 | 决定 Schema 和断链规则 |
+| Q-005 | 最小追溯链是否固定为 Feature → Story → Requirement Object（Scenario / AC / Rule / Transition / Invariant），且 Gate1 只要求关键 Requirement 可验证、不要求 Test 已存在 | 推荐采用；Task/Code/Test/Evidence 不进入 Gate1 强制存在链 | 决定 Schema 和断链规则 |
 | Q-006 | Behavior Coverage 的最低完成条件是什么 | 不宣称完整；要求所有显式关键 Decision Surface 已抽取并执行适用探针 | 决定覆盖缺口的可解释性 |
 | Q-007 | 现有 `gate1-v1-skill.zip` 是升级为新版本还是作为语义分析子 Skill | 推荐作为 `semantic-readiness-analyzer` 子能力，由 Gate1 Orchestrator 组合 SSOT/Trace 检查 | 决定代码结构和交付形式 |
 
@@ -751,6 +762,7 @@ Testing Q1–Q50 已作为后续 Testing Skill 的正式基线，但当前不与
 | S-010 | 大量测试通过即可证明 Gate2 PASS | 必须证明 Required Scenario / AC / Risk 拥有充分有效 Evidence |
 | S-011 | Gate2 与 Feature 提测门禁可以合并 | Gate2 保护 Change Merge；Gate3 保护 Feature 业务验收，二者分离 |
 | S-012 | 早期五层 Gate 模型直接作为当前实现基线 | 当前主线采用四层 Gate1–Gate4；旧五层材料仅作为历史参考 |
+| S-013 | Verification Obligation 作为 Gate1 V1 独立一等追溯节点 | V1 将其降级为解释性概念；Requirement Object 直接 `verified-by` Test / Verification Activity。Decision: DR-0001 |
 
 ## 12.1 旧版资产状态
 
@@ -777,7 +789,7 @@ Testing Q1–Q50 已作为后续 Testing Skill 的正式基线，但当前不与
 | D-005 | Gate2 在线测试生成、调试、修复和 Self-healing | 会混淆测试开发和准出，降低 Evidence 可信度 | 不进入当前 Gate2 路线；如未来研究需独立系统 |
 | D-006 | 第一版覆盖全部 NFR、全部风险和全部组合场景 | 会导致不可落地和高误报 | 按历史缺陷、关键业务和高风险模式逐步扩展 |
 | D-007 | 同时实现 Gate1、Gate2、Gate3、Gate4 | 造成范围失控，无法验证单层收益 | 每一层有真实试点和效果数据后再进入下一层 |
-| D-008 | 将 Testing Skill 并入 Gate1 V1 | Testing 已有独立基线，但不属于当前 Gate1 实现最小闭环 | Gate1 对 Verification Obligation 的输出契约稳定后衔接 |
+| D-008 | 将 Testing Skill 并入 Gate1 V1 | Testing 已有独立基线，但不属于当前 Gate1 实现最小闭环 | Gate1 对 Requirement 可验证性和后续 Verification Activity 接口稳定后衔接 |
 
 ---
 
@@ -785,7 +797,12 @@ Testing Q1–Q50 已作为后续 Testing Skill 的正式基线，但当前不与
 
 | 交付件 | 作用 | 当前状态 |
 |---|---|---|
-| `quality-gate-knowledge-overview-v0.1.md` | 整个质量门禁体系的当前入口和状态基线 | 本文，待评审 |
+| `quality-gate-knowledge-overview-v0.1.md` | 整个质量门禁体系的当前入口和状态基线 | 当前有效 |
+| `docs/decisions/README.md` | Decision Record 索引、治理规则、Issue/PR/Commit 关联规范 | 当前有效 |
+| `docs/decisions/DR-TEMPLATE.md` | 新决策记录统一模板 | 当前有效 |
+| `docs/decisions/DR-0001-verification-obligation-not-first-class.md` | Verification Obligation V1 建模决策 | Accepted |
+| `docs/decisions/decision-backlog.md` | C-001～C-018 历史决策补录优先级 | 当前有效 |
+| `.github/workflows/decision-record-check.yml` | 核心知识 Artifact 变化时检查是否同步 DR | 当前有效；需将该 Check 配为 required 才能硬阻止 Merge |
 | `feature-stories.example.yaml` | 一个 Feature 包含多个 Story 的 Canonical Requirement Source 标准示例 | 当前有效 |
 | `story-v3.2.yaml` | 旧版单 Story 注释型模板 | 已被替代，保留为历史参考 |
 | `ssot_checklist.md` | SSOT、Stable ID、Reference、Baseline 和 Gate 分层检查清单 | 当前有效，Gate1 子集待裁剪 |
@@ -835,9 +852,9 @@ Gate1 Overall PASS
 
 ## 15.3 Gate1 是否要求已有 Test
 
-**状态：已确认。**
+**状态：已确认 · Decision: DR-0001。**
 
-Gate1 不要求 Test Implementation 或 Test Execution 已经存在，但必须能够形成 Verification Obligation 或 Verification Strategy，使开发和后续测试知道如何判定正确。
+Gate1 不要求 Test Implementation 或 Test Execution 已经存在，但必须具有明确、可验证的 Requirement：关键行为能够形成客观 Oracle、可观察结果或 Verification Strategy，使开发和后续测试无需重新发明业务语义。
 
 ---
 
@@ -881,6 +898,8 @@ Gate1 不要求 Test Implementation 或 Test Execution 已经存在，但必须�
 Gate1 业务目标：判断 Engineering Ready
 已确认阻断：高置信、未闭合的 Behavior / Oracle / Contract Unknown
 已确认基础：Requirement Semantic SSOT + 最小可追溯性
+验证主链：Requirement Object → Test / Verification Activity → Evidence → Verdict
+DR 机制：Overview 管当前结论；docs/decisions 管为什么这样决定
 当前关键待确认：四项候选目标与三类 Unknown 的层次关系
 推荐结构：SSOT/Trace 是基础，行为覆盖是发现机制，关键决策闭合是结果
 下一决策：确认该结构，并决定是否内部拆分 Gate1-R / Gate1-D
@@ -891,8 +910,9 @@ Gate1 业务目标：判断 Engineering Ready
 
 # 18. 证据来源
 
-本版主要根据以下既有交付件和已确认讨论整理：
+本版主要根据以下既有交付件、已确认讨论和 Decision Record 整理：
 
+- `docs/decisions/DR-0001-verification-obligation-not-first-class.md`
 - `feature-stories.example.yaml`
 - `story-v3.2.yaml`（历史输入，用于说明模型演进）
 - `ssot_checklist.md`

@@ -1,0 +1,55 @@
+name: Decision Record Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  require-decision-record:
+    name: require-decision-record
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check core knowledge changes
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          changed_files="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")"
+
+          echo "Changed files:"
+          printf '%s\n' "$changed_files"
+
+          protected_pattern='^(docs/quality-gate-knowledge-overview-.*\.md|examples/feature-stories\.example\.yaml|schemas/.*|policies/.*|skills/.*|docs/gate[0-9].*\.md)$'
+          dr_pattern='^docs/decisions/DR-[0-9]{4}.*\.md$'
+
+          protected_changes="$(printf '%s\n' "$changed_files" | grep -E "$protected_pattern" || true)"
+          dr_changes="$(printf '%s\n' "$changed_files" | grep -E "$dr_pattern" || true)"
+
+          if [[ -z "$protected_changes" ]]; then
+            echo "No protected core knowledge artifact changed."
+            exit 0
+          fi
+
+          echo "Protected knowledge changes detected:"
+          printf '%s\n' "$protected_changes"
+
+          if [[ -z "$dr_changes" ]]; then
+            echo "::error::Core knowledge changed without a Decision Record. Add or update docs/decisions/DR-XXXX-*.md in the same PR."
+            exit 1
+          fi
+
+          echo "Decision Record changes detected:"
+          printf '%s\n' "$dr_changes"
+          echo "Decision Record requirement satisfied."

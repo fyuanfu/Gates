@@ -36,7 +36,8 @@
 - 决策索引与治理规则：`docs/decisions/README.md`
 - DR 模板：`docs/decisions/DR-TEMPLATE.md`
 - 历史补录清单：`docs/decisions/decision-backlog.md`
-- 当前首个正式决策：`DR-0001`——Verification Obligation 不作为 V1 一等追溯对象
+- `DR-0001`：Verification Obligation 不作为 V1 一等追溯对象
+- `DR-0002`：Task 以 Story 为主归属，并用 Requirement Coverage Review 保证实现完整性
 
 ---
 
@@ -161,7 +162,7 @@ Reference Everywhere
 
 ## 3.2 最小需求对象模型
 
-**状态：已确认**
+**状态：已确认 · Task 关系 Decision: DR-0002**
 
 ```text
 Feature
@@ -172,6 +173,8 @@ Story
   ├── governed by → Rule（按需）
   ├── exercises → State / Transition（按需）
   └── constrained by → Invariant / NFR（按需）
+
+Story ── implemented-by ──> Task
 ```
 
 | 对象 | 当前职责定义 | 状态 |
@@ -183,8 +186,10 @@ Story
 | Rule | 具有跨 Scenario 复用、独立决策或影响分析价值的业务约束 | 已确认 |
 | State / Transition | 在存在真实生命周期和状态变化分析价值时，表达状态及合法转换 | 已确认 |
 | Invariant | 跨多个 Scenario / State 必须始终成立的约束 | 已确认 |
-| Task | 实现活动，只引用 Requirement，不重新定义业务要求 | 已确认 |
+| Task | Story 的工程实现分解单元；Story-specific Task 必须直接引用 Story ID，不重新定义业务要求 | 已确认 · DR-0002 |
 | Test | 验证资产，通过 Requirement ID 建立 Oracle，不成为新的需求源 | 已确认 |
+
+说明：Task 不属于 Canonical Requirement Source。Scenario / AC / Rule 等 Requirement Object 用来约束实现计划是否完整，但不作为 Task 的强制父级。
 
 ## 3.3 SSOT 约束
 
@@ -192,7 +197,7 @@ Story
 
 1. Story、AC、Scenario、Rule、State、Transition、Invariant 的正文只定义一次。
 2. 每个可追溯对象具有稳定、唯一、机器可解析的 ID。
-3. 下游 Task、Design、Test 通过 ID 引用 Requirement Object。
+3. 下游 Task、Design、Test 通过稳定 ID 引用 Requirement；Story-specific Task 必须直接引用 Story ID，且不得复制后重新定义 Requirement 正文。
 4. 业务要求变化必须先修改 Canonical Requirement Source。
 5. Requirement Source 必须进入版本控制并形成 Baseline。
 6. 关系尽量只持久化一个方向，反向索引由工具派生。
@@ -310,7 +315,44 @@ Verdict
 - Gate4 扩展到 Release、真实环境信号、灰度 Evidence 和 Release Verdict。
 - `Verification Obligation` 仅保留为解释性概念，表示“Requirement 为被认为满足而必须得到证明的内容”，V1 不赋予独立 ID、Schema、存储位置和生命周期。详见 `DR-0001`。
 
-## 4.3 Change Safety 链
+## 4.3 需求与实现主链
+
+**状态：已确认 · Decision: DR-0002**
+
+```text
+Feature
+  ↓ contains
+Story
+  ↓ implemented-by
+Task
+  ↓ changed-by / realized-by
+Code / Change
+```
+
+Task 的主归属关系回答“这个工程活动为了交付哪个 Story”。但 Task Planning 的完整性不能只由 Story 标题判断，还必须由 Story 下的 Required Requirement Object 进行覆盖检查：
+
+```text
+Requirement Object
+(AC / Scenario / Rule / Transition / Invariant / applicable NFR)
+        ↓ constrains
+Implementation Plan / Tasks
+        ↓ review
+Implementation Coverage
+```
+
+当前规则：
+
+- Story-specific Task 必须直接引用 Story ID。
+- Scenario 不作为 Task 的强制父级；Scenario 与 Task 天然可能是 N:M。
+- `Task ── supports ──> Scenario / AC / Rule` 可以作为影响分析或导航所需的可选辅助关系，但不替代 `Task → Story` 主归属。
+- Task 生成后、编码开始前必须执行 Requirement → Implementation Coverage Review。
+- Coverage Review 是派生视图，不成为新的 Requirement Source。
+- 对 Required Requirement Object，Review 只接受：`COVERED`、`REUSED_EXISTING_BEHAVIOR`、`OUT_OF_SCOPE`（仅当 Canonical Requirement Source 已明确范围外）或 `GAP`。
+- 未解释的 Required `GAP` 不得进入编码。
+
+标准示例见 `examples/tasks.example.md`。
+
+## 4.4 Change Safety 链
 
 **状态：已确认**
 
@@ -332,15 +374,19 @@ Evidence
 Change Safety Verdict
 ```
 
-## 4.4 最小追溯原则
+其中前半段 `Change → Diff → Impact Anchor → Affected Existing Requirement / Behavior` 是 Change Impact Analysis；后半段继续完成 Risk、Verification、Evidence 和 Safety Verdict，因此 Change Safety 的范围大于 Change Impact Analysis。
 
-**状态：已确认**
+## 4.5 最小追溯原则
+
+**状态：已确认 · Task 关系 Decision: DR-0002**
 
 - 追溯关系必须机器可解析，不能只存在于自然语言说明中。
 - 引用对象必须真实存在，不允许悬空引用。
 - Requirement ID 在语义修改后应保持身份稳定；删除的 ID 不复用。
 - Evidence 必须绑定 Requirement Revision、Code Commit / Build 和 Test Execution。
 - 旧 Evidence 不自动证明修改后的新 Requirement。
+- Story-specific Task 的主实现归属为 `Task → Story`。
+- Requirement → Task 的细粒度关系主要用于 Implementation Coverage；可由 Review 派生，不强制每个 Task 永久维护全部 Scenario / AC / Rule ID。
 - `Story → Scenario → Existing Tests` 是 Gate2 的主要正向导航关系之一。
 - `Test → AC / Rule / Scenario / Transition / Invariant` 用于表达精确覆盖，不应反向成为 Requirement Source。
 
@@ -466,7 +512,44 @@ Gate1 业务目标
 - 机器可读 JSON/YAML；
 - 由机器输出派生的人类可读报告。
 
-## 5.6 Gate1 V1 明确不承诺
+## 5.6 Task 生成后、编码前的 Implementation Plan Coverage Review
+
+**状态：已确认 · Decision: DR-0002**
+
+该 Review 的目标是防止“Task 虽然按 Story 组织，但具体 Scenario / AC / Rule 在实现计划中消失”。它发生在 Task 生成后、编码开始前。
+
+这项检查不要求 Gate1-R 在 Requirement Ready 阶段必须已有 Task；如果流程先完成 Requirement Ready，再生成 `tasks.md`，则 Coverage Review 在后续 Planning 阶段执行，但仍必须在编码开始前闭合。
+
+### 输入
+
+- Canonical Requirement Source；
+- `tasks.md` / Task Plan；
+- 适用的 Technical Plan / Design；
+- 可选的 Existing Implementation / Reuse 引用。
+
+### Review 事项
+
+1. 每个 Story-specific Task 是否引用有效 Story ID。
+2. 每个 Required AC / Scenario / Rule / Transition / Invariant 是否已被实现计划覆盖。
+3. 如果无需新增 Task，是否明确为 `REUSED_EXISTING_BEHAVIOR` 并能定位已有实现。
+4. `OUT_OF_SCOPE` 是否已经由 Canonical Requirement Source 明确，而不是在 Task Review 阶段临时排除。
+5. 是否存在未解释的 Required `GAP`。
+6. Task / Design 是否引入了 Requirement Source 中不存在、需要产品或业务 Owner 决定的新行为。
+
+### Coverage Status
+
+```text
+COVERED
+REUSED_EXISTING_BEHAVIOR
+OUT_OF_SCOPE
+GAP
+```
+
+其中 `OUT_OF_SCOPE` 只有在 Canonical Requirement Source 已明确范围外时有效；未解释的 Required `GAP` 应阻止进入编码。
+
+Coverage Review 的结果是派生视图，不成为新的需求事实源。标准示例见 `examples/tasks.example.md`。
+
+## 5.7 Gate1 V1 明确不承诺
 
 **状态：已确认**
 
@@ -474,11 +557,11 @@ Gate1 业务目标
 - 发现所有 Unknown Unknown；
 - 自动替业务 Owner 作决策；
 - 以 LLM 置信度或文档总分直接决定放行；
-- 要求 Task、Code、Test Execution、Evidence 已经存在；
+- 在 Requirement Ready 阶段要求 Task、Code、Test Execution、Evidence 已经存在；Task 只在其生成后的 Planning Coverage Review 中作为输入；
 - 代替完整 Product Review、UX Review 或 Architecture Review；
 - 对不影响当前范围的所有 NFR、风险和边缘组合做穷举检查。
 
-## 5.7 Gate1 当前实现状态
+## 5.8 Gate1 当前实现状态
 
 **状态：待确认**
 
@@ -496,7 +579,8 @@ Gate1 业务目标
 2. 最小追溯关系校验是否成为前置阶段；
 3. 四项候选目标与三类 Unknown 的正式层次关系；
 4. Gate1-R / Gate1-D 是否拆分；
-5. 与 `feature-stories.example.yaml`、`ssot_checklist.md` 的统一输入契约。
+5. 与 `feature-stories.example.yaml`、`ssot_checklist.md` 的统一输入契约；
+6. Task 生成后的 Requirement → Implementation Coverage Review 如何接入编码前检查。
 
 ---
 
@@ -604,7 +688,7 @@ Change Safety Verdict
 
 ## 7.1 当前定位
 
-**状态：已确认到原则层**
+**状态：已确认到原则层 · Planning 逃逸解释 Decision: DR-0002**
 
 Gate3 面向完整 Feature 或可验收 Candidate，判断：
 
@@ -617,6 +701,8 @@ Gate3 与 Gate2 的核心区别：
 | 评估一次 Change 是否可以 Merge | 评估完整 Feature 是否满足业务承诺 |
 | 关注 Change Correctness、Safety、Implementation Quality | 关注端到端业务行为、跨 Story 协同和 Feature 验收 |
 | 证据可以集中于变更范围和受影响回归 | 证据必须覆盖完整 Required Acceptance Scope |
+
+验收仍然是必要的最终行为验证，但不承担“正常补齐已知 Requirement”的职责。若开发前已知且 Required 的 Scenario / AC / Rule 到 Gate3 才发现完全没有实现，应记录为 Planning / Implementation Coverage 的逃逸，而不是把验收当作正常需求补全阶段。
 
 ## 7.2 暂缓内容
 
@@ -715,6 +801,8 @@ Testing Q1–Q50 已作为后续 Testing Skill 的正式基线，但当前不与
 | C-017 | Gate3 负责完整 Feature 业务行为验收，Gate4 负责版本、灰度和真实环境风险 |
 | C-018 | Testing 的最终目标是产生可信 Evidence 和 Behavior/Product Verdict，而不只是让测试跑绿 |
 | C-019 | Verification Obligation 在 V1 不作为独立 Traceability Object；Requirement Object 直接由 Test / Verification Activity 验证。Decision: DR-0001 |
+| C-020 | Story-specific Task 的主归属为 Story；Task Planning / Review 必须覆盖 Story 下全部 Required Requirement Object，未解释 GAP 不进入编码。Decision: DR-0002 |
+| C-021 | Gate3 验收不是正常补齐已知 Requirement 漏实现的机制；此类遗漏应视为 Planning / Implementation Coverage 逃逸。Decision: DR-0002 |
 
 历史 C-001～C-018 的 DR 补录优先级见 `docs/decisions/decision-backlog.md`。
 
@@ -730,7 +818,7 @@ Testing Q1–Q50 已作为后续 Testing Skill 的正式基线，但当前不与
 | Q-002 | Gate1 是否拆成内部有依赖关系的 Gate1-R 和 Gate1-D | 推荐拆成两个检查点、一个对外 Gate1 Verdict | 决定输入、Owner 和执行时机 |
 | Q-003 | Gate1 V1 的最小 Canonical Input 是否固定为 Feature Scope + Requirement Source + 适用 UX/Technical/Contract | 采用；缺少强制输入时 CANNOT_EVALUATE | 决定 Skill 输入契约 |
 | Q-004 | Gate1 V1 强制的 SSOT / Traceability 规则具体是哪一组 | 从 `ssot_checklist.md` 选择 Gate1 阶段适用子集，暂不要求 Task/Test 已存在 | 决定确定性硬检查 |
-| Q-005 | 最小追溯链是否固定为 Feature → Story → Requirement Object（Scenario / AC / Rule / Transition / Invariant），且 Gate1 只要求关键 Requirement 可验证、不要求 Test 已存在 | 推荐采用；Task/Code/Test/Evidence 不进入 Gate1 强制存在链 | 决定 Schema 和断链规则 |
+| Q-005 | 最小追溯链是否固定为 Feature → Story → Requirement Object（Scenario / AC / Rule / Transition / Invariant），且 Gate1 Requirement Ready 只要求关键 Requirement 可验证、不要求 Test 已存在 | 推荐采用；Task/Code/Test/Evidence 不进入 Requirement Ready 强制存在链 | 决定 Schema 和断链规则 |
 | Q-006 | Behavior Coverage 的最低完成条件是什么 | 不宣称完整；要求所有显式关键 Decision Surface 已抽取并执行适用探针 | 决定覆盖缺口的可解释性 |
 | Q-007 | 现有 `gate1-v1-skill.zip` 是升级为新版本还是作为语义分析子 Skill | 推荐作为 `semantic-readiness-analyzer` 子能力，由 Gate1 Orchestrator 组合 SSOT/Trace 检查 | 决定代码结构和交付形式 |
 
@@ -763,6 +851,8 @@ Testing Q1–Q50 已作为后续 Testing Skill 的正式基线，但当前不与
 | S-011 | Gate2 与 Feature 提测门禁可以合并 | Gate2 保护 Change Merge；Gate3 保护 Feature 业务验收，二者分离 |
 | S-012 | 早期五层 Gate 模型直接作为当前实现基线 | 当前主线采用四层 Gate1–Gate4；旧五层材料仅作为历史参考 |
 | S-013 | Verification Obligation 作为 Gate1 V1 独立一等追溯节点 | V1 将其降级为解释性概念；Requirement Object 直接 `verified-by` Test / Verification Activity。Decision: DR-0001 |
+| S-014 | Task 只按 Story 组织即可，不需要在编码前检查 Scenario / AC / Rule 是否进入实现计划 | Task 仍以 Story 为主归属，但必须执行 Requirement → Implementation Coverage Review；未解释 GAP 不进入编码。Decision: DR-0002 |
+| S-015 | 为防需求遗漏，强制每个 Scenario 作为 Task 的父级 | Scenario 与 Task 是行为维度和实现维度的 N:M 关系；Scenario 不作为 Task 强制父级，细粒度 `supports` 仅按需使用。Decision: DR-0002 |
 
 ## 12.1 旧版资产状态
 
@@ -774,7 +864,7 @@ Testing Q1–Q50 已作为后续 Testing Skill 的正式基线，但当前不与
 | `story-v3.2.yaml` | 已被替代 | 其中 AC、Scenario 和 Rule 的语义继续有效；物理结构由 `feature_story_bundle` 取代 |
 | `gates.md` / `gates(1).md` 中的五层模型 | 已被替代或仅供历史参考 | 不作为当前门禁数量和边界的事实源 |
 | `story开发交付模板.md` | 部分有效 | 概念仍可参考，输入结构与关系方向以 `feature-stories.example.yaml` 为准 |
-| `gate1-v1-skill.zip` | 原型/待升级 | 保留三类 Unknown 分析能力，与 SSOT/Traceability 检查重新组合 |
+| `gate1-v1-skill.zip` | 原型/待升级 | 保留三类 Unknown 分析能力，与 SSOT/Traceability/Planning Coverage 检查重新组合 |
 
 ---
 
@@ -801,9 +891,11 @@ Testing Q1–Q50 已作为后续 Testing Skill 的正式基线，但当前不与
 | `docs/decisions/README.md` | Decision Record 索引、治理规则、Issue/PR/Commit 关联规范 | 当前有效 |
 | `docs/decisions/DR-TEMPLATE.md` | 新决策记录统一模板 | 当前有效 |
 | `docs/decisions/DR-0001-verification-obligation-not-first-class.md` | Verification Obligation V1 建模决策 | Accepted |
+| `docs/decisions/DR-0002-task-story-and-implementation-coverage.md` | Task → Story 主归属与 Implementation Coverage Review 决策 | Accepted |
 | `docs/decisions/decision-backlog.md` | C-001～C-018 历史决策补录优先级 | 当前有效 |
 | `.github/workflows/decision-record-check.yml` | 核心知识 Artifact 变化时检查是否同步 DR | 当前有效；需将该 Check 配为 required 才能硬阻止 Merge |
 | `feature-stories.example.yaml` | 一个 Feature 包含多个 Story 的 Canonical Requirement Source 标准示例 | 当前有效 |
+| `tasks.example.md` | Story-oriented Task 组织与 Requirement → Implementation Coverage Review 标准示例 | 当前有效 · DR-0002 |
 | `story-v3.2.yaml` | 旧版单 Story 注释型模板 | 已被替代，保留为历史参考 |
 | `ssot_checklist.md` | SSOT、Stable ID、Reference、Baseline 和 Gate 分层检查清单 | 当前有效，Gate1 子集待裁剪 |
 | `story-test-map.yaml` | Story → Scenario → Existing Tests 正向追溯示例 | 当前有效，Gate2 使用 |
@@ -845,16 +937,24 @@ Gate1-R PASS
     ↓
 Gate1-D PASS
     ↓
-Gate1 Overall PASS
+Task Planning + Implementation Coverage PASS
+    ↓
+Gate1 Overall PASS / Ready to Code
 ```
 
-这样既不增加外部四层门禁数量，也避免在需求尚未基线时评审技术方案。
+这样既不增加外部四层门禁数量，也避免在需求尚未基线时评审技术方案，并确保 Required Scenario / AC / Rule 不会在 Task Planning 中被遗漏。
 
 ## 15.3 Gate1 是否要求已有 Test
 
 **状态：已确认 · Decision: DR-0001。**
 
 Gate1 不要求 Test Implementation 或 Test Execution 已经存在，但必须具有明确、可验证的 Requirement：关键行为能够形成客观 Oracle、可观察结果或 Verification Strategy，使开发和后续测试无需重新发明业务语义。
+
+## 15.4 Task 应关联 Story 还是 Scenario
+
+**状态：已确认 · Decision: DR-0002。**
+
+Task 的主归属关系是 Story。Scenario / AC / Rule 不作为 Task 父级，而用于检查 Implementation Plan 是否完整。Task 与 Scenario 如有精细影响分析价值，可建立可选 N:M `supports` 关系。编码前必须不存在未解释的 Required `GAP`。
 
 ---
 
@@ -870,10 +970,11 @@ Gate1 不要求 Test Implementation 或 Test Execution 已经存在，但必须�
 2. 确认 Gate1-R / Gate1-D 是否作为内部两阶段。
 3. 固定 Gate1 最小输入和 Canonical Schema。
 4. 从 `ssot_checklist.md` 裁剪 Gate1 确定性规则。
-5. 固定最小追溯链和断链规则。
-6. 将现有三类 Unknown Skill 作为语义分析子能力接入。
-7. 固定 Finding、Evidence、Policy、Verdict 输出 Schema。
-8. 用一个 Android Feature 进行历史回放试点。
+5. 固定最小 Requirement Trace 和断链规则。
+6. 固定 Task Planning / Implementation Coverage Review 的输入、Coverage Status 与 GAP 阻断规则。
+7. 将现有三类 Unknown Skill 作为语义分析子能力接入。
+8. 固定 Finding、Evidence、Policy、Verdict 输出 Schema。
+9. 用一个 Android Feature 进行历史回放试点。
 
 ## 16.1 Gate1 V1 的建议完成定义
 
@@ -882,6 +983,7 @@ Gate1 不要求 Test Implementation 或 Test Execution 已经存在，但必须�
 - 一个真实 Feature 能提供完整输入；
 - SSOT/Traceability 确定性检查可重复执行；
 - Behavior/Oracle/Contract Unknown 能输出带证据的 Finding；
+- Task 生成后，Required Requirement → Implementation Coverage 不存在未解释 GAP；
 - 相同输入和 Policy 得到相同 Verdict；
 - 每个 BLOCK 都有 Owner 和明确 Unblock Condition；
 - 人工能够审计并纠正 Finding；
@@ -899,6 +1001,8 @@ Gate1 业务目标：判断 Engineering Ready
 已确认阻断：高置信、未闭合的 Behavior / Oracle / Contract Unknown
 已确认基础：Requirement Semantic SSOT + 最小可追溯性
 验证主链：Requirement Object → Test / Verification Activity → Evidence → Verdict
+实现主链：Story → Task → Code / Change；AC / Scenario / Rule 用于挑战 Task Plan 完整性
+Planning Review：Task 生成后、编码前，不允许存在未解释的 Required GAP
 DR 机制：Overview 管当前结论；docs/decisions 管为什么这样决定
 当前关键待确认：四项候选目标与三类 Unknown 的层次关系
 推荐结构：SSOT/Trace 是基础，行为覆盖是发现机制，关键决策闭合是结果
@@ -913,7 +1017,9 @@ DR 机制：Overview 管当前结论；docs/decisions 管为什么这样决定
 本版主要根据以下既有交付件、已确认讨论和 Decision Record 整理：
 
 - `docs/decisions/DR-0001-verification-obligation-not-first-class.md`
+- `docs/decisions/DR-0002-task-story-and-implementation-coverage.md`
 - `feature-stories.example.yaml`
+- `tasks.example.md`
 - `story-v3.2.yaml`（历史输入，用于说明模型演进）
 - `ssot_checklist.md`
 - `story-test-map.yaml`

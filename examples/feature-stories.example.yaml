@@ -1,0 +1,124 @@
+schema_type: "feature_story_bundle"
+schema_version: "1.0"
+
+feature:
+  id: "FEATURE-NOTE-RECYCLE-BIN"
+  name: "笔记回收站"
+
+  references:
+    prd: "repo://docs/product/note-recycle-bin.md"
+    ux_spec: "repo://docs/ux/note-recycle-bin.md"
+    technical_design: "repo://docs/tech/note-recycle-bin.md"
+
+  boundary:
+    in_scope:
+      - "恢复回收站中的单篇笔记"
+      - "永久删除回收站中的单篇笔记"
+    out_of_scope:
+      - "批量恢复或批量永久删除"
+      - "跨账号恢复笔记"
+
+  dependencies:
+    - id: "DEP-NOTE-01"
+      description: "笔记数据必须保留删除时间和原目录 ID"
+
+  unknowns: []
+
+stories:
+  - id: "US-NOTE-017"
+    name: "恢复删除的笔记"
+
+    user_story:
+      as_a: "笔记用户"
+      i_want: "恢复误删除的笔记"
+      so_that: "我可以继续使用原有内容"
+
+    acceptance_criteria:
+      - id: "US-NOTE-017-AC01"
+        description: "恢复成功后，笔记必须重新处于可使用状态"
+      - id: "US-NOTE-017-AC02"
+        description: "恢复后的笔记必须位于有效目录"
+
+    dependencies: []
+    unknowns: []
+
+    rules:
+      - id: "US-NOTE-017-R01"
+        description: "原目录存在时恢复到原目录，否则恢复到默认目录"
+
+    scenarios:
+      - id: "US-NOTE-017-S01"
+        name: "原目录存在时恢复"
+        kind: "main"
+        verifies:
+          - "US-NOTE-017-AC01"
+          - "US-NOTE-017-AC02"
+        exercises_rules:
+          - "US-NOTE-017-R01"
+        given:
+          - "笔记处于回收站"
+          - "笔记原目录仍然存在"
+        when: "用户恢复笔记"
+        then:
+          - "笔记恢复为可使用状态"
+          - "笔记返回原目录"
+
+      - id: "US-NOTE-017-S02"
+        name: "原目录不存在时恢复"
+        kind: "alternative"
+        verifies:
+          - "US-NOTE-017-AC01"
+          - "US-NOTE-017-AC02"
+        exercises_rules:
+          - "US-NOTE-017-R01"
+        given:
+          - "笔记处于回收站"
+          - "笔记原目录已经不存在"
+        when: "用户恢复笔记"
+        then:
+          - "笔记恢复为可使用状态"
+          - "笔记进入默认目录"
+
+  - id: "US-NOTE-018"
+    name: "永久删除笔记"
+
+    user_story:
+      as_a: "笔记用户"
+      i_want: "永久删除回收站中的笔记"
+      so_that: "我可以彻底清理不再需要的内容"
+
+    acceptance_criteria:
+      - id: "US-NOTE-018-AC01"
+        description: "未经用户确认不得永久删除笔记"
+      - id: "US-NOTE-018-AC02"
+        description: "永久删除完成后，笔记不得再被访问或恢复"
+
+    dependencies: []
+    unknowns: []
+
+    scenarios:
+      - id: "US-NOTE-018-S01"
+        name: "确认永久删除"
+        kind: "main"
+        verifies:
+          - "US-NOTE-018-AC01"
+          - "US-NOTE-018-AC02"
+        given:
+          - "笔记处于回收站"
+          - "永久删除确认界面已经显示"
+        when: "用户确认永久删除"
+        then:
+          - "笔记被永久删除"
+          - "用户无法再访问或恢复该笔记"
+
+      - id: "US-NOTE-018-S02"
+        name: "取消永久删除"
+        kind: "alternative"
+        verifies:
+          - "US-NOTE-018-AC01"
+        given:
+          - "笔记处于回收站"
+          - "永久删除确认界面已经显示"
+        when: "用户取消永久删除"
+        then:
+          - "笔记继续保留在回收站"

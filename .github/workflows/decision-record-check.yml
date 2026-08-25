@@ -31,7 +31,7 @@ jobs:
           echo "Changed files:"
           printf '%s\n' "$changed_files"
 
-          protected_pattern='^(docs/quality-gate-knowledge-overview-.*\.md|examples/feature-stories\.example\.yaml|schemas/.*|policies/.*|skills/.*|docs/gate[0-9].*\.md)$'
+          protected_pattern='^(docs/quality-gate-knowledge-overview-.*\.md|examples/feature-stories\.example\.yaml|examples/tasks\.example\.md|schemas/.*|policies/.*|skills/.*|docs/gate[0-9].*\.md)$'
           dr_pattern='^docs/decisions/DR-[0-9]{4}.*\.md$'
 
           protected_changes="$(printf '%s\n' "$changed_files" | grep -E "$protected_pattern" || true)"

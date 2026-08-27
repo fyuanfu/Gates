@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Discovery Gap 消除方法研究</title>
+<style>
+  :root {
+    --bg: #f6f8fb;
+    --paper: #ffffff;
+    --text: #172033;
+    --muted: #64748b;
+    --line: #dbe3ee;
+    --accent: #315efb;
+    --accent-soft: #eef3ff;
+    --warn: #a15c00;
+    --warn-soft: #fff7e8;
+    --ok: #116b45;
+    --ok-soft: #ecfdf5;
+    --danger: #b42318;
+    --danger-soft: #fff1f0;
+    --code: #0f172a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+    line-height: 1.72;
+  }
+  .page { max-width: 1180px; margin: 0 auto; padding: 36px 22px 72px; }
+  .hero {
+    background: linear-gradient(135deg, #172033 0%, #2c467e 62%, #315efb 100%);
+    color: #fff; border-radius: 24px; padding: 46px 48px;
+    box-shadow: 0 18px 50px rgba(23,32,51,.14);
+  }
+  .hero .eyebrow { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; opacity: .78; margin-bottom: 8px; }
+  h1 { font-size: 38px; line-height: 1.2; margin: 0 0 12px; }
+  .hero p { margin: 0; max-width: 900px; font-size: 17px; opacity: .92; }
+  .meta { margin-top: 18px; font-size: 13px; opacity: .72; }
+  .layout { display: grid; grid-template-columns: 250px minmax(0,1fr); gap: 22px; margin-top: 22px; align-items: start; }
+  .toc { position: sticky; top: 18px; background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+  .toc strong { display:block; margin-bottom: 10px; }
+  .toc a { display: block; text-decoration: none; color: #43506a; padding: 5px 0; font-size: 14px; }
+  .toc a:hover { color: var(--accent); }
+  main { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 34px 38px 42px; }
+  h2 { margin-top: 42px; padding-top: 4px; font-size: 26px; line-height: 1.35; }
+  h2:first-child { margin-top: 0; }
+  h3 { margin-top: 28px; font-size: 20px; }
+  h4 { margin-top: 22px; font-size: 17px; }
+  p { margin: 10px 0; }
+  .lead { font-size: 18px; color: #24324d; }
+  .callout { border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 0 12px 12px 0; padding: 16px 18px; margin: 18px 0; }
+  .callout.warn { border-color: #f59e0b; background: var(--warn-soft); }
+  .callout.ok { border-color: #22a06b; background: var(--ok-soft); }
+  .callout.danger { border-color: #d92d20; background: var(--danger-soft); }
+  .kpi-grid, .method-grid { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0,1fr)); margin: 18px 0; }
+  .card { border: 1px solid var(--line); border-radius: 14px; padding: 18px; background: #fbfcfe; }
+  .card h3, .card h4 { margin-top: 0; }
+  .tag { display: inline-block; border-radius: 999px; padding: 2px 9px; font-size: 12px; background: #eef2f7; color: #4b5870; margin-right: 5px; }
+  .tag.good { background: var(--ok-soft); color: var(--ok); }
+  .tag.mid { background: var(--warn-soft); color: var(--warn); }
+  .tag.blue { background: var(--accent-soft); color: #2948c7; }
+  .flow { display: flex; align-items: stretch; gap: 8px; flex-wrap: wrap; margin: 20px 0; }
+  .flow .step { flex: 1 1 130px; min-width: 120px; border: 1px solid #cdd8eb; background: #f8faff; border-radius: 12px; padding: 13px 12px; text-align: center; font-weight: 600; font-size: 14px; }
+  .flow .arrow { display:flex; align-items:center; color:#8ba0c6; font-weight:700; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0 22px; font-size: 14px; }
+  th, td { border: 1px solid var(--line); padding: 10px 12px; vertical-align: top; }
+  th { background: #f3f6fb; text-align: left; }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+  pre { white-space: pre-wrap; background: var(--code); color: #e5edf9; border-radius: 14px; padding: 18px; overflow-x: auto; line-height: 1.55; font-size: 13px; }
+  .matrix td:first-child { font-weight: 700; white-space: nowrap; }
+  ul, ol { padding-left: 24px; }
+  li { margin: 5px 0; }
+  .small { font-size: 13px; color: var(--muted); }
+  .source-list a { color: var(--accent); word-break: break-all; }
+  .footer { text-align:center; color: var(--muted); font-size: 12px; margin-top: 24px; }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .toc { position: static; }
+    .kpi-grid, .method-grid { grid-template-columns: 1fr; }
+    main { padding: 24px 20px 32px; }
+    .hero { padding: 34px 26px; }
+    h1 { font-size: 30px; }
+  }
+  @media print {
+    body { background:#fff; }
+    .page { max-width:none; padding:0; }
+    .hero { border-radius:0; box-shadow:none; }
+    .layout { grid-template-columns:1fr; }
+    .toc { display:none; }
+    main { border:none; padding:20px 0; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <div class="eyebrow">AI × Requirements Engineering</div>
+    <h1>Discovery Gap 消除方法研究</h1>
+    <p>聚焦 AI 需求评审中的 Gap Discovery：如何系统性发现“需求没有写出来的部分”，以及如何通过证据、过滤和人工 Oracle 将候选缺口收敛为可行动的需求问题。</p>
+    <div class="meta">知识文档 · 基于当前关于 AI Requirement Review / Gap Discovery 的讨论整理 · 2026-08-27</div>
+  </header>
+
+  <div class="layout">
+    <aside class="toc">
+      <strong>目录</strong>
+      <a href="#summary">1. 核心结论</a>
+      <a href="#definition">2. 什么是 Discovery Gap</a>
+      <a href="#goal">3. 评审目标</a>
+      <a href="#difficulty">4. 为什么难</a>
+      <a href="#maturity">5. 行业成熟度</a>
+      <a href="#methods">6. 六类消除方法</a>
+      <a href="#search-space">7. 受约束搜索空间</a>
+      <a href="#lifecycle">8. Candidate Gap 生命周期</a>
+      <a href="#precision-recall">9. Precision / Recall</a>
+      <a href="#workflow">10. 推荐工程流程</a>
+      <a href="#evaluation">11. 如何评估 AI Reviewer</a>
+      <a href="#output">12. 输出结构</a>
+      <a href="#boundaries">13. 能力边界</a>
+      <a href="#conclusion">14. 最终结论</a>
+      <a href="#references">15. 参考资料</a>
+    </aside>
+
+    <main>
+      <section id="summary">
+        <h2>1. 核心结论</h2>
+        <p class="lead">AI 加持后的需求评审，真正有增量价值的部分，不是继续做“句子写得好不好”的检查，而是把过去高度依赖资深 Reviewer 经验的<strong>需求缺口探索</strong>变成可重复、可规模化的工程过程。</p>
+        <div class="callout"><strong>核心定义：</strong> Gap Discovery 不是“证明需求完整”，而是<strong>系统性扩大候选需求空间，并找出当前 Requirement Set 无法回答的重要关注点</strong>。</div>
+        <div class="kpi-grid">
+          <div class="card"><h4>AI 的优势</h4><p>高 Recall、快速扩展候选空间、可并行从多视角探索、可重复执行。</p></div>
+          <div class="card"><h4>人的优势</h4><p>掌握真实业务语义、优先级和组织约束，能提供最终业务 Oracle。</p></div>
+          <div class="card"><h4>推荐组合</h4><p><strong>AI 扩展搜索空间 + Evidence 约束 + Human Confirm</strong>，而不是 AI 单独批准需求。</p></div>
+        </div>
+      </section>
+
+      <section id="definition">
+        <h2>2. 什么是 Discovery Gap</h2>
+        <p>需求文档中有两类不同的问题：</p>
+        <table>
+          <thead><tr><th>类别</th><th>关注点</th><th>例子</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Defect Detection</strong></td><td>已经写出来的 Requirement 是否存在歧义、冲突、不可验证等缺陷。</td><td>“系统应快速完成上传”中的“快速”没有阈值。</td></tr>
+            <tr><td><strong>Gap Discovery</strong></td><td>需求空间中是否存在重要但当前文档尚未定义的场景、状态、异常、约束或假设。</td><td>“用户可修改绑定手机号”，但未说明旧号码不可用、新号码已绑定、并发修改、会话失效等行为。</td></tr>
+          </tbody>
+        </table>
+        <pre>Known Requirements
+        +
+Candidate Requirement Space
+        ↓
+Compare / Coverage Analysis
+        ↓
+Unanswered Concern
+        ↓
+Candidate Gap</pre>
+        <p>因此，Gap Discovery 最难的不是文本解析，而是：<strong>Candidate Requirement Space 从哪里来，以及怎样避免无限发散。</strong></p>
+      </section>
+
+      <section id="goal">
+        <h2>3. AI Gap Discovery 的评审目标</h2>
+        <p>不应该把目标定义为“证明 Requirement 100% 完整”。自然语言需求没有一个可计算的完备性证明机制，AI 也没有天然业务真值。</p>
+        <div class="callout ok"><strong>更合理的目标：</strong> 在开发开始之前，系统性提高<strong>重要需求缺口的发现概率</strong>，并把尚未解决的不确定性显式化。</div>
+        <div class="flow">
+          <div class="step">需求上下文</div><div class="arrow">→</div><div class="step">系统化探索</div><div class="arrow">→</div><div class="step">Candidate Gaps</div><div class="arrow">→</div><div class="step">Evidence</div><div class="arrow">→</div><div class="step">Human Oracle</div><div class="arrow">→</div><div class="step">确认 / 拒绝 / 补充</div>
+        </div>
+        <p>最终关心的不是“文档质量分数”，而是：</p>
+        <ul>
+          <li>是否仍存在会导致开发产生重大不同理解的未解决问题；</li>
+          <li>是否存在关键场景、状态或失败行为没有定义；</li>
+          <li>是否还有重要假设只存在于人的脑中；</li>
+          <li>AI 提出的高价值候选缺口是否已被确认、拒绝或转化为新 Requirement。</li>
+        </ul>
+      </section>
+
+      <section id="difficulty">
+        <h2>4. 为什么 Gap Discovery 比普通 Requirement Lint 难</h2>
+        <table>
+          <thead><tr><th>难点</th><th>原因</th><th>后果</th></tr></thead>
+          <tbody>
+            <tr><td>缺失内容不可直接观察</td><td>文本中没有出现的东西，无法像模糊词一样直接匹配。</td><td>必须先构造“可能应该存在什么”。</td></tr>
+            <tr><td>缺少天然 Oracle</td><td>模型不知道真实产品规则。</td><td>AI 的合理建议不等于真实缺陷。</td></tr>
+            <tr><td>搜索空间巨大</td><td>场景、状态、角色、异常、数据、依赖、NFR 都可以无限扩展。</td><td>容易产生 Candidate Explosion。</td></tr>
+            <tr><td>领域依赖强</td><td>同一行为在支付、相册、社交、内部工具中的重要性完全不同。</td><td>通用模型常识不够。</td></tr>
+            <tr><td>Completeness 无法直接证明</td><td>“没有继续发现问题”不等于“没有问题”。</td><td>应使用风险与覆盖证据，而不是绝对完整声明。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="maturity">
+        <h2>5. 截至 2026 年的行业成熟度</h2>
+        <table class="matrix">
+          <thead><tr><th>能力</th><th>成熟度</th><th>判断</th></tr></thead>
+          <tbody>
+            <tr><td>模糊词/句式/单位/阈值检查</td><td>★★★★★</td><td>成熟、已产品化。</td></tr>
+            <tr><td>单条需求语义质量检查</td><td>★★★★☆</td><td>LLM 已能稳定辅助，但仍需确认。</td></tr>
+            <tr><td>Traceability / Coverage Gap</td><td>★★★☆</td><td>已有商业产品和工程实践。</td></tr>
+            <tr><td>遗漏 Scenario / State / Failure</td><td>★★★☆☆</td><td>价值较高，正在工程化，Precision 仍是问题。</td></tr>
+            <tr><td>隐含假设挑战</td><td>★★★☆☆</td><td>LLM 有明显优势，但强依赖上下文。</td></tr>
+            <tr><td>判断真实业务是否正确</td><td>★★☆☆☆</td><td>缺少业务 Oracle。</td></tr>
+            <tr><td>证明 Feature 已完整</td><td>★☆☆☆☆</td><td>目前不可可靠实现。</td></tr>
+            <tr><td>无人审查自动批准</td><td>★☆☆☆☆</td><td>不应作为当前目标。</td></tr>
+          </tbody>
+        </table>
+        <p class="small">成熟度为本次研究讨论的综合工程判断，不代表某一单一标准或公司的官方评级。</p>
+      </section>
+
+      <section id="methods">
+        <h2>6. Discovery Gap 的六类主要消除方法</h2>
+        <h3>6.1 LLM 作为外部知识源：Candidate Concept Expansion</h3>
+        <p>让模型利用语言和领域常识，推断当前需求上下文中通常还会出现哪些相关概念、行为或条件，再与 Requirement Set 比较。</p>
+        <pre>Requirement Set
+      ↓
+Context / Concept Extraction
+      ↓
+LLM predicts related concepts
+      ↓
+Candidate concepts
+      ↓
+Compare with existing requirements
+      ↓
+Potential missing concepts</pre>
+        <p><strong>价值：</strong>发现显式文本之外的可能关注点。<br><strong>主要风险：</strong>噪音大；通用常识未必适用于当前产品。</p>
+
+        <h3>6.2 RAG + Domain Evidence：用领域资料约束模型</h3>
+        <p>把纯模型常识替换为“模型 + 当前系统证据”，从相关需求、历史规则、领域文档、既有测试、相邻 Feature 中检索上下文，再生成候选缺口。</p>
+        <pre>Current Requirement
+       ↓
+Retrieve relevant evidence
+ ┌─────┼────────┬──────────┐
+ │     │        │          │
+历史需求 业务规则 相邻Feature  测试/缺陷
+ └─────┼────────┴──────────┘
+       ↓
+      LLM
+       ↓
+Evidence-grounded Candidate Gaps</pre>
+        <p><strong>核心收益：</strong>降低 hallucination，提高与真实系统的相关性。</p>
+
+        <h3>6.3 Scenario Generation as Probing：用场景反推需求缺口</h3>
+        <p>与其直接问“还漏了什么”，不如要求 AI 构造可验证场景，再检查需求是否能够对每个场景给出确定答案。</p>
+        <pre>Requirement
+   ↓
+Generate candidate scenarios
+   ↓
+Happy / Failure / Boundary / Recovery / Concurrent ...
+   ↓
+Can the requirement set determine expected behavior?
+          ┌──────────┴──────────┐
+         Yes                    No
+          ↓                      ↓
+      Covered               Candidate Gap</pre>
+        <p>这是非常适合工程落地的 probing 方法，因为“生成场景”比“自由寻找一切遗漏”拥有更明确的搜索目标。</p>
+
+        <h3>6.4 Cross-Pollination：Human 高 Precision + AI 高 Recall</h3>
+        <p>工业研究显示，一个有价值的组合模式是分别让人工分析者和 LLM 展开需求，再与生产阶段真实产物或后续确认结果对比。其核心启发不是 AI 取代 BA，而是双方互补：</p>
+        <table>
+          <thead><tr><th></th><th>优势</th><th>弱点</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Human</strong></td><td>Precision 高、领域判断强</td><td>Recall 容易受经验、时间、认知盲区影响</td></tr>
+            <tr><td><strong>LLM</strong></td><td>Recall 高、探索快、容易发现 implicit/non-obvious concerns</td><td>会生成不适用或过度设计的候选项</td></tr>
+          </tbody>
+        </table>
+        <div class="callout">推荐定位：<strong>AI 扩大搜索空间，人负责收敛真值。</strong></div>
+
+        <h3>6.5 Cross-Artifact Discovery：从已有 Artifact 的关系缺口找问题</h3>
+        <p>这是相对高可靠的一类 Gap，因为不是凭空创造需求，而是在已有工程对象之间寻找结构断点。</p>
+        <pre>Goal → Requirement → Acceptance / Test / Design / Risk
+                     ↑
+                 Missing link
+                     ↓
+               Candidate Gap</pre>
+        <p>典型问题包括：Requirement 没有验收条件、关键需求没有测试覆盖、依赖没有来源、父子需求关系断裂等。</p>
+
+        <h3>6.6 Interactive Elicitation：AI 主动追问</h3>
+        <p>把静态 Review 变成动态需求访谈。AI 围绕尚未定义的行为主动提出问题：</p>
+        <ul>
+          <li>如果 X 失败怎么办？</li>
+          <li>用户处于 Y 状态时，这条规则是否仍成立？</li>
+          <li>A 与 B 同时发生时谁优先？</li>
+          <li>这里默认依赖了什么前提？</li>
+          <li>这个行为是否在所有角色、设备或账户状态下一致？</li>
+        </ul>
+        <p>AI 适合作为 <strong>Question Generator / Elicitation Partner</strong>，不适合作为 Business Oracle。</p>
+      </section>
+
+      <section id="search-space">
+        <h2>7. 关键工程原则：Bounded Gap Search</h2>
+        <p>一个万能 Prompt ——“请找出所有遗漏需求”——看似覆盖面最大，实际最容易失控。更可靠的做法是把开放式搜索拆成多个受约束的探索任务。</p>
+        <div class="method-grid">
+          <div class="card"><h4>Scenario Explorer</h4><p>正常流程、替代流程、取消、中断、恢复、多角色场景。</p></div>
+          <div class="card"><h4>State Explorer</h4><p>前置状态、状态转换、非法状态、终止状态、恢复状态。</p></div>
+          <div class="card"><h4>Failure Explorer</h4><p>超时、失败、部分成功、重试、幂等、依赖不可用。</p></div>
+          <div class="card"><h4>Boundary Explorer</h4><p>最大/最小值、空值、重复、容量、时序、临界条件。</p></div>
+          <div class="card"><h4>Rule / Constraint Explorer</h4><p>业务规则、权限、优先级、互斥、约束、例外。</p></div>
+          <div class="card"><h4>Dependency Explorer</h4><p>上下游、接口、数据源、外部系统、配置、环境依赖。</p></div>
+          <div class="card"><h4>NFR Explorer</h4><p>性能、可靠性、安全、兼容、资源、可恢复性。</p></div>
+          <div class="card"><h4>Assumption Explorer</h4><p>隐含前提、默认业务事实、组织规则、时序与一致性假设。</p></div>
+        </div>
+        <div class="callout warn">上述 Explorer 是一种<strong>工程分解建议</strong>，用于限制搜索空间和提高可重复性；它不是某个统一国际标准中的固定八类 taxonomy。</div>
+        <p>其核心原则是：</p>
+        <pre>不要： Requirement → "Find everything"
+
+而要： Requirement → bounded perspective
+                    → candidate concerns
+                    → compare
+                    → gap</pre>
+      </section>
+
+      <section id="lifecycle">
+        <h2>8. Candidate Gap 的正确生命周期</h2>
+        <p>AI 提出的“合理问题”不能直接叫 Defect。Gap Discovery 必须有一个显式确认过程。</p>
+        <div class="flow"><div class="step">Candidate Concern</div><div class="arrow">→</div><div class="step">Evidence Check</div><div class="arrow">→</div><div class="step">Open Question</div><div class="arrow">→</div><div class="step">Domain Owner</div><div class="arrow">→</div><div class="step">Confirm / Reject</div><div class="arrow">→</div><div class="step">Requirement / Finding</div></div>
+        <p>例如：</p>
+        <pre>AI:
+"手机号修改后，现有 session 是否需要失效？
+在当前 Requirement Set 中未找到明确规定。"
+
+此时状态：
+Candidate Gap / Open Question
+
+产品确认：
+A. 全部失效
+B. 当前设备保留
+C. 全部保留
+
+确认后：
+→ 补充 Requirement
+→ 或记录“不适用/无需定义”的决策</pre>
+        <div class="callout danger"><strong>禁止模式：</strong>AI 根据常识说“系统应该怎样”，然后直接把自己的建议标记成 Major Defect。没有业务 Oracle 时，这只是 Candidate Concern。</div>
+      </section>
+
+      <section id="precision-recall">
+        <h2>9. Gap Discovery 的核心权衡：Precision vs Recall</h2>
+        <p>Gap Discovery 很适合按信息检索问题来理解：</p>
+        <ul><li><strong>Recall：</strong>真实重要缺口里，AI 找到了多少；</li><li><strong>Precision：</strong>AI 提出的候选缺口里，真正成立的有多少。</li></ul>
+        <table>
+          <thead><tr><th>策略</th><th>结果</th><th>风险</th></tr></thead>
+          <tbody>
+            <tr><td>只输出 100% 确定问题</td><td>Precision ↑，Recall ↓</td><td>失去 Gap Discovery 的主要价值</td></tr>
+            <tr><td>无限发散找所有可能性</td><td>Recall ↑，Precision ↓</td><td>Reviewer 被大量噪音淹没</td></tr>
+            <tr><td><strong>受约束探索 + Evidence + Human Confirm</strong></td><td>在 Recall 与 Reviewer 成本间取得平衡</td><td>需要设计过滤、排序和确认机制</td></tr>
+          </tbody>
+        </table>
+        <div class="callout"><strong>推荐 KPI 优先级：</strong>首先关注<strong>重要缺口召回率</strong>，同时控制单位真实 Finding 所产生的候选问题数量，而不是单纯追求“AI 判断准确率”。</div>
+      </section>
+
+      <section id="workflow">
+        <h2>10. 推荐的工程化 Gap Discovery 流程</h2>
+        <p>综合研究与工业实践，建议采用四阶段主流程：</p>
+        <div class="flow"><div class="step">1. Expand</div><div class="arrow">→</div><div class="step">2. Compare</div><div class="arrow">→</div><div class="step">3. Filter</div><div class="arrow">→</div><div class="step">4. Confirm</div></div>
+        <h3>阶段 1：Expand — 扩展候选需求空间</h3>
+        <ul><li>选择一个 bounded perspective；</li><li>结合领域 RAG / 历史需求 / 相关测试 / 缺陷 / 业务规则；</li><li>生成 Candidate Scenario / State / Failure / Constraint / Assumption。</li></ul>
+        <h3>阶段 2：Compare — 与 Requirement Set 对照</h3>
+        <ul><li>判断现有需求是否已经明确回答该关注点；</li><li>区分 Covered / Partially Covered / Unanswered；</li><li>提供引用位置或搜索证据，而不是仅凭模型印象。</li></ul>
+        <h3>阶段 3：Filter — 去重、过滤、风险排序</h3>
+        <ul><li>合并语义重复 Candidate；</li><li>过滤明显超出 Scope 的建议；</li><li>优先保留可能导致实现分叉、数据损失、安全风险、无法验收的问题；</li><li>限制每轮输出数量，降低 reviewer fatigue。</li></ul>
+        <h3>阶段 4：Confirm — 交给领域 Oracle</h3>
+        <ul><li>确认：转化为 Requirement / Finding；</li><li>拒绝：记录不适用原因，避免下一次重复提出；</li><li>暂不确定：保留 Open Question 和 Owner；</li><li>结论反馈给后续 Reviewer，形成持续学习的领域上下文。</li></ul>
+      </section>
+
+      <section id="evaluation">
+        <h2>11. 如何评价一个 AI Gap Reviewer 是否真的有效</h2>
+        <p>不能用“回答看起来聪明”来评估。建议建立可测 Benchmark。</p>
+        <h3>11.1 Oracle / Benchmark 来源</h3>
+        <ul><li><strong>Production-derived artifacts：</strong>用需求之后真正形成的用户故事、测试、设计、缺陷反推早期遗漏。</li><li><strong>Seeded omissions：</strong>从完整需求集中人工移除已知场景或约束，测试 AI 是否能召回。</li><li><strong>Expert Gold Set：</strong>由多名领域专家独立评审并仲裁形成基准。</li><li><strong>Historical defects：</strong>将“因需求遗漏导致的历史缺陷”作为高价值 gap case。</li></ul>
+        <h3>11.2 推荐指标</h3>
+        <table>
+          <thead><tr><th>指标</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>Critical Gap Recall</td><td>高风险真实缺口被发现的比例；比全量 Recall 更重要。</td></tr>
+            <tr><td>Precision</td><td>候选缺口最终被确认成立的比例。</td></tr>
+            <tr><td>False Positive Burden</td><td>每确认一个真实问题，Reviewer 需要处理多少无效候选。</td></tr>
+            <tr><td>Novel Finding Yield</td><td>AI 找到、而普通人工评审首次未发现的有效问题数。</td></tr>
+            <tr><td>Resolution Rate</td><td>候选问题有多少最终被确认、拒绝或形成决策，而不是长期悬空。</td></tr>
+            <tr><td>Review Cost</td><td>AI 引入后总评审时间、人工确认成本是否下降。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="output">
+        <h2>12. Candidate Gap 推荐输出结构</h2>
+        <p>输出必须能区分“证据明确的问题”和“待确认的候选缺口”。建议最小结构如下：</p>
+        <pre>{
+  "id": "GAP-017",
+  "perspective": "failure",
+  "requirement_refs": ["REQ-12", "REQ-13"],
+  "candidate_gap": "上传过程中网络断开后的行为未定义",
+  "why_it_matters": "开发可能分别实现为自动重试、立即失败或保持挂起",
+  "evidence": {
+    "searched_scope": "REQ-01..REQ-28",
+    "covered_by_existing_requirement": false
+  },
+  "status": "open_question",
+  "confidence": "medium",
+  "suggested_owner": "product/domain owner",
+  "resolution": null
+}</pre>
+        <p>推荐状态至少区分：</p>
+        <p><span class="tag blue">candidate</span><span class="tag mid">open_question</span><span class="tag good">confirmed_gap</span><span class="tag">rejected</span><span class="tag">resolved</span></p>
+      </section>
+
+      <section id="boundaries">
+        <h2>13. 当前 AI Gap Discovery 的能力边界</h2>
+        <div class="callout warn"><strong>AI 可以扩大未知空间，但不能凭自身常识提供最终业务真值。</strong></div>
+        <table>
+          <thead><tr><th>可以让 AI 做</th><th>不应直接让 AI 做</th></tr></thead>
+          <tbody>
+            <tr><td>从多个视角系统展开候选场景</td><td>宣称需求已经“绝对完整”</td></tr>
+            <tr><td>结合 RAG 找类似规则、场景和历史证据</td><td>凭常识决定真实业务政策</td></tr>
+            <tr><td>识别 Requirement Set 无法回答的问题</td><td>把所有合理建议直接判成缺陷</td></tr>
+            <tr><td>发现 traceability / coverage 结构断点</td><td>在无人工确认下自动批准复杂 Feature</td></tr>
+            <tr><td>生成高 Recall Candidate Gaps</td><td>以质量总分代替关键问题 Gate</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="conclusion">
+        <h2>14. 最终结论</h2>
+        <p>AI 时代需求评审最值得建设的能力，不是“自动把 Requirement 改写得更标准”，而是把<strong>需求未知空间的探索</strong>工程化。</p>
+        <pre>Requirement Set
+      ↓
+Bounded Exploration
+      ↓
+Domain / Artifact Evidence
+      ↓
+Candidate Requirement Space
+      ↓
+Compare
+      ↓
+Candidate Gaps
+      ↓
+Filter & Rank
+      ↓
+Open Questions
+      ↓
+Human Oracle
+      ↓
+Confirmed Finding / New Requirement / Rejected
+      ↓
+Updated Requirement Set</pre>
+        <div class="callout ok"><strong>一句话总结：</strong> Gap Discovery 的正确目标不是让 AI “证明没有遗漏”，而是让 AI 以高 Recall 系统性暴露可能遗漏的重要问题，再通过证据和人的业务判断把候选空间收敛成高 Precision 的 Requirement Set。</div>
+        <h3>落地时最值得坚持的五条原则</h3>
+        <ol><li><strong>Search before Judge：</strong>先扩大候选空间，再判断是否成立。</li><li><strong>Bounded before Open-ended：</strong>分视角探索优于万能 Prompt。</li><li><strong>Evidence before Assertion：</strong>Candidate Gap 必须说明现有需求为何无法回答。</li><li><strong>Question before Defect：</strong>缺少业务 Oracle 时先标记 Open Question。</li><li><strong>Recall + Human Precision：</strong>让 AI 与人的能力互补，而不是相互替代。</li></ol>
+      </section>
+
+      <section id="references">
+        <h2>15. 参考资料</h2>
+        <p class="small">以下来源用于支撑本研究中关于 LLM 需求完整性、RAG 场景生成、工业 Gap Discovery、AI 需求关系发现和研究成熟度的讨论。</p>
+        <ol class="source-list">
+          <li>Improving requirements completeness: automated assistance through large language models.<br><a href="https://www.researchgate.net/publication/379265365_Improving_requirements_completeness_automated_assistance_through_large_language_models">ResearchGate / Requirements Engineering 相关论文页面</a></li>
+          <li>Generating Test Scenarios from NL Requirements Using Retrieval-Augmented LLMs: An Industrial Study (RAGTAG).<br><a href="https://research.monash.edu/en/publications/generating-test-scenarios-from-nl-requirements-using-retrieval-au/">Monash University Research Portal</a></li>
+          <li>Can LLMs identify missing elements in requirements elicitation? An empirical evaluation using production derived user stories in an industry setting.<br><a href="https://conf.researchr.org/details/eseiw-2026/eseiw-2026-esem---seip-track/3/Can-LLMs-identify-missing-elements-in-requirements-elicitation-An-empirical-evaluati">ESEM 2026 SEIP</a></li>
+          <li>Jama Connect Advisor — AI-assisted requirement quality and relationship discovery.<br><a href="https://www.jamasoftware.com/solutions/artificial-intelligence/">Jama Software</a></li>
+          <li>Automated Requirements Elicitation systematic mapping study.<br><a href="https://www.mdpi.com/2078-2489/17/8/777">MDPI Information</a></li>
+          <li>LLMs in Requirements Engineering — systematic literature review / research overview.<br><a href="https://arxiv.org/abs/2509.11446">arXiv</a></li>
+        </ol>
+      </section>
+    </main>
+  </div>
+  <div class="footer">Discovery Gap 消除方法研究 · Knowledge Document · 2026</div>
+</div>
+</body>
+</html>

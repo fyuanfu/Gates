@@ -1,1 +1,420 @@
-PLACEHOLDER
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Gate1 Implementation Readiness 检查指导</title>
+<style>
+:root{
+  --bg:#f6f8fb;
+  --card:#ffffff;
+  --text:#172033;
+  --muted:#5b6577;
+  --line:#dfe5ee;
+  --soft:#eef3f8;
+  --accent:#2457d6;
+  --accent2:#0f7b6c;
+  --warn:#b7791f;
+  --block:#b42318;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.65;
+}
+.container{max-width:1480px;margin:0 auto;padding:38px 28px 72px}
+.hero{
+  background:linear-gradient(135deg,#173b8f,#2457d6 60%,#3477ea);
+  color:#fff;border-radius:18px;padding:34px 38px;margin-bottom:24px;
+  box-shadow:0 14px 36px rgba(28,59,129,.16)
+}
+.hero h1{margin:0 0 10px;font-size:34px;letter-spacing:.2px}
+.hero p{margin:6px 0;color:#e8eefc;font-size:16px}
+.badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.badge{
+  display:inline-block;padding:6px 10px;border:1px solid rgba(255,255,255,.35);
+  border-radius:999px;background:rgba(255,255,255,.10);font-size:13px
+}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:24px 26px;margin:18px 0;box-shadow:0 4px 18px rgba(20,32,60,.05)
+}
+h2{font-size:24px;margin:0 0 14px}
+h3{font-size:18px;margin:20px 0 10px}
+p{margin:8px 0}
+.callout{
+  border-left:5px solid var(--accent);background:#f4f7ff;padding:16px 18px;
+  border-radius:10px;margin:14px 0
+}
+.callout strong{color:#173b8f}
+.flow{
+  display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:18px
+}
+.step{
+  padding:15px 12px;text-align:center;border-radius:12px;border:1px solid var(--line);
+  background:var(--soft);font-weight:700;font-size:14px
+}
+.step small{display:block;color:var(--muted);font-weight:500;margin-top:5px}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:1120px;background:#fff}
+th,td{padding:12px 13px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);vertical-align:top}
+th:last-child,td:last-child{border-right:0}
+th{background:#eef3fb;text-align:left;font-size:13px;color:#24334f;position:sticky;top:0}
+td{font-size:13.5px}
+tr:last-child td{border-bottom:0}
+.object{font-weight:700;color:#173b8f;white-space:nowrap}
+.attr{font-weight:700;color:#0f6d63}
+.finding{background:#fbfcfe;border:1px dashed #cbd5e1;padding:14px 16px;border-radius:10px;margin:10px 0}
+.code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  background:#111827;color:#e5eefb;padding:16px;border-radius:10px;white-space:pre-wrap
+}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.mini{padding:16px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.mini h4{margin:0 0 7px;font-size:15px}
+.block{border-left:5px solid var(--block);background:#fff3f2}
+.warn{border-left:5px solid var(--warn);background:#fffaf0}
+.pass{border-left:5px solid var(--accent2);background:#f0fbf8}
+.kicker{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+ul{margin:8px 0 8px 20px;padding:0}
+li{margin:4px 0}
+.footer{margin-top:26px;color:var(--muted);font-size:12px;text-align:center}
+@media(max-width:980px){
+  .flow{grid-template-columns:1fr 1fr}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .container{padding:22px 14px 48px}
+  .hero{padding:26px 22px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<section class="hero">
+  <div class="kicker" style="color:#c9d7ff">Gate1 Guidance</div>
+  <h1>Gate1 Implementation Readiness 检查指导</h1>
+  <p>用于 AI / LLM / Coding Agent 参与研发场景下的“进入实现前”质量门禁。</p>
+  <p><strong>核心原则：</strong>检查对象、检查属性、Finding、Materiality 与 Verdict 必须分层，不在同一维度混用。</p>
+  <div class="badges">
+    <span class="badge">目标：Implementation Ready</span>
+    <span class="badge">模型：Object × Attribute</span>
+    <span class="badge">输出：Finding + Evidence</span>
+    <span class="badge">判定：PASS / WARN / BLOCK</span>
+  </div>
+</section>
+
+<section class="card">
+  <h2>1. Gate1 的总结性目标</h2>
+  <div class="callout">
+    <strong>Gate1 的目标不是“文档写完整”，也不是“消灭所有未知”。</strong><br/>
+    Gate1 要确认：进入实现前，业务意图、关键行为、数据与契约、约束、技术方案以及验收定义已经达到足够明确、完整、一致、可实现、可验证、可追溯的状态，
+    使开发者或 Coding Agent <strong>无需自行补充会显著改变产品行为、架构、安全、数据语义、上下游契约或验收结果的重要决策</strong>。
+  </div>
+
+  <h3>1.1 分层模型</h3>
+  <div class="flow">
+    <div class="step">L0 Goal<small>为什么检查</small></div>
+    <div class="step">L1 Object<small>检查什么</small></div>
+    <div class="step">L2 Attribute<small>检查什么性质</small></div>
+    <div class="step">L3 Finding<small>发现了什么</small></div>
+    <div class="step">L4 Materiality<small>问题是否重大</small></div>
+    <div class="step">L5 Verdict<small>PASS / WARN / BLOCK</small></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>2. L1：检查对象</h2>
+  <p>这一层只回答“Gate1 看什么”，不掺杂完整性、模糊性等质量属性。</p>
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>一级对象</th><th>二级对象</th><th>核心问题</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="object">Intent & Scope</td><td>Goal / User / Scope / Out of Scope</td><td>为什么做、为谁做、做到哪里、哪些明确不做。</td></tr>
+      <tr><td class="object">Behavior</td><td>Scenario / Flow / Rule / State / Edge / Failure</td><td>系统在正常、异常、边界、状态变化等条件下应该怎样表现。</td></tr>
+      <tr><td class="object">Data & Contract</td><td>Business Object / Data Semantics / API / Dependency</td><td>业务对象是什么、数据如何解释、上下游之间怎样约定。</td></tr>
+      <tr><td class="object">Constraints</td><td>Architecture / Security / Privacy / Compliance / Platform / NFR</td><td>实现必须遵守哪些技术、平台、安全、性能和组织约束。</td></tr>
+      <tr><td class="object">Design / Plan</td><td>Solution / Component / Key Decision / Implementation Plan</td><td>关键技术方案是否足以支撑进入编码。</td></tr>
+      <tr><td class="object">Verification</td><td>AC / Expected Result / Verification Approach / Evidence</td><td>什么叫做正确，完成后拿什么证明正确。</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="card">
+  <h2>3. L2：检查属性</h2>
+  <p>这一层是横向质量维度。每一个重要检查对象，都应从这些属性上进行审视。</p>
+  <div class="grid3">
+    <div class="mini"><h4 class="attr">Completeness 完整性</h4><p>必须知道的信息是否遗漏。核心问题：<strong>有没有缺关键定义？</strong></p></div>
+    <div class="mini"><h4 class="attr">Clarity 明确性</h4><p>已有定义是否足够确定。核心问题：<strong>是否存在多种合理解释？</strong></p></div>
+    <div class="mini"><h4 class="attr">Consistency 一致性</h4><p>不同定义是否互相冲突。核心问题：<strong>各处是否描述同一个世界？</strong></p></div>
+    <div class="mini"><h4 class="attr">Feasibility 可实现性</h4><p>在真实约束下是否成立。核心问题：<strong>实际上能不能做？</strong></p></div>
+    <div class="mini"><h4 class="attr">Verifiability 可验证性</h4><p>完成后能否客观判定。核心问题：<strong>怎么知道做对了？</strong></p></div>
+    <div class="mini"><h4 class="attr">Traceability / Coverage 可追溯与覆盖</h4><p>关键定义是否被下游承接。核心问题：<strong>有没有丢失或无来源实现？</strong></p></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>4. L3：详细检查矩阵（Object × Attribute）</h2>
+  <p>LLM Gate1 的主要工作面应建立在这张矩阵上：先确定对象，再从属性角度查找 Finding。</p>
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>检查对象</th>
+        <th>完整性</th>
+        <th>明确性</th>
+        <th>一致性</th>
+        <th>可实现性</th>
+        <th>可验证性</th>
+        <th>可追溯 / 覆盖</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="object">Intent / Goal</td>
+        <td>目标、用户价值、成功结果是否齐备。</td>
+        <td>目标是否存在多种业务解释。</td>
+        <td>与业务目标、产品定位是否冲突。</td>
+        <td>目标是否现实、可达。</td>
+        <td>能否判断目标是否达成。</td>
+        <td>是否被 Requirement / Story 承接。</td>
+      </tr>
+      <tr>
+        <td class="object">Scope</td>
+        <td>范围、边界、Out-of-Scope 是否遗漏。</td>
+        <td>边界是否清楚，是否存在“顺手一起做”的空间。</td>
+        <td>不同文档中的范围是否矛盾。</td>
+        <td>当前资源与周期下是否可交付。</td>
+        <td>是否能判断实现是否越界。</td>
+        <td>Story / Design / Task 是否都位于范围内。</td>
+      </tr>
+      <tr>
+        <td class="object">Scenario / Flow</td>
+        <td>主路径、关键分支、角色、触发条件是否缺失。</td>
+        <td>前置条件、触发、过程、结果是否清楚。</td>
+        <td>不同场景是否定义冲突。</td>
+        <td>流程在平台/系统约束下是否可落地。</td>
+        <td>每个关键路径是否有可观察结果。</td>
+        <td>是否被 Design / Task / AC 承接。</td>
+      </tr>
+      <tr>
+        <td class="object">Rule</td>
+        <td>适用条件、结果、优先级、例外是否完整。</td>
+        <td>规则语义、边界、优先级是否明确。</td>
+        <td>规则之间、规则与场景之间是否冲突。</td>
+        <td>规则是否能被系统可靠执行。</td>
+        <td>规则是否有判定依据。</td>
+        <td>是否映射到实现机制和验收定义。</td>
+      </tr>
+      <tr>
+        <td class="object">State / Transition</td>
+        <td>状态集合、进入/退出条件、迁移是否遗漏。</td>
+        <td>各状态含义及转移触发是否明确。</td>
+        <td>是否出现非法或矛盾迁移。</td>
+        <td>状态模型是否能由现有系统支撑。</td>
+        <td>状态变化是否可观测、可断言。</td>
+        <td>是否有对应实现与验证。</td>
+      </tr>
+      <tr>
+        <td class="object">Edge / Failure</td>
+        <td>关键失败、异常、边界、恢复场景是否遗漏。</td>
+        <td>失败后的行为、提示、重试、恢复是否明确。</td>
+        <td>与正常路径、Rule、State 是否冲突。</td>
+        <td>恢复/重试/降级策略是否可实现。</td>
+        <td>是否能够模拟并验证失败结果。</td>
+        <td>是否存在对应设计、任务和验收覆盖。</td>
+      </tr>
+      <tr>
+        <td class="object">Data / Business Object</td>
+        <td>字段、实体关系、生命周期、默认值是否缺失。</td>
+        <td>null、空值、单位、枚举、时间语义是否明确。</td>
+        <td>跨文档、上下游的数据定义是否一致。</td>
+        <td>现有存储/同步/迁移机制是否支持。</td>
+        <td>结果数据是否可检查、可断言。</td>
+        <td>是否映射到 API、存储、实现和验证。</td>
+      </tr>
+      <tr>
+        <td class="object">API / Contract</td>
+        <td>输入、输出、错误、超时、版本等是否完整。</td>
+        <td>字段、错误码、幂等、重试语义是否明确。</td>
+        <td>提供方与消费方定义是否一致。</td>
+        <td>接口能力是否真实存在且满足要求。</td>
+        <td>是否能够验证契约行为。</td>
+        <td>是否被调用链和实现计划承接。</td>
+      </tr>
+      <tr>
+        <td class="object">Dependency</td>
+        <td>外部系统、能力、人员、版本依赖是否识别。</td>
+        <td>责任边界、可用性、SLA 是否明确。</td>
+        <td>双方约定是否一致。</td>
+        <td>依赖是否已存在、可访问、可按期提供。</td>
+        <td>关键依赖条件是否可验证。</td>
+        <td>是否进入 Design / Task / Risk。</td>
+      </tr>
+      <tr>
+        <td class="object">NFR / Constraint</td>
+        <td>性能、安全、可靠性、兼容性等是否遗漏。</td>
+        <td>约束是否量化或具有明确判据。</td>
+        <td>约束与功能需求、方案是否冲突。</td>
+        <td>目标是否技术可达。</td>
+        <td>是否存在验证方法和阈值。</td>
+        <td>是否进入设计、实现任务和验证。</td>
+      </tr>
+      <tr>
+        <td class="object">Design</td>
+        <td>关键组件、数据流、接口、异常策略是否缺失。</td>
+        <td>组件职责、关键机制、决策边界是否明确。</td>
+        <td>是否与 Requirement / Constraint 冲突。</td>
+        <td>方案是否符合代码库、平台、架构现实。</td>
+        <td>是否说明关键设计如何被证明。</td>
+        <td>是否覆盖所有关键 Requirement。</td>
+      </tr>
+      <tr>
+        <td class="object">Plan / Task</td>
+        <td>是否遗漏关键实现、迁移、配置、验证工作。</td>
+        <td>任务是否足够具体可执行。</td>
+        <td>是否与 Design、Requirement 冲突。</td>
+        <td>依赖顺序、资源和前置条件是否满足。</td>
+        <td>是否包含对应验证动作。</td>
+        <td>Requirement → Design → Task 是否闭合。</td>
+      </tr>
+      <tr>
+        <td class="object">AC / Expected Result</td>
+        <td>关键行为是否都有验收定义。</td>
+        <td>正确结果是否明确、无主观词。</td>
+        <td>是否与 Rule / Scenario / Constraint 一致。</td>
+        <td>是否可以在现实环境中执行验证。</td>
+        <td>是否有客观、可观察、可判定结果。</td>
+        <td>是否覆盖关键 Requirement 与风险。</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="card">
+  <h2>5. Finding 模型</h2>
+  <p>Finding 不是新的“检查维度”，而是检查矩阵发现的问题实例。推荐统一结构：</p>
+
+  <div class="code">Finding =
+Object
+× Attribute
+× Problem Statement
+× Evidence
+× Impact
+× Suggested Resolution
+× Status</div>
+
+  <h3>5.1 推荐字段</h3>
+  <div class="table-wrap">
+  <table style="min-width:900px">
+    <thead><tr><th>字段</th><th>说明</th><th>示例</th></tr></thead>
+    <tbody>
+      <tr><td>Object</td><td>问题发生在哪个检查对象。</td><td>Scenario</td></tr>
+      <tr><td>Attribute</td><td>违反哪个质量属性。</td><td>Completeness</td></tr>
+      <tr><td>Problem</td><td>具体缺口、歧义、冲突或不可验证点。</td><td>账号被冻结状态下的支付行为未定义。</td></tr>
+      <tr><td>Evidence</td><td>能够定位问题的原文、章节、关系或代码/契约证据。</td><td>Scenario-03 仅覆盖 Active Account。</td></tr>
+      <tr><td>Impact</td><td>如果不解决，可能改变什么。</td><td>支付是否允许会出现两个合理实现。</td></tr>
+      <tr><td>Resolution</td><td>需要谁补什么信息或解决什么冲突。</td><td>产品确认 Frozen Account 的支付策略。</td></tr>
+      <tr><td>Status</td><td>Open / Resolved / Accepted Assumption。</td><td>Open</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>5.2 示例</h3>
+  <div class="finding"><strong>Finding A — Behavior × Completeness</strong><br/>
+  账号被冻结时，支付行为未定义。当前 Scenario 仅描述 Active Account。若不补充，Agent 可以合理实现“禁止支付”或“允许现有交易完成”，会产生不同业务行为。</div>
+
+  <div class="finding"><strong>Finding B — API Contract × Consistency</strong><br/>
+  API 文档定义 <code>null = 不修改</code>，业务 Rule 定义 <code>null = 清空字段</code>。两者不能同时成立。</div>
+
+  <div class="finding"><strong>Finding C — AC × Verifiability</strong><br/>
+  AC 仅描述“页面应快速打开”，没有明确阈值、比较基线或其他可观察判据，因此无法形成客观验收结论。</div>
+</section>
+
+<section class="card">
+  <h2>6. BLOCK 判定</h2>
+  <div class="callout">
+    <strong>关键原则：</strong>Completeness、Clarity、Consistency 等并不天然等于 BLOCK。<br/>
+    Gate1 应根据 Finding 的 <strong>Materiality（实质影响）</strong> 决定是否阻断。
+  </div>
+
+  <h3>6.1 BLOCK 的核心判据</h3>
+  <p>当一个未解决 Finding 会迫使实现者或 Coding Agent 自行做出一个<strong>会显著改变结果</strong>的决策时，应 BLOCK。</p>
+
+  <div class="table-wrap">
+  <table style="min-width:980px">
+    <thead><tr><th>影响维度</th><th>典型情况</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td class="object">User Behavior</td><td>不同解释会导致用户看到不同流程、权限、提示、结果。</td><td><strong style="color:#b42318">BLOCK</strong></td></tr>
+      <tr><td class="object">Business Semantics</td><td>会改变业务规则、金额、权限、资格、生命周期等。</td><td><strong style="color:#b42318">BLOCK</strong></td></tr>
+      <tr><td class="object">Data Semantics</td><td>会改变数据含义、状态、保存/删除/同步结果。</td><td><strong style="color:#b42318">BLOCK</strong></td></tr>
+      <tr><td class="object">Architecture</td><td>Agent 必须自行决定关键组件边界、持久化、同步、容灾等重要方案。</td><td><strong style="color:#b42318">BLOCK</strong></td></tr>
+      <tr><td class="object">Security / Privacy / Compliance</td><td>可能导致权限、安全、隐私、法规结果不同。</td><td><strong style="color:#b42318">BLOCK</strong></td></tr>
+      <tr><td class="object">External Contract</td><td>上下游协议、错误语义、幂等、兼容性可能出现不同实现。</td><td><strong style="color:#b42318">BLOCK</strong></td></tr>
+      <tr><td class="object">Acceptance Result</td><td>无法确定完成后什么结果算正确。</td><td><strong style="color:#b42318">BLOCK</strong></td></tr>
+      <tr><td class="object">Low-risk implementation detail</td><td>局部实现细节不影响外部行为和验收，可采用合理默认值并记录。</td><td><strong style="color:#b7791f">WARN / ASSUMPTION</strong></td></tr>
+      <tr><td class="object">Naming / Style / Local choice</td><td>变量名、局部组织、无外部影响的低风险实现选择。</td><td><strong style="color:#0f7b6c">PASS</strong></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>6.2 六类典型 BLOCK</h3>
+  <div class="grid2">
+    <div class="mini block"><h4>BLOCK-1 关键定义缺失</h4><p>缺失会导致用户行为、业务结果、数据、安全、接口或验收结果出现不同实现。</p></div>
+    <div class="mini block"><h4>BLOCK-2 关键定义存在多种合理解释</h4><p>Agent 无法根据现有规则安全选择，并且不同选择会改变重要结果。</p></div>
+    <div class="mini block"><h4>BLOCK-3 关键定义互相冲突</h4><p>Requirement、Rule、UX、API、Design、Task 之间存在会影响实现的冲突。</p></div>
+    <div class="mini block"><h4>BLOCK-4 要求或方案不可成立</h4><p>平台、依赖、接口、架构或性能约束使要求无法可信实现。</p></div>
+    <div class="mini block"><h4>BLOCK-5 关键行为不可验证</h4><p>无法客观定义什么结果算正确，导致实现完成后也无法判定。</p></div>
+    <div class="mini block"><h4>BLOCK-6 关键需求在下游丢失</h4><p>重要 Requirement 没有被 Design / Plan / Task 承接，或存在无来源的关键实现。</p></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>7. Gate1 判定流程</h2>
+  <div class="code">1. 建立检查对象集合
+        ↓
+2. 对每个重要对象执行 Object × Attribute 检查
+        ↓
+3. 形成 Finding，并附 Evidence
+        ↓
+4. 判断 Finding 是否造成 Material Decision
+        ↓
+5. 若是高影响未决决策 → BLOCK
+   若是低风险可默认 → WARN / Accepted Assumption
+   若无实质影响 → PASS
+        ↓
+6. 所有 BLOCK Finding 关闭后，Gate1 才可 PASS</div>
+
+  <h3>7.1 推荐的最终 Verdict 规则</h3>
+  <div class="grid3">
+    <div class="mini pass"><h4>PASS</h4><p>不存在未关闭的 material finding；剩余项不会迫使实现者做高影响决策。</p></div>
+    <div class="mini warn"><h4>WARN</h4><p>存在低风险缺口，但有安全默认值或已记录 assumption，不影响关键行为与验收。</p></div>
+    <div class="mini block"><h4>BLOCK</h4><p>至少存在 1 个未关闭的 material finding，会迫使实现者自行决定重要语义或无法形成可信验证。</p></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>8. 对 LLM Gate1 实现的直接指导</h2>
+  <ul>
+    <li><strong>不要直接问：</strong>“这个 PRD 是否可以开发？”——过于主观。</li>
+    <li><strong>先构造对象清单：</strong>Intent、Behavior、Data、Contract、Constraint、Design、Verification。</li>
+    <li><strong>再按属性审查：</strong>Completeness、Clarity、Consistency、Feasibility、Verifiability、Traceability。</li>
+    <li><strong>每个 Finding 必须带 Evidence：</strong>不能只有抽象判断。</li>
+    <li><strong>把发现问题与阻断决策分离：</strong>Finding 发现由 LLM 强语义推理完成，BLOCK 由 Materiality + Gate Policy 决定。</li>
+    <li><strong>允许低风险 Assumption：</strong>Gate1 的目标不是消灭所有未知，而是消灭未决的高影响决策。</li>
+    <li><strong>输出结构化结果：</strong>建议同时产生 HTML 给人审阅、JSON 给 CI/Agent 消费。</li>
+  </ul>
+</section>
+
+<div class="footer">Gate1 Implementation Readiness Guidance · Standalone HTML</div>
+
+</div>
+</body>
+</html>

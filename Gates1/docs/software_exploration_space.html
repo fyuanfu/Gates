@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>软件探索空间：一种用于系统发现需求、设计与验证盲点的方法</title>
+<style>
+  :root{
+    --bg:#f6f7fb;
+    --paper:#ffffff;
+    --text:#1f2937;
+    --muted:#667085;
+    --line:#e5e7eb;
+    --soft:#f8fafc;
+    --accent:#3b82f6;
+    --accent2:#7c3aed;
+    --good:#0f766e;
+    --warn:#b45309;
+    --danger:#b42318;
+    --shadow:0 10px 30px rgba(15,23,42,.08);
+    --radius:18px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
+    line-height:1.72;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:36px 22px 72px}
+  .hero{
+    background:linear-gradient(135deg,#0f172a 0%,#1e293b 58%,#312e81 100%);
+    color:#fff;border-radius:24px;padding:46px 42px;box-shadow:var(--shadow);margin-bottom:28px;
+  }
+  .eyebrow{font-size:13px;letter-spacing:.12em;text-transform:uppercase;opacity:.75;margin-bottom:12px}
+  h1{font-size:38px;line-height:1.22;margin:0 0 14px}
+  .hero p{max-width:860px;font-size:18px;color:#e5e7eb;margin:0}
+  .card{
+    background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+    padding:28px 30px;margin:22px 0;box-shadow:0 4px 18px rgba(15,23,42,.04)
+  }
+  h2{font-size:27px;line-height:1.3;margin:0 0 16px}
+  h3{font-size:20px;line-height:1.4;margin:28px 0 10px}
+  h4{font-size:17px;margin:18px 0 8px}
+  p{margin:10px 0}
+  .lead{font-size:18px;color:#374151}
+  .quote{
+    margin:18px 0;padding:18px 20px;border-left:4px solid var(--accent);
+    background:#eff6ff;border-radius:0 12px 12px 0;font-size:18px
+  }
+  .callout{
+    padding:16px 18px;border-radius:14px;background:#f5f3ff;border:1px solid #ddd6fe;margin:16px 0
+  }
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .mini{
+    border:1px solid var(--line);background:#fff;border-radius:14px;padding:18px
+  }
+  .mini b{display:block;margin-bottom:6px}
+  .tag{display:inline-block;padding:3px 9px;border-radius:999px;background:#eef2ff;color:#4338ca;font-size:12px;margin-left:6px}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+  th,td{padding:12px 12px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+  th{background:#f8fafc;font-weight:700}
+  tr:last-child td{border-bottom:none}
+  code,.code{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  pre{
+    white-space:pre-wrap;background:#0f172a;color:#e5e7eb;border-radius:14px;padding:18px 20px;
+    overflow:auto;line-height:1.6;font-size:14px
+  }
+  .diagram{
+    background:#f8fafc;border:1px dashed #cbd5e1;border-radius:16px;padding:22px;margin:18px 0;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;line-height:1.7;
+  }
+  .pillrow{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 4px}
+  .pill{padding:7px 11px;border-radius:999px;background:#f1f5f9;border:1px solid #e2e8f0;font-size:13px}
+  .rule{
+    border-left:4px solid var(--good);background:#ecfdf5;padding:16px 18px;border-radius:0 12px 12px 0;margin:16px 0
+  }
+  .warn{
+    border-left:4px solid var(--warn);background:#fffbeb;padding:16px 18px;border-radius:0 12px 12px 0;margin:16px 0
+  }
+  .danger{
+    border-left:4px solid var(--danger);background:#fef2f2;padding:16px 18px;border-radius:0 12px 12px 0;margin:16px 0
+  }
+  .footer{color:var(--muted);font-size:13px;text-align:center;margin-top:34px}
+  .toc a{color:#334155;text-decoration:none}
+  .toc ol{columns:2;column-gap:40px;padding-left:22px}
+  .toc li{margin:6px 0}
+  @media (max-width:780px){
+    .wrap{padding:18px 14px 48px}
+    .hero{padding:30px 22px}
+    h1{font-size:30px}
+    .g2,.g3{grid-template-columns:1fr}
+    .toc ol{columns:1}
+    .card{padding:22px 18px}
+    table{font-size:13px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow">Software Exploration Space</div>
+    <h1>软件探索空间：一种用于系统发现需求、设计与验证盲点的方法</h1>
+    <p>软件文档不应该把所有问题空间都写成章节；但软件分析过程必须有办法系统地发现“还没有被想到的问题”。本文提出一个“探索空间 → 相关性筛选 → 场景化 → 决策落盘 → 验证闭环”的方法，用来降低需求、设计和测试中的系统性遗漏。</p>
+  </section>
+
+  <section class="card toc">
+    <h2>目录</h2>
+    <ol>
+      <li><a href="#why">为什么需要“软件探索空间”</a></li>
+      <li><a href="#scenario">Scenario、Flow 与“空间”的关系</a></li>
+      <li><a href="#model">核心探索空间模型</a></li>
+      <li><a href="#risk">Risk Pattern 的正确位置</a></li>
+      <li><a href="#docs">为什么文档不应该按空间逐章展开</a></li>
+      <li><a href="#workflow">工程化使用流程</a></li>
+      <li><a href="#gate1">如何用于 Gate1 / Spec Review</a></li>
+      <li><a href="#example">示例：图片上传 Feature</a></li>
+      <li><a href="#principles">实施原则与边界</a></li>
+    </ol>
+  </section>
+
+  <section class="card" id="why">
+    <h2>1. 为什么需要“软件探索空间”</h2>
+    <p class="lead">软件研发中最难的问题，往往不是“已经写出来的需求是否正确”，而是<strong>还有哪些本应被考虑的问题根本没有进入文档、设计和讨论</strong>。</p>
+
+    <p>传统文档评审很容易陷入一种局部正确性检查：</p>
+    <pre>需求写了什么？
+→ 设计有没有实现？
+→ 测试有没有覆盖？</pre>
+
+    <p>但如果需求本身就没有描述：</p>
+    <div class="pillrow">
+      <span class="pill">状态恢复</span>
+      <span class="pill">并发冲突</span>
+      <span class="pill">超时</span>
+      <span class="pill">依赖失败</span>
+      <span class="pill">生命周期</span>
+      <span class="pill">兼容性</span>
+      <span class="pill">权限差异</span>
+    </div>
+
+    <p>那么后续的设计和测试完全可能“正确地实现一个不完整的问题定义”。</p>
+
+    <div class="quote">
+      软件探索空间的目标，不是让文档更长，而是建立一个用于发现盲点的坐标系：<strong>我们还应该从哪些相互不同的角度继续看这个系统？</strong>
+    </div>
+  </section>
+
+  <section class="card" id="scenario">
+    <h2>2. Scenario、Flow 与“空间”的关系</h2>
+
+    <h3>2.1 Flow 不是 Scenario</h3>
+    <p><strong>Flow</strong>回答的是：事情如何按步骤、分支、循环、中断和恢复展开。它暴露的是<strong>路径空间</strong>。</p>
+    <p><strong>Scenario</strong>回答的是：在某组具体前置条件下，发生某个动作后，系统应该产生什么可验证结果。它更接近<strong>某条具体路径上的行为实例</strong>。</p>
+
+    <div class="diagram">Flow
+  Start
+    ↓
+  选择照片
+    ↓
+  格式合法？
+   ├─ 否 → 提示错误 → End
+   └─ 是
+        ↓
+      上传
+        ↓
+    上传成功？
+     ├─ 否 → 重试/失败
+     └─ 是 → 保存 → 展示</div>
+
+    <p>对应的 Scenario 可以是：</p>
+    <pre>Given 合法照片 + 网络正常
+When 用户点击上传
+Then 上传完成并展示成功</pre>
+
+    <p>也可以是：</p>
+    <pre>Given 上传已经开始
+When 网络中断
+Then 上传进入失败态
+And 用户可以重试</pre>
+
+    <div class="rule">
+      <strong>关键结论：</strong>Flow 更像“路径生成器”，Scenario 更像从路径空间和其他问题空间中选出的一个可验证实例。
+    </div>
+
+    <h3>2.2 Scenario 不是独立的基础空间</h3>
+    <p>更准确地说，一个有价值的 Scenario 往往是多个维度交叉后的结果：</p>
+
+    <div class="diagram">Actor = 普通用户
+Flow = 上传照片
+State = 上传中
+Data = 100MB 图片
+Time = 长时间延迟
+Concurrency = 同时上传两张
+Dependency = 云服务慢响应
+Environment = 弱网
+Lifecycle = App 切后台
+        ↓
+形成一个具体、可验证的 Scenario</div>
+
+    <p>因此，Scenario 不是“和 Flow、State、Data 并列的另一个建模维度”，而更像是这些维度的组合切片。</p>
+  </section>
+
+  <section class="card" id="model">
+    <h2>3. 核心探索空间模型</h2>
+    <p>下面给出一套适合作为软件分析“检查坐标系”的工作模型。它不是行业标准章节模板，而是一组用于防遗漏的分析视角。</p>
+
+    <h3>3.1 基础问题空间</h3>
+    <table>
+      <thead>
+        <tr><th>空间</th><th>核心问题</th><th>主要暴露的遗漏</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Goal / Intent</strong></td><td>为什么做？真正目标是什么？</td><td>目标错位、伪需求、局部最优</td></tr>
+        <tr><td><strong>Actor / Role</strong></td><td>谁在做？不同角色是否有差异？</td><td>权限、责任、角色行为差异</td></tr>
+        <tr><td><strong>Flow</strong></td><td>事情如何展开？</td><td>分支、循环、中断、恢复、遗漏路径</td></tr>
+        <tr><td><strong>State</strong></td><td>系统可能处于什么状态？</td><td>非法状态、遗漏状态、错误状态转换</td></tr>
+        <tr><td><strong>Rule</strong></td><td>什么条件下允许、禁止、必须？</td><td>业务约束、前置条件、不变量</td></tr>
+        <tr><td><strong>Data</strong></td><td>有哪些对象、字段、边界、关系？</td><td>空值、边界值、组合、数据一致性</td></tr>
+        <tr><td><strong>Time</strong></td><td>时间和顺序如何影响行为？</td><td>超时、延迟、过期、乱序、竞态</td></tr>
+        <tr><td><strong>Concurrency</strong></td><td>多件事同时发生怎么办？</td><td>重复执行、丢更新、死锁、竞态</td></tr>
+        <tr><td><strong>Lifecycle</strong></td><td>对象、组件、任务如何创建、暂停、销毁、恢复？</td><td>重建、恢复、后台化、资源清理</td></tr>
+        <tr><td><strong>Dependency</strong></td><td>依赖什么外部系统或组件？</td><td>超时、失败、部分成功、降级、重试</td></tr>
+        <tr><td><strong>Interface / Contract</strong></td><td>边界之间如何约定？</td><td>Schema、错误码、版本、契约不一致</td></tr>
+        <tr><td><strong>Environment</strong></td><td>在哪些运行环境下工作？</td><td>网络、设备、OS、区域、语言、配置差异</td></tr>
+        <tr><td><strong>Resource</strong></td><td>资源受限时会怎样？</td><td>内存、CPU、存储、连接数、电量、容量问题</td></tr>
+      </tbody>
+    </table>
+
+    <h3>3.2 横切质量空间</h3>
+    <p>一些维度不是某个具体业务对象的结构，而是跨越所有基础空间的质量约束：</p>
+    <div class="grid g2">
+      <div class="mini"><b>Reliability</b>失败后是否可恢复？是否会丢失、重复、损坏？</div>
+      <div class="mini"><b>Security</b>认证、授权、信任边界、数据保护是否正确？</div>
+      <div class="mini"><b>Performance</b>延迟、吞吐、容量、资源成本是否满足目标？</div>
+      <div class="mini"><b>Compatibility / Evolution</b>升级、迁移、旧数据、旧客户端、灰度是否可控？</div>
+      <div class="mini"><b>Observability</b>系统出问题后能否通过日志、指标、Trace、证据定位？</div>
+    </div>
+
+    <div class="callout">
+      可以把这套模型理解为一个“13 + 5”的工作模型：13 个基础探索空间 + 5 个横切质量空间。数字本身不重要，重要的是维度之间尽量正交，并能够稳定地暴露不同类型的遗漏。
+    </div>
+  </section>
+
+  <section class="card" id="risk">
+    <h2>4. Risk Pattern 的正确位置</h2>
+    <p>Risk Pattern 很重要，但它不适合作为和 Flow、State、Data 完全同一级的基础空间。</p>
+
+    <p>原因是：一个风险模式往往会横切多个空间。例如“重复执行”：</p>
+
+    <div class="diagram">重复执行 Risk Pattern
+├─ Flow：同一步骤重复进入
+├─ State：状态重复转换
+├─ Data：重复写入
+├─ Concurrency：两个请求同时执行
+└─ Dependency：下游重试造成重复调用</div>
+
+    <p>因此更合理的定位是：</p>
+    <div class="quote">
+      <strong>基础空间用于展开问题结构；Risk Pattern 用于对这些空间进行失败模式投影。</strong>
+    </div>
+
+    <p>这两者结合时，探索效果比单独使用风险清单更强：</p>
+    <pre>基础空间
+  ×
+历史缺陷 / 风险模式
+  ×
+当前领域知识
+  ↓
+生成更高价值的探索问题和 Scenario</pre>
+  </section>
+
+  <section class="card" id="docs">
+    <h2>5. 为什么软件文档不应该按这些空间逐章展开</h2>
+
+    <p>如果这些空间都重要，一个自然疑问是：为什么成熟的软件文档很少有 18 个章节？答案是：<strong>因为“思考结构”和“文档结构”不是一回事。</strong></p>
+
+    <h3>5.1 探索模型负责防遗漏</h3>
+    <p>它回答：</p>
+    <pre>还有哪些维度没有被考虑？
+哪些维度与当前 Feature 有关？
+哪些维度中存在未决问题或风险？</pre>
+
+    <h3>5.2 文档结构负责降低认知负担</h3>
+    <p>最终文档更可能只写：</p>
+    <pre>1. 背景与目标
+2. 关键用户流程
+3. 核心设计
+4. 数据 / 接口
+5. 异常与恢复
+6. 关键决策
+7. 验证与发布</pre>
+
+    <p>State、Concurrency、Dependency、Lifecycle 等内容可以被折叠到这些章节里，只在有重要决策时显式展开。</p>
+
+    <div class="warn">
+      <strong>错误做法：</strong>要求每个 Spec 都必须有 State、Concurrency、Topology、Security 等固定章节。这样很容易把探索模型变成文档形式主义。
+    </div>
+
+    <div class="rule">
+      <strong>更合理的原则：</strong>空间模型负责防遗漏，文档结构负责表达最重要的决策。
+    </div>
+
+    <h3>5.3 没有单独章节，不等于没有建模</h3>
+    <table>
+      <thead><tr><th>问题空间</th><th>常见承载物</th></tr></thead>
+      <tbody>
+        <tr><td>Flow</td><td>流程图、Activity Diagram、Use Case Flow</td></tr>
+        <tr><td>State</td><td>State Machine、状态表</td></tr>
+        <tr><td>Rule</td><td>PRD、AC、决策表、Invariant</td></tr>
+        <tr><td>Data</td><td>ER Diagram、Schema、数据字典</td></tr>
+        <tr><td>Interface</td><td>API Spec、OpenAPI、IDL</td></tr>
+        <tr><td>Time / Interaction</td><td>Sequence Diagram、时序约束</td></tr>
+        <tr><td>Security</td><td>Threat Model、安全设计</td></tr>
+        <tr><td>Performance</td><td>SLO、NFR、容量模型</td></tr>
+        <tr><td>Scenario</td><td>BDD、Example、Test Case</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card" id="workflow">
+    <h2>6. 软件探索空间的工程化使用流程</h2>
+
+    <div class="diagram">Step 1  明确目标与对象
+        ↓
+Step 2  扫描基础探索空间
+        ↓
+Step 3  判断哪些空间与当前问题相关
+        ↓
+Step 4  对相关空间做交叉探索
+        ↓
+Step 5  用 Risk Pattern / 历史缺陷做失败模式投影
+        ↓
+Step 6  形成关键 Scenario
+        ↓
+Step 7  为关键 Scenario 明确 Oracle / Test Obligation
+        ↓
+Step 8  只把重要决策、约束、风险和证据落到文档</div>
+
+    <h3>6.1 第一步不是“问完所有问题”，而是筛选 Relevant Spaces</h3>
+    <p>一个简单的本地设置开关，可能只需要：</p>
+    <div class="pillrow">
+      <span class="pill">State</span><span class="pill">Rule</span><span class="pill">Persistence</span><span class="pill">Compatibility</span>
+    </div>
+
+    <p>而支付、同步、上传、消息系统可能必须考虑：</p>
+    <div class="pillrow">
+      <span class="pill">Flow</span><span class="pill">State</span><span class="pill">Time</span><span class="pill">Concurrency</span>
+      <span class="pill">Dependency</span><span class="pill">Lifecycle</span><span class="pill">Reliability</span><span class="pill">Security</span>
+    </div>
+
+    <p>因此，空间模型应该是<strong>自适应选择</strong>，而不是全量强制展开。</p>
+
+    <h3>6.2 真正有价值的是“交叉探索”</h3>
+    <p>单独看 Data、State、Time 往往只得到局部问题；高价值问题通常产生于维度交叉：</p>
+
+    <table>
+      <thead><tr><th>交叉</th><th>典型问题</th></tr></thead>
+      <tbody>
+        <tr><td>State × Time</td><td>一个状态停留太久后应该怎样？是否过期？</td></tr>
+        <tr><td>State × Concurrency</td><td>两个事件同时试图改变同一状态时谁胜出？</td></tr>
+        <tr><td>Dependency × Retry × Data</td><td>重试会不会造成重复写入？是否幂等？</td></tr>
+        <tr><td>Lifecycle × Flow</td><td>流程执行中组件被销毁，回来后如何恢复？</td></tr>
+        <tr><td>Actor × Rule</td><td>不同角色在相同业务规则下权限是否一致？</td></tr>
+        <tr><td>Environment × Performance</td><td>弱网、低端设备下是否仍满足关键体验目标？</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card" id="gate1">
+    <h2>7. 如何用于 Gate1 / Spec Review</h2>
+
+    <p>Gate1 不应该检查“有没有某个章节”，而应该检查：<strong>当前 Feature 相关的问题空间是否被充分识别，并且关键决策是否已经明确。</strong></p>
+
+    <h3>7.1 不检查 Presence，检查 Coverage</h3>
+    <div class="grid g2">
+      <div class="mini">
+        <b>不推荐</b>
+        是否有 State 章节？<br/>
+        是否有 Concurrency 章节？<br/>
+        是否有 Dependency 章节？
+      </div>
+      <div class="mini">
+        <b>推荐</b>
+        是否存在重要状态空间？若存在，是否被建模？<br/>
+        是否存在并发风险？若存在，行为是否已决策？<br/>
+        外部依赖失败时，产品和系统行为是否明确？
+      </div>
+    </div>
+
+    <h3>7.2 Gate1 应重点发现三类缺口</h3>
+    <table>
+      <thead><tr><th>缺口</th><th>含义</th><th>示例</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Coverage Gap</strong></td><td>相关问题空间完全没有进入讨论</td><td>支付流程未考虑超时和回调乱序</td></tr>
+        <tr><td><strong>Decision Gap</strong></td><td>问题被发现了，但行为没有决策</td><td>“上传失败可重试”，但重试次数、幂等行为未明确</td></tr>
+        <tr><td><strong>Verification Gap</strong></td><td>已经定义行为，但没有可验证 Oracle 或证据要求</td><td>“性能良好”无法判定通过/失败</td></tr>
+      </tbody>
+    </table>
+
+    <p>这样，Gate1 从“文档格式检查”升级为“问题空间与决策闭环检查”。</p>
+  </section>
+
+  <section class="card" id="example">
+    <h2>8. 示例：图片上传 Feature</h2>
+
+    <h3>8.1 初始需求</h3>
+    <pre>用户可以从相册选择图片并上传到云端。</pre>
+
+    <p>如果直接进入设计，很容易得到一个只覆盖 Happy Path 的方案：</p>
+    <pre>选择图片 → 调用上传接口 → 上传成功 → 展示结果</pre>
+
+    <h3>8.2 使用探索空间展开</h3>
+    <table>
+      <thead><tr><th>空间</th><th>可能需要探索的问题</th></tr></thead>
+      <tbody>
+        <tr><td>Flow</td><td>选择、裁剪、压缩、上传、保存、展示之间有哪些分支？</td></tr>
+        <tr><td>State</td><td>idle / preparing / uploading / success / failed / cancelled 是否足够？</td></tr>
+        <tr><td>Data</td><td>超大图、损坏图、HEIC、透明图、重复图片怎么办？</td></tr>
+        <tr><td>Time</td><td>上传超时后，如果服务器稍后返回成功，客户端如何处理？</td></tr>
+        <tr><td>Concurrency</td><td>同时上传多张图片时是否允许并发？最大并发数？</td></tr>
+        <tr><td>Lifecycle</td><td>上传中 App 进后台、进程被杀、旋转屏幕后如何恢复？</td></tr>
+        <tr><td>Dependency</td><td>对象存储成功，但业务服务保存失败，如何补偿？</td></tr>
+        <tr><td>Environment</td><td>弱网、无网、蜂窝网络、漫游下行为是否不同？</td></tr>
+        <tr><td>Resource</td><td>低内存设备处理大图是否 OOM？是否需要分块？</td></tr>
+        <tr><td>Reliability</td><td>失败后重试是否幂等？会不会生成重复记录？</td></tr>
+        <tr><td>Observability</td><td>如何区分客户端失败、上传服务失败、保存失败？</td></tr>
+      </tbody>
+    </table>
+
+    <h3>8.3 最终并不需要 11 个文档章节</h3>
+    <p>探索后，真正落盘的文档可能只有：</p>
+    <pre>1. Goal & Scope
+2. Upload Flow
+3. Upload State & Recovery
+4. Data / API Contract
+5. Error Handling & Retry
+6. Lifecycle Handling
+7. Verification & Rollout</pre>
+
+    <p>这体现了本文最重要的原则：</p>
+    <div class="quote">
+      <strong>探索空间可以很多，但文档只保留有决策价值的结果。</strong>
+    </div>
+  </section>
+
+  <section class="card" id="principles">
+    <h2>9. 实施原则与边界</h2>
+
+    <div class="grid g2">
+      <div class="mini">
+        <b>原则 1：空间不是章节</b>
+        不要求文档逐一对应，而要求相关问题被思考和决策。
+      </div>
+      <div class="mini">
+        <b>原则 2：先筛选，再深入</b>
+        不对每个 Feature 全量展开所有空间。
+      </div>
+      <div class="mini">
+        <b>原则 3：关注交叉，不只关注单维度</b>
+        高风险问题往往来自 State × Time、Dependency × Retry 等组合。
+      </div>
+      <div class="mini">
+        <b>原则 4：Scenario 是结果，不是起点</b>
+        先展开问题空间，再形成高价值 Scenario。
+      </div>
+      <div class="mini">
+        <b>原则 5：Risk Pattern 是横切投影器</b>
+        用历史缺陷和失败模式挑战已有模型，而不是代替基础建模。
+      </div>
+      <div class="mini">
+        <b>原则 6：最终必须形成可验证闭环</b>
+        关键行为需要 Oracle、Test Obligation 与 Evidence。
+      </div>
+    </div>
+
+    <div class="danger">
+      <strong>需要避免的误区：</strong>把“软件探索空间”变成新的重型模板。如果每个项目都要求机械填写 18 个维度，这套方法会迅速退化为形式主义。
+    </div>
+
+    <h3>最终模型</h3>
+    <div class="diagram">软件目标 / Feature
+        ↓
+基础探索空间
+Goal · Actor · Flow · State · Rule · Data · Time
+Concurrency · Lifecycle · Dependency · Interface
+Environment · Resource
+        +
+横切质量空间
+Reliability · Security · Performance
+Compatibility/Evolution · Observability
+        +
+Risk Pattern / 历史缺陷 / 领域知识
+        ↓
+识别相关空间
+        ↓
+交叉探索
+        ↓
+关键 Scenario
+        ↓
+Oracle / Test Obligation
+        ↓
+Decision / Evidence
+        ↓
+Gate Verdict</div>
+
+    <p class="lead"><strong>一句话总结：</strong>软件探索空间不是为了让软件文档写得更复杂，而是为了让软件团队和 AI Agent 在进入设计、编码和验证之前，有一个系统方法去发现“还没有被问到的问题”。</p>
+  </section>
+
+  <div class="footer">Software Exploration Space · Working Model</div>
+</div>
+</body>
+</html>

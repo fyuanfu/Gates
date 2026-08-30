@@ -1,141 +1,120 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Gate1 实现就绪门禁汇报</title>
-<style>
-:root{--bg:#f5f7fb;--card:#ffffff;--text:#172033;--muted:#667085;--line:#e4e7ec;--primary:#1f4fbf;--primary-soft:#eef4ff;--green:#067647;--green-soft:#ecfdf3;--amber:#b54708;--amber-soft:#fffaeb;--red:#b42318;--red-soft:#fef3f2;--slate:#344054}
-*{box-sizing:border-box}body{margin:0;font-family:"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}.container{max-width:1480px;margin:0 auto;padding:34px 28px 72px}.hero{background:linear-gradient(135deg,#173a88,#1f4fbf 58%,#2f6ce5);color:#fff;border-radius:20px;padding:34px 38px;box-shadow:0 14px 34px rgba(24,58,136,.16)}.hero h1{margin:0;font-size:34px}.hero .sub{margin-top:8px;color:#e6ecff;font-size:16px}.hero .summary{margin-top:22px;padding:16px 18px;border-radius:12px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);font-size:18px;font-weight:700}.top-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px}.kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 3px 12px rgba(16,24,40,.04)}.kpi .n{font-size:13px;color:var(--muted);margin-bottom:6px}.kpi .v{font-size:20px;font-weight:800;color:var(--slate)}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px 26px;margin-top:18px;box-shadow:0 4px 16px rgba(16,24,40,.04)}h2{font-size:24px;margin:0 0 14px}h3{font-size:17px;margin:18px 0 10px}p{margin:8px 0}.callout{padding:16px 18px;border-radius:12px;background:var(--primary-soft);border-left:5px solid var(--primary);margin:12px 0}.flow{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:16px}.step{border:1px solid var(--line);border-radius:12px;padding:14px 10px;text-align:center;background:#fbfcfe}.step b{display:block;font-size:15px}.step span{display:block;color:var(--muted);font-size:12px;margin-top:4px}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}table{border-collapse:collapse;width:100%;min-width:1120px;background:#fff}th,td{padding:12px 13px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);vertical-align:top}th:last-child,td:last-child{border-right:0}tr:last-child td{border-bottom:0}th{background:#f2f5fa;color:#344054;font-size:13px;text-align:left}td{font-size:13.5px}.obj{font-weight:800;color:#1f4fbf;white-space:nowrap}.attr{font-weight:800;color:#067647}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.mini{border:1px solid var(--line);border-radius:12px;padding:16px;background:#fff}.mini h4{margin:0 0 8px;font-size:15px}.block{background:var(--red-soft);border-left:5px solid var(--red)}.warn{background:var(--amber-soft);border-left:5px solid var(--amber)}.pass{background:var(--green-soft);border-left:5px solid var(--green)}.code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#101828;color:#e4e7ec;padding:16px;border-radius:10px;white-space:pre-wrap;font-size:13px}.tag{display:inline-block;border-radius:999px;padding:4px 9px;background:#eef2f6;color:#475467;font-size:12px;margin-right:6px}.finding{border:1px dashed #cfd6e4;background:#fbfcfe;border-radius:10px;padding:14px 16px;margin-top:10px}ul{margin:8px 0 8px 20px;padding:0}li{margin:5px 0}.footer{margin-top:28px;color:var(--muted);text-align:center;font-size:12px}@media(max-width:980px){.top-grid,.flow,.grid2,.grid3{grid-template-columns:1fr 1fr}.container{padding:20px 14px 48px}}@media(max-width:640px){.top-grid,.flow,.grid2,.grid3{grid-template-columns:1fr}}
-</style>
-</head>
-<body>
-<div class="container">
-<section class="hero">
-  <h1>Gate1 实现就绪门禁汇报</h1>
-  <div class="sub">面向 AI / 大模型 / Coding Agent 参与研发的“进入编码前”质量门禁</div>
-  <div class="summary">一句话结论：Gate1 不是要求“所有问题都解决”，而是要确保进入实现前，所有会显著改变用户行为、业务语义、数据语义、架构、安全、外部契约和验收结论的关键决策已经明确。</div>
-</section>
-<section class="top-grid">
-  <div class="kpi"><div class="n">门禁目标</div><div class="v">实现就绪</div></div>
-  <div class="kpi"><div class="n">核心检查模型</div><div class="v">对象 × 属性</div></div>
-  <div class="kpi"><div class="n">问题输出</div><div class="v">Finding + 证据</div></div>
-  <div class="kpi"><div class="n">最终判定</div><div class="v">通过 / 警告 / 阻断</div></div>
-</section>
-<section class="card">
-  <h2>1. Gate1 的目标</h2>
-  <div class="callout"><strong>Gate1 的总结性目标：</strong><br/>确保业务意图、关键行为、数据与接口契约、工程约束、技术方案和验收定义已经达到足够的完整性、明确性、一致性、可实现性、可验证性和可追溯性，从而使开发者或 Coding Agent 可以进入实现，而不需要自行补充会改变关键结果的重要决策。</div>
-  <div class="grid3">
-    <div class="mini"><h4>拦截“关键决策留到编码阶段”</h4><p>避免 Agent 在信息缺口处自行选择一个看似合理但未经确认的方案。</p></div>
-    <div class="mini"><h4>拦截“定义之间互相打架”</h4><p>避免需求、规则、接口、设计、任务之间存在语义冲突。</p></div>
-    <div class="mini"><h4>拦截“做完也无法证明正确”</h4><p>确保关键行为具有明确、可观察、可判定的验收依据。</p></div>
-  </div>
-</section>
-<section class="card">
-  <h2>2. 检查框架</h2>
-  <p>Gate1 的检查过程分为六层，保证“检查对象、质量属性、问题类型和阻断标准”不混在同一层级。</p>
-  <div class="flow">
-    <div class="step"><b>总体目标</b><span>为什么检查</span></div>
-    <div class="step"><b>检查对象</b><span>检查什么</span></div>
-    <div class="step"><b>检查属性</b><span>检查什么性质</span></div>
-    <div class="step"><b>问题项 Finding</b><span>发现什么问题</span></div>
-    <div class="step"><b>实质影响</b><span>问题是否重大</span></div>
-    <div class="step"><b>门禁结论</b><span>通过 / 警告 / 阻断</span></div>
-  </div>
-</section>
-<section class="card">
-  <h2>3. 检查对象</h2>
-  <p>这一层只定义 Gate1 要检查哪些内容，不混入“完整、模糊、一致”等质量属性。</p>
-  <div class="table-wrap"><table><thead><tr><th>一级对象</th><th>二级对象</th><th>关注点</th></tr></thead><tbody>
-    <tr><td class="obj">意图与范围</td><td>目标、用户、范围、非范围</td><td>为什么做、为谁做、做到哪里、明确不做什么。</td></tr>
-    <tr><td class="obj">行为定义</td><td>场景、流程、规则、状态、边界、异常</td><td>系统在正常、异常、边界和状态变化下应该如何表现。</td></tr>
-    <tr><td class="obj">数据与契约</td><td>业务对象、数据语义、接口、依赖</td><td>对象如何定义、数据如何解释、上下游如何约定。</td></tr>
-    <tr><td class="obj">工程约束</td><td>架构、安全、隐私、合规、平台、非功能</td><td>实现必须遵守哪些技术、平台、性能和组织约束。</td></tr>
-    <tr><td class="obj">技术方案与计划</td><td>方案、组件职责、关键决策、实现计划</td><td>关键技术决策是否已经明确到可以进入编码。</td></tr>
-    <tr><td class="obj">验收定义</td><td>验收条件、预期结果、验证方法、证据</td><td>什么叫做正确，完成后拿什么证明正确。</td></tr>
-  </tbody></table></div>
-</section>
-<section class="card">
-  <h2>4. 检查属性</h2>
-  <p>所有重要检查对象，统一从六个质量属性进行审视。</p>
-  <div class="grid3">
-    <div class="mini"><h4 class="attr">完整性（Completeness）</h4><p>关键定义有没有遗漏。</p></div>
-    <div class="mini"><h4 class="attr">明确性（Clarity）</h4><p>已有定义是否存在多种合理解释。</p></div>
-    <div class="mini"><h4 class="attr">一致性（Consistency）</h4><p>不同定义之间是否互相冲突。</p></div>
-    <div class="mini"><h4 class="attr">可实现性（Feasibility）</h4><p>在真实平台、依赖和架构约束下能否实现。</p></div>
-    <div class="mini"><h4 class="attr">可验证性（Verifiability）</h4><p>完成后能否客观判断是否正确。</p></div>
-    <div class="mini"><h4 class="attr">可追溯与覆盖（Traceability / Coverage）</h4><p>关键定义是否被设计、任务和验收完整承接。</p></div>
-  </div>
-</section>
-<section class="card">
-  <h2>5. 详细检查矩阵</h2>
-  <p><span class="tag">纵轴：检查对象</span><span class="tag">横轴：检查属性</span></p>
-  <div class="table-wrap"><table><thead><tr><th>检查对象</th><th>完整性</th><th>明确性</th><th>一致性</th><th>可实现性</th><th>可验证性</th><th>可追溯 / 覆盖</th></tr></thead><tbody>
-    <tr><td class="obj">目标</td><td>目标、用户价值、成功结果是否齐备。</td><td>目标是否存在多种业务解释。</td><td>是否与业务目标、产品定位冲突。</td><td>目标是否现实可达。</td><td>能否判断目标是否达成。</td><td>是否被需求、用户故事承接。</td></tr>
-    <tr><td class="obj">范围</td><td>范围、边界、非范围是否遗漏。</td><td>边界是否清楚。</td><td>不同文档中的范围是否矛盾。</td><td>当前资源、周期下是否可交付。</td><td>能否判断实现是否越界。</td><td>需求、设计、任务是否都位于范围内。</td></tr>
-    <tr><td class="obj">场景 / 流程</td><td>主路径、关键分支、角色、触发条件是否缺失。</td><td>前置条件、触发、过程、结果是否清楚。</td><td>不同场景之间是否冲突。</td><td>流程在平台和系统约束下是否可落地。</td><td>每个关键路径是否有可观察结果。</td><td>是否被设计、任务、验收承接。</td></tr>
-    <tr><td class="obj">业务规则</td><td>适用条件、结果、优先级、例外是否完整。</td><td>规则语义、边界、优先级是否明确。</td><td>规则之间、规则与场景之间是否冲突。</td><td>规则是否能被系统可靠执行。</td><td>规则是否有明确判定依据。</td><td>是否映射到实现机制和验收定义。</td></tr>
-    <tr><td class="obj">状态 / 状态迁移</td><td>状态集合、进入/退出条件、迁移是否遗漏。</td><td>状态含义及迁移触发是否明确。</td><td>是否存在非法或矛盾迁移。</td><td>状态模型是否能被现有系统支撑。</td><td>状态变化是否可观察、可断言。</td><td>是否有对应实现与验证。</td></tr>
-    <tr><td class="obj">异常 / 边界</td><td>关键失败、异常、边界、恢复路径是否遗漏。</td><td>失败后的行为、提示、重试、恢复是否明确。</td><td>是否与正常路径、规则、状态定义冲突。</td><td>恢复、重试、降级策略是否可实现。</td><td>是否能够模拟并验证失败结果。</td><td>是否存在设计、任务和验收覆盖。</td></tr>
-    <tr><td class="obj">数据 / 业务对象</td><td>字段、实体关系、生命周期、默认值是否缺失。</td><td>空值、单位、枚举、时间等语义是否明确。</td><td>跨文档、上下游的数据定义是否一致。</td><td>现有存储、同步、迁移机制是否支持。</td><td>数据结果是否可检查、可断言。</td><td>是否映射到接口、存储、实现和验证。</td></tr>
-    <tr><td class="obj">接口 / 契约</td><td>输入、输出、错误、超时、版本是否完整。</td><td>字段、错误码、幂等、重试语义是否明确。</td><td>提供方与消费方定义是否一致。</td><td>接口能力是否真实存在并满足要求。</td><td>是否能够验证契约行为。</td><td>是否被调用链和实现计划承接。</td></tr>
-    <tr><td class="obj">依赖</td><td>外部系统、能力、版本、人员依赖是否识别。</td><td>责任边界、可用性、服务水平是否明确。</td><td>双方约定是否一致。</td><td>依赖是否已存在、可访问、可按期提供。</td><td>关键依赖条件是否可验证。</td><td>是否进入设计、任务和风险清单。</td></tr>
-    <tr><td class="obj">非功能 / 约束</td><td>性能、安全、可靠性、兼容性是否遗漏。</td><td>约束是否量化或具有明确判据。</td><td>是否与功能需求、技术方案冲突。</td><td>目标是否技术可达。</td><td>是否存在验证方法和阈值。</td><td>是否进入设计、实现任务和验证。</td></tr>
-    <tr><td class="obj">技术方案</td><td>关键组件、数据流、接口、异常策略是否缺失。</td><td>组件职责、关键机制、决策边界是否明确。</td><td>是否与需求和工程约束冲突。</td><td>是否符合代码库、平台和架构现实。</td><td>关键设计是否有明确验证方式。</td><td>是否覆盖所有关键需求。</td></tr>
-    <tr><td class="obj">计划 / 任务</td><td>是否遗漏关键实现、迁移、配置、验证工作。</td><td>任务是否具体到可执行。</td><td>是否与技术方案、需求冲突。</td><td>依赖顺序、资源和前置条件是否满足。</td><td>是否包含对应验证动作。</td><td>需求 → 设计 → 任务是否闭合。</td></tr>
-    <tr><td class="obj">验收条件 / 预期结果</td><td>关键行为是否都有验收定义。</td><td>正确结果是否明确，是否存在主观词。</td><td>是否与规则、场景、约束一致。</td><td>是否可以在现实环境中执行验证。</td><td>是否有客观、可观察、可判定结果。</td><td>是否覆盖关键需求和风险。</td></tr>
-  </tbody></table></div>
-</section>
-<section class="card">
-  <h2>6. Finding：门禁输出的问题项</h2>
-  <p>Finding 是“某个检查对象在某个质量属性上的具体问题”，而不是新的检查维度。</p>
-  <div class="code">Finding = 检查对象 × 失败属性 × 问题描述 × 证据 × 影响 × 处理建议 × 状态</div>
-  <div class="grid3" style="margin-top:14px">
-    <div class="finding"><strong>示例 1：场景 × 完整性</strong><br/>账号被冻结时，支付行为未定义；当前场景仅覆盖正常账号。</div>
-    <div class="finding"><strong>示例 2：接口契约 × 一致性</strong><br/>接口定义“空值=不修改”，业务规则定义“空值=清空字段”。</div>
-    <div class="finding"><strong>示例 3：验收条件 × 可验证性</strong><br/>仅描述“页面应快速打开”，缺少客观判定依据。</div>
-  </div>
-  <h3>Finding 最低要求</h3>
-  <ul><li>必须能够定位到具体对象和具体问题。</li><li>必须提供证据，不能只有“模型认为有风险”。</li><li>必须说明如果不处理，会影响什么。</li><li>必须有明确状态：待解决 / 已解决 / 接受假设。</li></ul>
-</section>
-<section class="card">
-  <h2>7. 阻断标准</h2>
-  <div class="callout"><strong>阻断不由“问题类型”直接决定，而由问题的实质影响决定。</strong><br/>完整性、明确性、一致性问题都可能是阻断项，也可能只是警告项；关键在于它是否会迫使实现者自行做一个高影响决策。</div>
-  <h3>7.1 需要阻断的六类情况</h3>
-  <div class="grid2">
-    <div class="mini block"><h4>1. 关键定义缺失</h4><p>缺失会导致用户行为、业务结果、数据语义、接口行为或验收结果出现不同实现。</p></div>
-    <div class="mini block"><h4>2. 关键定义存在多种合理解释</h4><p>现有信息不足以支持唯一选择，且不同选择会改变重要结果。</p></div>
-    <div class="mini block"><h4>3. 关键定义互相冲突</h4><p>需求、规则、交互、接口、设计、任务之间存在会影响实现的冲突。</p></div>
-    <div class="mini block"><h4>4. 要求或方案不可成立</h4><p>平台、依赖、接口、架构或性能约束使要求无法可信实现。</p></div>
-    <div class="mini block"><h4>5. 关键行为不可验证</h4><p>无法客观定义什么结果算正确，完成后无法形成可信验收。</p></div>
-    <div class="mini block"><h4>6. 关键需求在下游丢失</h4><p>重要需求没有被技术方案、计划或任务承接，或存在无来源的关键实现。</p></div>
-  </div>
-  <h3>7.2 实质影响判定</h3>
-  <div class="table-wrap"><table style="min-width:980px"><thead><tr><th>影响维度</th><th>典型影响</th><th>门禁结论</th></tr></thead><tbody>
-    <tr><td class="obj">用户行为</td><td>不同解释会导致用户看到不同流程、权限、提示或结果。</td><td><strong style="color:#b42318">阻断</strong></td></tr>
-    <tr><td class="obj">业务语义</td><td>会改变业务规则、资格、金额、生命周期等。</td><td><strong style="color:#b42318">阻断</strong></td></tr>
-    <tr><td class="obj">数据语义</td><td>会改变数据含义、状态、保存、删除或同步结果。</td><td><strong style="color:#b42318">阻断</strong></td></tr>
-    <tr><td class="obj">关键架构决策</td><td>Agent 必须自行决定组件边界、持久化、同步、容灾等重要方案。</td><td><strong style="color:#b42318">阻断</strong></td></tr>
-    <tr><td class="obj">安全 / 隐私 / 合规</td><td>不同选择可能导致安全、权限、隐私或法规结果不同。</td><td><strong style="color:#b42318">阻断</strong></td></tr>
-    <tr><td class="obj">外部契约</td><td>上下游协议、错误语义、幂等或兼容性会出现不同实现。</td><td><strong style="color:#b42318">阻断</strong></td></tr>
-    <tr><td class="obj">验收结论</td><td>无法确定完成后什么结果算正确。</td><td><strong style="color:#b42318">阻断</strong></td></tr>
-    <tr><td class="obj">低风险实现细节</td><td>不影响外部行为和验收，可采用合理默认值并记录。</td><td><strong style="color:#b54708">警告 / 接受假设</strong></td></tr>
-    <tr><td class="obj">命名 / 风格 / 局部实现</td><td>不影响关键语义和验收结果。</td><td><strong style="color:#067647">通过</strong></td></tr>
-  </tbody></table></div>
-</section>
-<section class="card">
-  <h2>8. 最终判定</h2>
-  <div class="grid3">
-    <div class="mini pass"><h4>通过（PASS）</h4><p>不存在未关闭的高影响 Finding；剩余问题不会迫使实现者做关键决策。</p></div>
-    <div class="mini warn"><h4>警告（WARN）</h4><p>存在低风险缺口，但有安全默认值或已记录假设，不影响关键行为和验收。</p></div>
-    <div class="mini block"><h4>阻断（BLOCK）</h4><p>至少存在 1 个未关闭的高影响 Finding，会迫使实现者自行决定重要语义，或无法形成可信验证。</p></div>
-  </div>
-  <h3>推荐判定流程</h3>
-  <div class="code">检查对象
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Gate1 实现就绪门禁汇报</title><style>
+:root{
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --text:#172033;
+  --muted:#667085;
+  --line:#e4e7ec;
+  --primary:#1f4fbf;
+  --primary-soft:#eef4ff;
+  --green:#067647;
+  --green-soft:#ecfdf3;
+  --amber:#b54708;
+  --amber-soft:#fffaeb;
+  --red:#b42318;
+  --red-soft:#fef3f2;
+  --slate:#344054;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+}
+.container{max-width:1480px;margin:0 auto;padding:34px 28px 72px}
+.hero{
+  background:linear-gradient(135deg,#173a88,#1f4fbf 58%,#2f6ce5);
+  color:#fff;border-radius:20px;padding:34px 38px;box-shadow:0 14px 34px rgba(24,58,136,.16)
+}
+.hero h1{margin:0;font-size:34px}
+.hero .sub{margin-top:8px;color:#e6ecff;font-size:16px}
+.hero .summary{
+  margin-top:22px;padding:16px 18px;border-radius:12px;
+  background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);
+  font-size:18px;font-weight:700
+}
+.top-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px
+}
+.kpi{
+  background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;
+  box-shadow:0 3px 12px rgba(16,24,40,.04)
+}
+.kpi .n{font-size:13px;color:var(--muted);margin-bottom:6px}
+.kpi .v{font-size:20px;font-weight:800;color:var(--slate)}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:24px 26px;margin-top:18px;box-shadow:0 4px 16px rgba(16,24,40,.04)
+}
+h2{font-size:24px;margin:0 0 14px}
+h3{font-size:17px;margin:18px 0 10px}
+p{margin:8px 0}
+.callout{
+  padding:16px 18px;border-radius:12px;background:var(--primary-soft);
+  border-left:5px solid var(--primary);margin:12px 0
+}
+.flow{
+  display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:16px
+}
+.step{
+  border:1px solid var(--line);border-radius:12px;padding:14px 10px;text-align:center;background:#fbfcfe
+}
+.step b{display:block;font-size:15px}
+.step span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:1120px;background:#fff}
+th,td{padding:12px 13px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);vertical-align:top}
+th:last-child,td:last-child{border-right:0}
+tr:last-child td{border-bottom:0}
+th{background:#f2f5fa;color:#344054;font-size:13px;text-align:left}
+td{font-size:13.5px}
+.obj{font-weight:800;color:#1f4fbf;white-space:nowrap}
+.attr{font-weight:800;color:#067647}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.mini{
+  border:1px solid var(--line);border-radius:12px;padding:16px;background:#fff
+}
+.mini h4{margin:0 0 8px;font-size:15px}
+.block{background:var(--red-soft);border-left:5px solid var(--red)}
+.warn{background:var(--amber-soft);border-left:5px solid var(--amber)}
+.pass{background:var(--green-soft);border-left:5px solid var(--green)}
+.code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  background:#101828;color:#e4e7ec;padding:16px;border-radius:10px;white-space:pre-wrap;font-size:13px
+}
+.tag{
+  display:inline-block;border-radius:999px;padding:4px 9px;background:#eef2f6;color:#475467;
+  font-size:12px;margin-right:6px
+}
+.finding{
+  border:1px dashed #cfd6e4;background:#fbfcfe;border-radius:10px;padding:14px 16px;margin-top:10px
+}
+ul{margin:8px 0 8px 20px;padding:0}
+li{margin:5px 0}
+.footer{margin-top:28px;color:var(--muted);text-align:center;font-size:12px}
+@media(max-width:980px){
+  .top-grid,.flow,.grid2,.grid3{grid-template-columns:1fr 1fr}
+  .container{padding:20px 14px 48px}
+}
+@media(max-width:640px){
+  .top-grid,.flow,.grid2,.grid3{grid-template-columns:1fr}
+}
+</style></head><body><div class="container"><section class="hero"><h1>Gate1 实现就绪门禁汇报</h1><div class="sub">面向 AI / 大模型 / 编码智能体参与研发的“进入编码前”质量门禁</div><div class="summary">
+    一句话结论：Gate1 不是要求“所有问题都解决”，而是要确保进入实现前，所有会显著改变用户行为、业务语义、数据语义、架构、安全、外部契约和验收结论的关键决策已经明确。
+  </div></section><section class="top-grid"><div class="kpi"><div class="n">门禁目标</div><div class="v">实现就绪</div></div><div class="kpi"><div class="n">核心检查模型</div><div class="v">对象 × 属性</div></div><div class="kpi"><div class="n">问题输出</div><div class="v">问题项 + 证据</div></div><div class="kpi"><div class="n">最终判定</div><div class="v">通过 / 警告 / 阻断</div></div></section><section class="card"><h2>1. Gate1 的目标</h2><div class="callout"><strong>Gate1 的总结性目标：</strong><br/>
+    确保业务意图、关键行为、数据与接口契约、工程约束、技术方案和验收定义已经达到足够的完整性、明确性、一致性、可实现性、可验证性和可追溯性，
+    从而使开发者或编码智能体可以进入实现，而不需要自行补充会改变关键结果的重要决策。
+  </div><div class="grid3"><div class="mini"><h4>拦截“关键决策留到编码阶段”</h4><p>避免编码智能体在信息缺口处自行选择一个看似合理但未经确认的方案。</p></div><div class="mini"><h4>拦截“定义之间互相打架”</h4><p>避免需求、规则、接口、设计、任务之间存在语义冲突。</p></div><div class="mini"><h4>拦截“做完也无法证明正确”</h4><p>确保关键行为具有明确、可观察、可判定的验收依据。</p></div></div></section><section class="card"><h2>2. 检查框架</h2><p>Gate1 的检查过程分为六层，保证“检查对象、质量属性、问题类型和阻断标准”不混在同一层级。</p><div class="flow"><div class="step"><b>总体目标</b><span>为什么检查</span></div><div class="step"><b>检查对象</b><span>检查什么</span></div><div class="step"><b>检查属性</b><span>检查什么性质</span></div><div class="step"><b>问题项</b><span>发现什么问题</span></div><div class="step"><b>实质影响</b><span>问题是否重大</span></div><div class="step"><b>门禁结论</b><span>通过 / 警告 / 阻断</span></div></div><div class="callout" style="margin-top:14px"><strong>术语口径：</strong>汇报以中文作为主名称；英文仅在首次定义或需要与行业术语对照时括注，后文统一使用中文。
+  </div></section><section class="card"><h2>3. 检查对象：进入编码前需要确认什么</h2><p>这一层只定义 Gate1 要检查哪些内容，不混入“完整、模糊、一致”等质量属性。</p><div class="table-wrap"><table><thead><tr><th>一级对象</th><th>二级对象</th><th>关注点</th></tr></thead><tbody><tr><td class="obj">意图与范围</td><td>目标、用户、范围、非范围</td><td>为什么做、为谁做、做到哪里、明确不做什么。</td></tr><tr><td class="obj">行为定义</td><td>场景、流程、规则、状态、边界、异常</td><td>系统在正常、异常、边界和状态变化下应该如何表现。</td></tr><tr><td class="obj">数据与契约</td><td>业务对象、数据语义、接口、依赖</td><td>对象如何定义、数据如何解释、上下游如何约定。</td></tr><tr><td class="obj">工程约束</td><td>架构、安全、隐私、合规、平台、非功能</td><td>实现必须遵守哪些技术、平台、性能和组织约束。</td></tr><tr><td class="obj">技术方案与计划</td><td>方案、组件职责、关键决策、实现计划</td><td>关键技术决策是否已经明确到可以进入编码。</td></tr><tr><td class="obj">验收定义</td><td>验收条件、预期结果、验证方法、证据</td><td>什么叫做正确，完成后拿什么证明正确。</td></tr></tbody></table></div></section><section class="card"><h2>4. 六项统一质量属性</h2><p>所有重要检查对象，统一从六个质量属性进行审视。</p><div class="grid3"><div class="mini"><h4 class="attr">完整性（Completeness）</h4><p>关键定义有没有遗漏。</p></div><div class="mini"><h4 class="attr">明确性（Clarity）</h4><p>已有定义是否存在多种合理解释。</p></div><div class="mini"><h4 class="attr">一致性（Consistency）</h4><p>不同定义之间是否互相冲突。</p></div><div class="mini"><h4 class="attr">可实现性（Feasibility）</h4><p>在真实平台、依赖和架构约束下能否实现。</p></div><div class="mini"><h4 class="attr">可验证性（Verifiability）</h4><p>完成后能否客观判断是否正确。</p></div><div class="mini"><h4 class="attr">可追溯与覆盖（Traceability / Coverage）</h4><p>关键定义是否被设计、任务和验收完整承接。</p></div></div></section><section class="card"><h2>5. 核心检查矩阵：检查对象 × 质量属性</h2><p><span class="tag">纵轴：检查对象</span><span class="tag">横轴：检查属性</span></p><div class="table-wrap"><table><thead><tr><th>检查对象</th><th>完整性</th><th>明确性</th><th>一致性</th><th>可实现性</th><th>可验证性</th><th>可追溯 / 覆盖</th></tr></thead><tbody><tr><td class="obj">目标</td><td>目标、用户价值、成功结果是否齐备。</td><td>目标是否存在多种业务解释。</td><td>是否与业务目标、产品定位冲突。</td><td>目标是否现实可达。</td><td>能否判断目标是否达成。</td><td>是否被需求、用户故事承接。</td></tr><tr><td class="obj">范围</td><td>范围、边界、非范围是否遗漏。</td><td>边界是否清楚。</td><td>不同文档中的范围是否矛盾。</td><td>当前资源、周期下是否可交付。</td><td>能否判断实现是否越界。</td><td>需求、设计、任务是否都位于范围内。</td></tr><tr><td class="obj">场景 / 流程</td><td>主路径、关键分支、角色、触发条件是否缺失。</td><td>前置条件、触发、过程、结果是否清楚。</td><td>不同场景之间是否冲突。</td><td>流程在平台和系统约束下是否可落地。</td><td>每个关键路径是否有可观察结果。</td><td>是否被设计、任务、验收承接。</td></tr><tr><td class="obj">业务规则</td><td>适用条件、结果、优先级、例外是否完整。</td><td>规则语义、边界、优先级是否明确。</td><td>规则之间、规则与场景之间是否冲突。</td><td>规则是否能被系统可靠执行。</td><td>规则是否有明确判定依据。</td><td>是否映射到实现机制和验收定义。</td></tr><tr><td class="obj">状态 / 状态迁移</td><td>状态集合、进入/退出条件、迁移是否遗漏。</td><td>状态含义及迁移触发是否明确。</td><td>是否存在非法或矛盾迁移。</td><td>状态模型是否能被现有系统支撑。</td><td>状态变化是否可观察、可断言。</td><td>是否有对应实现与验证。</td></tr><tr><td class="obj">异常 / 边界</td><td>关键失败、异常、边界、恢复路径是否遗漏。</td><td>失败后的行为、提示、重试、恢复是否明确。</td><td>是否与正常路径、规则、状态定义冲突。</td><td>恢复、重试、降级策略是否可实现。</td><td>是否能够模拟并验证失败结果。</td><td>是否存在设计、任务和验收覆盖。</td></tr><tr><td class="obj">数据 / 业务对象</td><td>字段、实体关系、生命周期、默认值是否缺失。</td><td>空值、单位、枚举、时间等语义是否明确。</td><td>跨文档、上下游的数据定义是否一致。</td><td>现有存储、同步、迁移机制是否支持。</td><td>数据结果是否可检查、可断言。</td><td>是否映射到接口、存储、实现和验证。</td></tr><tr><td class="obj">接口 / 契约</td><td>输入、输出、错误、超时、版本是否完整。</td><td>字段、错误码、幂等、重试语义是否明确。</td><td>提供方与消费方定义是否一致。</td><td>接口能力是否真实存在并满足要求。</td><td>是否能够验证契约行为。</td><td>是否被调用链和实现计划承接。</td></tr><tr><td class="obj">依赖</td><td>外部系统、能力、版本、人员依赖是否识别。</td><td>责任边界、可用性、服务水平是否明确。</td><td>双方约定是否一致。</td><td>依赖是否已存在、可访问、可按期提供。</td><td>关键依赖条件是否可验证。</td><td>是否进入设计、任务和风险清单。</td></tr><tr><td class="obj">非功能 / 约束</td><td>性能、安全、可靠性、兼容性是否遗漏。</td><td>约束是否量化或具有明确判据。</td><td>是否与功能需求、技术方案冲突。</td><td>目标是否技术可达。</td><td>是否存在验证方法和阈值。</td><td>是否进入设计、实现任务和验证。</td></tr><tr><td class="obj">技术方案</td><td>关键组件、数据流、接口、异常策略是否缺失。</td><td>组件职责、关键机制、决策边界是否明确。</td><td>是否与需求和工程约束冲突。</td><td>是否符合代码库、平台和架构现实。</td><td>关键设计是否有明确验证方式。</td><td>是否覆盖所有关键需求。</td></tr><tr><td class="obj">计划 / 任务</td><td>是否遗漏关键实现、迁移、配置、验证工作。</td><td>任务是否具体到可执行。</td><td>是否与技术方案、需求冲突。</td><td>依赖顺序、资源和前置条件是否满足。</td><td>是否包含对应验证动作。</td><td>需求 → 设计 → 任务是否闭合。</td></tr><tr><td class="obj">验收条件 / 预期结果</td><td>关键行为是否都有验收定义。</td><td>正确结果是否明确，是否存在主观词。</td><td>是否与规则、场景、约束一致。</td><td>是否可以在现实环境中执行验证。</td><td>是否有客观、可观察、可判定结果。</td><td>是否覆盖关键需求和风险。</td></tr></tbody></table></div></section><section class="card"><h2>6. 问题项：门禁发现的具体质量缺口</h2><p>问题项是“某个检查对象在某个质量属性上的具体质量缺口”，不是新的检查维度。</p><div class="code">问题项 = 检查对象 × 失败属性 × 问题描述 × 证据 × 影响 × 处理建议 × 状态</div><div class="grid3" style="margin-top:14px"><div class="finding"><strong>示例 1：场景 × 完整性</strong><br/>账号被冻结时，支付行为未定义；当前场景仅覆盖正常账号。</div><div class="finding"><strong>示例 2：接口契约 × 一致性</strong><br/>接口定义“空值=不修改”，业务规则定义“空值=清空字段”。</div><div class="finding"><strong>示例 3：验收条件 × 可验证性</strong><br/>仅描述“页面应快速打开”，缺少客观判定依据。</div></div><h3>问题项最低要求</h3><ul><li>必须能够定位到具体对象和具体问题。</li><li>必须提供证据，不能只有“模型认为有风险”。</li><li>必须说明如果不处理，会影响什么。</li><li>必须有明确状态：待解决 / 已解决 / 接受假设。</li></ul></section><section class="card"><h2>7. 阻断标准：什么问题必须在编码前关闭</h2><div class="callout"><strong>阻断不由“问题类型”直接决定，而由问题的实质影响决定。</strong><br/>
+    完整性、明确性、一致性问题都可能是阻断项，也可能只是警告项；关键在于它是否会迫使实现者自行做一个高影响决策。
+  </div><h3>7.1 需要阻断的六类情况</h3><div class="grid2"><div class="mini block"><h4>1. 关键定义缺失</h4><p>缺失会导致用户行为、业务结果、数据语义、接口行为或验收结果出现不同实现。</p></div><div class="mini block"><h4>2. 关键定义存在多种合理解释</h4><p>现有信息不足以支持唯一选择，且不同选择会改变重要结果。</p></div><div class="mini block"><h4>3. 关键定义互相冲突</h4><p>需求、规则、交互、接口、设计、任务之间存在会影响实现的冲突。</p></div><div class="mini block"><h4>4. 要求或方案不可成立</h4><p>平台、依赖、接口、架构或性能约束使要求无法可信实现。</p></div><div class="mini block"><h4>5. 关键行为不可验证</h4><p>无法客观定义什么结果算正确，完成后无法形成可信验收。</p></div><div class="mini block"><h4>6. 关键需求在下游丢失</h4><p>重要需求没有被技术方案、计划或任务承接，或存在无来源的关键实现。</p></div></div><h3>7.2 实质影响判定</h3><div class="table-wrap"><table style="min-width:980px"><thead><tr><th>影响维度</th><th>典型影响</th><th>门禁结论</th></tr></thead><tbody><tr><td class="obj">用户行为</td><td>不同解释会导致用户看到不同流程、权限、提示或结果。</td><td><strong style="color:#b42318">阻断</strong></td></tr><tr><td class="obj">业务语义</td><td>会改变业务规则、资格、金额、生命周期等。</td><td><strong style="color:#b42318">阻断</strong></td></tr><tr><td class="obj">数据语义</td><td>会改变数据含义、状态、保存、删除或同步结果。</td><td><strong style="color:#b42318">阻断</strong></td></tr><tr><td class="obj">关键架构决策</td><td>编码智能体必须自行决定组件边界、持久化、同步、容灾等重要方案。</td><td><strong style="color:#b42318">阻断</strong></td></tr><tr><td class="obj">安全 / 隐私 / 合规</td><td>不同选择可能导致安全、权限、隐私或法规结果不同。</td><td><strong style="color:#b42318">阻断</strong></td></tr><tr><td class="obj">外部契约</td><td>上下游协议、错误语义、幂等或兼容性会出现不同实现。</td><td><strong style="color:#b42318">阻断</strong></td></tr><tr><td class="obj">验收结论</td><td>无法确定完成后什么结果算正确。</td><td><strong style="color:#b42318">阻断</strong></td></tr><tr><td class="obj">低风险实现细节</td><td>不影响外部行为和验收，可采用合理默认值并记录。</td><td><strong style="color:#b54708">警告 / 接受假设</strong></td></tr><tr><td class="obj">命名 / 风格 / 局部实现</td><td>不影响关键语义和验收结果。</td><td><strong style="color:#067647">通过</strong></td></tr></tbody></table></div></section><section class="card"><h2>8. 门禁结论：通过 / 警告 / 阻断</h2><div class="grid3"><div class="mini pass"><h4>通过（PASS）</h4><p>不存在未关闭的高影响问题项；剩余问题不会迫使实现者做关键决策。</p></div><div class="mini warn"><h4>警告（WARN）</h4><p>存在低风险缺口，但有安全默认值或已记录假设，不影响关键行为和验收。</p></div><div class="mini block"><h4>阻断（BLOCK）</h4><p>至少存在 1 个未关闭的高影响问题项，会迫使实现者自行决定重要语义，或无法形成可信验证。</p></div></div><h3>推荐判定流程</h3><div class="code">检查对象
    ↓
 按六个质量属性检查
    ↓
-形成 Finding + 证据
+形成问题项 + 证据
    ↓
 判断是否影响关键结果
    ↓
@@ -143,22 +122,7 @@
 低风险且有安全默认值 → 警告 / 接受假设
 无实质影响 → 通过
    ↓
-所有阻断项关闭后，Gate1 通过</div>
-</section>
-<section class="card">
-  <h2>9. 对 AI / LLM 门禁实现的要求</h2>
-  <div class="grid2">
-    <div class="mini"><h4>语义检查由 LLM 发挥优势</h4><p>重点识别遗漏、歧义、冲突、上下游不一致，以及跨文档的语义漂移。</p></div>
-    <div class="mini"><h4>阻断规则必须显式</h4><p>最终是否阻断不能只依赖模型主观判断，应基于 Finding 的实质影响和门禁策略。</p></div>
-    <div class="mini"><h4>每个 Finding 都要有证据</h4><p>门禁输出必须可定位、可复核、可追踪，避免“AI 认为有问题但无法解释”。</p></div>
-    <div class="mini"><h4>允许低风险假设</h4><p>Gate1 不追求零未知，而是确保高影响未决决策不进入编码阶段。</p></div>
-  </div>
-</section>
-<section class="card">
-  <h2>10. 汇报结论</h2>
-  <div class="callout"><strong>Gate1 的本质，是把“关键决策完成”从编码阶段前移到实现前。</strong><br/>通过“检查对象 × 质量属性”的结构化审查，把问题转化为带证据的 Finding，再依据实质影响决定是否阻断。对 AI 研发而言，最终目标不是限制 Agent，而是明确 Agent 的可决策空间，防止它在高影响问题上替代产品、架构、安全或业务负责人做决策。</div>
-</section>
-<div class="footer">Gate1 实现就绪门禁汇报 · 中文优先版</div>
-</div>
-</body>
-</html>
+所有阻断项关闭后，Gate1 通过</div></section><section class="card"><h2>9. 对 AI / 大模型门禁实现的要求</h2><div class="grid2"><div class="mini"><h4>语义检查由 LLM 发挥优势</h4><p>重点识别遗漏、歧义、冲突、上下游不一致，以及跨文档的语义漂移。</p></div><div class="mini"><h4>阻断规则必须显式</h4><p>最终是否阻断不能只依赖模型主观判断，应基于问题项的实质影响和门禁策略。</p></div><div class="mini"><h4>每个问题项都要有证据</h4><p>门禁输出必须可定位、可复核、可追踪，避免“AI 认为有问题但无法解释”。</p></div><div class="mini"><h4>允许低风险假设</h4><p>Gate1 不追求零未知，而是确保高影响未决决策不进入编码阶段。</p></div></div></section><section class="card"><h2>10. 汇报结论</h2><div class="callout"><strong>Gate1 的本质，是把“关键决策完成”从编码阶段前移到实现前。</strong><br/>
+    通过“检查对象 × 质量属性”的结构化审查，把问题转化为带证据的问题项，再依据实质影响决定是否阻断。
+    对 AI 研发而言，最终目标不是限制编码智能体，而是明确编码智能体的可决策空间，防止它在高影响问题上替代产品、架构、安全或业务负责人做决策。
+  </div></section><div class="footer">Gate1 实现就绪门禁汇报 · 中文优先版</div></div></body></html>

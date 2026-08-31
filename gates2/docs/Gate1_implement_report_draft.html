@@ -57,6 +57,27 @@ p{margin:7px 0}
 }
 .kpi b{display:block;font-size:19px;color:var(--blue2);margin-bottom:3px}
 .kpi span{font-size:12px;color:var(--muted)}
+
+.summary-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:0 0 22px
+}
+.summary-card{
+  border:1px solid var(--line);border-radius:14px;padding:16px 17px;background:#fbfcfe;
+  display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:center
+}
+.summary-number{
+  font-size:38px;line-height:1;font-weight:800;color:var(--blue);
+  min-width:42px;text-align:center
+}
+.summary-copy small{
+  display:block;color:var(--muted);font-size:12px;margin-bottom:3px
+}
+.summary-copy b{
+  display:block;font-size:16px;color:var(--blue2);margin-bottom:3px
+}
+.summary-copy span{
+  display:block;color:#475467;font-size:12px;line-height:1.4
+}
 .flow{
   display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin:16px 0
 }
@@ -87,7 +108,7 @@ th{background:#eef3fb;text-align:left;color:#344054}
 .phase b{display:block;color:var(--blue2);font-size:17px;margin-bottom:6px}
 .footer{color:var(--muted);font-size:12px;text-align:right;margin-top:12px}
 @media(max-width:1050px){
-  .grid2,.grid3,.grid4,.timeline{grid-template-columns:1fr}
+  .grid2,.grid3,.grid4,.timeline,.summary-grid{grid-template-columns:1fr}
   .flow{grid-template-columns:1fr 1fr}
   .page{min-height:auto}
 }
@@ -105,6 +126,41 @@ th{background:#eef3fb;text-align:left;color:#344054}
   <div class="hero">
     <h1>Gate1 实现方案汇报</h1>
     <p>总体架构 · 检查流程 · 核心能力</p>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-number">1</div>
+      <div class="summary-copy">
+        <small>总体目标</small>
+        <b>实现就绪</b>
+        <span>编码前完成需求、方案和验证设计收敛</span>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-number">3</div>
+      <div class="summary-copy">
+        <small>检查阶段</small>
+        <b>需求 · 技术方案 · 测试设计</b>
+        <span>依次回答做什么、怎么做、怎么证明做对</span>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-number">6</div>
+      <div class="summary-copy">
+        <small>统一质量属性</small>
+        <b>对象 × 属性</b>
+        <span>完整、明确、一致、可实现、可验证、可追溯</span>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-number">3</div>
+      <div class="summary-copy">
+        <small>门禁结论</small>
+        <b>通过 · 警告 · 阻断</b>
+        <span>依据问题实质影响进行最终裁决</span>
+      </div>
+    </div>
   </div>
 
   <h2>1. 总体架构</h2>

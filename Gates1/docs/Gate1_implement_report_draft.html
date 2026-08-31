@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Gate1 实现方案汇报</title>
+<style>
+:root{
+  --bg:#eef2f7;
+  --paper:#ffffff;
+  --text:#172033;
+  --muted:#667085;
+  --line:#dfe4ec;
+  --blue:#2457d6;
+  --blue2:#173b8f;
+  --soft:#f4f7fb;
+  --green:#067647;
+  --amber:#b54708;
+  --red:#b42318;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;
+  line-height:1.55;
+}
+.wrap{max-width:1500px;margin:0 auto;padding:28px 18px 56px}
+.page{
+  background:var(--paper);
+  min-height:900px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  margin:0 0 24px;
+  padding:30px 34px;
+  box-shadow:0 10px 28px rgba(16,24,40,.07);
+}
+.hero{
+  background:linear-gradient(135deg,var(--blue2),var(--blue));
+  color:white;border-radius:16px;padding:24px 28px;margin-bottom:20px
+}
+.hero h1{margin:0;font-size:32px}
+.hero p{margin:7px 0 0;color:#e7edff}
+h2{font-size:24px;margin:0 0 14px}
+h3{font-size:17px;margin:16px 0 8px}
+p{margin:7px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.card{
+  border:1px solid var(--line);border-radius:13px;padding:16px;background:#fff
+}
+.card h4{margin:0 0 6px;font-size:15px}
+.kpi{
+  border:1px solid var(--line);border-radius:12px;padding:14px;background:#fbfcfe
+}
+.kpi b{display:block;font-size:19px;color:var(--blue2);margin-bottom:3px}
+.kpi span{font-size:12px;color:var(--muted)}
+
+.summary-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:0 0 22px
+}
+.summary-card{
+  border:1px solid var(--line);border-radius:14px;padding:16px 17px;background:#fbfcfe;
+  display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:center
+}
+.summary-number{
+  font-size:38px;line-height:1;font-weight:800;color:var(--blue);
+  min-width:42px;text-align:center
+}
+.summary-copy small{
+  display:block;color:var(--muted);font-size:12px;margin-bottom:3px
+}
+.summary-copy b{
+  display:block;font-size:16px;color:var(--blue2);margin-bottom:3px
+}
+.summary-copy span{
+  display:block;color:#475467;font-size:12px;line-height:1.4
+}
+.flow{
+  display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin:16px 0
+}
+.step{
+  background:var(--soft);border:1px solid var(--line);border-radius:10px;
+  padding:13px 8px;text-align:center;font-size:13px;font-weight:700
+}
+.step small{display:block;font-weight:500;color:var(--muted);margin-top:4px}
+.callout{
+  background:#f4f7ff;border-left:5px solid var(--blue);padding:14px 16px;border-radius:10px
+}
+.code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  background:#101828;color:#e4e7ec;padding:14px;border-radius:10px;white-space:pre-wrap;font-size:13px
+}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;min-width:980px}
+th,td{padding:11px 12px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);vertical-align:top;font-size:13px}
+th:last-child,td:last-child{border-right:0}
+tr:last-child td{border-bottom:0}
+th{background:#eef3fb;text-align:left;color:#344054}
+.tag{display:inline-block;padding:3px 8px;border-radius:999px;background:#eef2f6;color:#475467;font-size:12px;margin-right:6px}
+.red{border-left:5px solid var(--red);background:#fef3f2}
+.green{border-left:5px solid var(--green);background:#ecfdf3}
+.amber{border-left:5px solid var(--amber);background:#fffaeb}
+.timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.phase{padding:18px;border:1px solid var(--line);border-radius:13px}
+.phase b{display:block;color:var(--blue2);font-size:17px;margin-bottom:6px}
+.footer{color:var(--muted);font-size:12px;text-align:right;margin-top:12px}
+@media(max-width:1050px){
+  .grid2,.grid3,.grid4,.timeline,.summary-grid{grid-template-columns:1fr}
+  .flow{grid-template-columns:1fr 1fr}
+  .page{min-height:auto}
+}
+@media print{
+  body{background:white}
+  .wrap{padding:0}
+  .page{box-shadow:none;border:0;border-radius:0;page-break-after:always;margin:0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section class="page">
+  <div class="hero">
+    <h1>Gate1 实现方案汇报</h1>
+    <p>总体架构 · 检查流程 · 核心能力</p>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-number">1</div>
+      <div class="summary-copy">
+        <small>总体目标</small>
+        <b>实现就绪</b>
+        <span>编码前完成需求、方案和验证设计收敛</span>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-number">3</div>
+      <div class="summary-copy">
+        <small>检查阶段</small>
+        <b>需求 · 技术方案 · 测试设计</b>
+        <span>依次回答做什么、怎么做、怎么证明做对</span>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-number">6</div>
+      <div class="summary-copy">
+        <small>统一质量属性</small>
+        <b>对象 × 属性</b>
+        <span>完整、明确、一致、可实现、可验证、可追溯</span>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-number">3</div>
+      <div class="summary-copy">
+        <small>门禁结论</small>
+        <b>通过 · 警告 · 阻断</b>
+        <span>依据问题实质影响进行最终裁决</span>
+      </div>
+    </div>
+  </div>
+
+  <h2>1. 总体架构</h2>
+  <div class="callout">
+    Gate1 采用“<strong>统一语义模型 + 分阶段检查 + 主动缺口探索 + 证据确认 + 追溯闭环 + 显式阻断策略</strong>”的实现架构。
+  </div>
+
+  <div class="flow">
+    <div class="step">输入资料<small>PRD / Spec / 设计 / 测试</small></div>
+    <div class="step">语义归一化<small>统一对象模型</small></div>
+    <div class="step">需求检查<small>WHAT</small></div>
+    <div class="step">方案检查<small>HOW</small></div>
+    <div class="step">测试检查<small>HOW TO PROVE</small></div>
+    <div class="step">追溯闭环<small>需求 ↔ 设计 ↔ 测试</small></div>
+    <div class="step">问题判定<small>Finding + Evidence</small></div>
+    <div class="step">门禁结论<small>通过 / 警告 / 阻断</small></div>
+  </div>
+
+  <h2 style="margin-top:22px">2. 检查流程</h2>
+  <div class="grid4">
+    <div class="kpi"><b>① 需求定义检查</b><span>检查目标、范围、Story、场景、Rule、状态、数据、契约、AC</span></div>
+    <div class="kpi"><b>② 技术方案检查</b><span>检查方案自身质量，以及需求是否被设计完整承接</span></div>
+    <div class="kpi"><b>③ 测试设计检查</b><span>检查 Test Case 是否完成，并覆盖 Story、AC、Rule、关键设计决策</span></div>
+    <div class="kpi"><b>④ 跨对象闭环检查</b><span>检查 WHAT → HOW → HOW TO PROVE 是否形成闭环</span></div>
+  </div>
+
+  <h2 style="margin-top:22px">3. 核心检查能力</h2>
+  <div class="grid2">
+    <div class="card">
+      <h4>对象 × 属性矩阵检查</h4>
+      <p>对需求、设计和测试对象统一检查：完整性、明确性、一致性、可实现性、可验证性、可追溯与覆盖。</p>
+    </div>
+    <div class="card">
+      <h4>主动缺口探索</h4>
+      <p>不只 Review 已写内容，还从流程、状态、规则、数据、异常、并发、依赖等空间主动寻找遗漏。</p>
+    </div>
+    <div class="card">
+      <h4>证据确认与反证搜索</h4>
+      <p>大模型发现问题后必须绑定原始证据，并再次搜索是否已有其他定义，降低误报。</p>
+    </div>
+    <div class="card">
+      <h4>需求—设计—测试追溯</h4>
+      <p>检查 Story、AC、Rule、设计决策、实现任务和 Test Case 之间是否形成完整覆盖关系。</p>
+    </div>
+  </div>
+
+  <div class="footer">第 1 页 / 3</div>
+</section>
+
+<section class="page">
+  <div class="hero">
+    <h1>Gate1 核心实现模型</h1>
+    <p>数据模型 · 追溯闭环 · 问题判定</p>
+  </div>
+
+  <h2>4. 数据模型</h2>
+  <div class="grid2">
+    <div class="card">
+      <h4>统一语义模型</h4>
+      <div class="code">目标 / 范围 / Story
+场景 / 流程 / Rule / State
+数据 / 接口 / 依赖 / 约束
+设计决策 / 技术方案 / Task
+Test Case</div>
+    </div>
+    <div class="card">
+      <h4>每个对象保留证据链</h4>
+      <div class="code">对象 ID
+对象类型
+语义内容
+原始文档
+章节 / 位置
+关联对象
+抽取置信度</div>
+    </div>
+  </div>
+
+  <h2 style="margin-top:22px">5. 追溯闭环</h2>
+  <div class="code">Story
+  │
+  ├── AC
+  ├── Rule
+  │
+  ▼
+Design Decision
+  │
+  ▼
+Implementation Task
+  │
+  ▼
+Test Case</div>
+
+  <div class="table-wrap" style="margin-top:14px">
+    <table>
+      <thead>
+        <tr><th>Story</th><th>AC</th><th>Rule</th><th>设计决策</th><th>Test Case</th><th>状态</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>S01</td><td>AC01</td><td>R01</td><td>DD03</td><td>TC01</td><td>已覆盖</td></tr>
+        <tr><td>S01</td><td>AC02</td><td>R03</td><td>DD04</td><td>TC02 / TC03</td><td>已覆盖</td></tr>
+        <tr><td>S01</td><td>AC03</td><td>—</td><td>DD05</td><td>—</td><td><strong style="color:#b42318">缺失</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 style="margin-top:22px">6. 问题判定</h2>
+  <div class="grid3">
+    <div class="card">
+      <h4>候选问题</h4>
+      <p>由矩阵检查或主动探索产生，不能直接进入阻断。</p>
+    </div>
+    <div class="card">
+      <h4>正式问题项</h4>
+      <p>完成证据绑定与反证搜索后，确认问题真实存在。</p>
+    </div>
+    <div class="card">
+      <h4>实质影响判断</h4>
+      <p>判断问题是否会迫使开发者或编码智能体作出高影响决策。</p>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:14px">
+    <strong>核心阻断规则：</strong>如果一个未关闭问题会显著改变用户行为、业务语义、数据语义、外部契约、关键架构、安全/隐私/合规或验收结论，则 Gate1 阻断。
+  </div>
+
+  <div class="grid3" style="margin-top:14px">
+    <div class="card red"><h4>阻断</h4><p>关键定义缺失、多义、冲突、不可实现、不可验证、追溯链断裂。</p></div>
+    <div class="card amber"><h4>警告</h4><p>存在低风险缺口，但已有安全默认值或接受假设。</p></div>
+    <div class="card green"><h4>通过</h4><p>不存在未关闭的高影响问题项。</p></div>
+  </div>
+
+  <div class="footer">第 2 页 / 3</div>
+</section>
+
+<section class="page">
+  <div class="hero">
+    <h1>Gate1 分阶段落地</h1>
+    <p>先打通闭环，再扩展探索能力和组织知识</p>
+  </div>
+
+  <h2>7. 分阶段落地</h2>
+  <div class="timeline">
+    <div class="phase">
+      <b>V1：打通门禁闭环</b>
+      <p><span class="tag">目标</span>先形成可运行、可解释、可阻断的完整链路。</p>
+      <ul>
+        <li>支持 PRD / Spec / 技术方案 / 测试设计输入；</li>
+        <li>建立统一语义模型；</li>
+        <li>覆盖 Story、AC、Rule、设计决策、Test Case；</li>
+        <li>实现对象 × 属性检查；</li>
+        <li>实现证据绑定、反证搜索；</li>
+        <li>生成通过 / 警告 / 阻断报告。</li>
+      </ul>
+      <div class="code">输入
+↓
+语义模型
+↓
+检查
+↓
+问题项
+↓
+阻断判定
+↓
+Gate1 Report</div>
+    </div>
+
+    <div class="phase">
+      <b>V2：增强主动探索</b>
+      <p><span class="tag">目标</span>从“检查已有内容”升级到“主动发现遗漏”。</p>
+      <ul>
+        <li>状态空间；</li>
+        <li>数据空间；</li>
+        <li>异常与恢复；</li>
+        <li>依赖与并发；</li>
+        <li>安全与性能；</li>
+        <li>兼容性与生命周期。</li>
+      </ul>
+      <div class="code">已定义内容检查
++
+探索空间
+=
+更强的遗漏发现能力</div>
+    </div>
+
+    <div class="phase">
+      <b>V3：接入组织知识</b>
+      <p><span class="tag">目标</span>让 Gate1 从通用检查升级为公司级工程门禁。</p>
+      <ul>
+        <li>领域规则库；</li>
+        <li>历史缺陷模式；</li>
+        <li>架构约束；</li>
+        <li>安全规范；</li>
+        <li>平台知识；</li>
+        <li>历史设计决策。</li>
+      </ul>
+      <div class="code">通用 LLM 能力
++
+组织知识
++
+显式 Policy
+=
+稳定门禁能力</div>
+    </div>
+  </div>
+
+  <h2 style="margin-top:24px">最终实现形态</h2>
+  <div class="grid3">
+    <div class="card"><h4>面向人的输出</h4><p>HTML Gate1 报告：问题项、证据、影响、覆盖矩阵、阻断结论。</p></div>
+    <div class="card"><h4>面向系统的输出</h4><p>JSON 结构化结果：供 CI、Agent、质量平台消费。</p></div>
+    <div class="card"><h4>门禁执行</h4><p>所有阻断问题关闭后，Gate1 才允许进入编码阶段。</p></div>
+  </div>
+
+  <div class="callout" style="margin-top:18px">
+    <strong>整体落地原则：</strong>第一版先确保“需求—设计—测试—问题判定—阻断”闭环可运行；后续再逐步扩大探索空间和知识深度，避免第一版门禁过度膨胀。
+  </div>
+
+  <div class="footer">第 3 页 / 3</div>
+</section>
+
+</div>
+</body>
+</html>

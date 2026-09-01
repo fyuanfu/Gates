@@ -1,0 +1,14 @@
+interface:
+  display_name: Spec Decision Challenge
+  short_description: Discover gaps and challenge risky spec decisions
+  default_prompt: Use $challenge-spec-decisions to discover missing design questions,
+    resolve the decision tree, and challenge risky conclusions.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

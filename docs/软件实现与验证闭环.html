@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>软件实现与验证闭环</title>
+<style>
+  :root{
+    --bg:#f6f8fb;
+    --panel:#ffffff;
+    --text:#1f2937;
+    --muted:#667085;
+    --line:#98a2b3;
+
+    --feature-bg:#f3efff;
+    --feature-bd:#9b7bea;
+
+    --req-bg:#eaf2ff;
+    --req-bd:#78a6ff;
+
+    --impl-bg:#eef7ff;
+    --impl-bd:#67a2d8;
+
+    --verify-bg:#fff7e6;
+    --verify-bd:#efb44d;
+
+    --evidence-bg:#ecfdf3;
+    --evidence-bd:#63be8a;
+
+    --verdict-bg:#f4efff;
+    --verdict-bd:#8f72df;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Inter,"PingFang SC","Microsoft YaHei",
+      system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+
+  .page{
+    max-width:1200px;
+    margin:0 auto;
+    padding:42px 28px 60px;
+  }
+
+  h1{
+    margin:0;
+    font-size:30px;
+    line-height:1.25;
+    font-weight:760;
+  }
+
+  .subtitle{
+    margin-top:10px;
+    color:var(--muted);
+    font-size:15px;
+    line-height:1.7;
+  }
+
+  .card{
+    margin-top:28px;
+    background:var(--panel);
+    border:1px solid #e4e7ec;
+    border-radius:20px;
+    box-shadow:0 10px 28px rgba(16,24,40,.08);
+    padding:34px 28px 40px;
+    overflow-x:auto;
+  }
+
+  .diagram{
+    min-width:930px;
+    position:relative;
+  }
+
+  .top{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  .node{
+    min-width:220px;
+    padding:14px 20px;
+    text-align:center;
+    border-radius:12px;
+    border:1.5px solid #d0d5dd;
+    background:#fff;
+    font-weight:680;
+    line-height:1.4;
+  }
+
+  .feature{
+    min-width:280px;
+    background:var(--feature-bg);
+    border-color:var(--feature-bd);
+    font-size:18px;
+  }
+
+  .decomp{
+    margin-top:14px;
+    min-width:280px;
+    background:#f8fafc;
+    border-style:dashed;
+    color:#344054;
+  }
+
+  .stories,.ac{
+    background:var(--req-bg);
+    border-color:var(--req-bd);
+  }
+
+  .arrow-down{
+    width:2px;
+    height:24px;
+    background:var(--line);
+    position:relative;
+  }
+
+  .arrow-down::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:-2px;
+    width:8px;
+    height:8px;
+    border-right:2px solid var(--line);
+    border-bottom:2px solid var(--line);
+    transform:translateX(-50%) rotate(45deg);
+  }
+
+  .split{
+    width:620px;
+    height:66px;
+    margin:0 auto;
+    position:relative;
+  }
+
+  .split .stem{
+    position:absolute;
+    left:50%;
+    top:0;
+    height:18px;
+    width:2px;
+    background:var(--line);
+  }
+
+  .split .bar{
+    position:absolute;
+    left:140px;
+    right:140px;
+    top:18px;
+    height:2px;
+    background:var(--line);
+  }
+
+  .split .left-down,
+  .split .right-down{
+    position:absolute;
+    top:18px;
+    width:2px;
+    height:30px;
+    background:var(--line);
+  }
+
+  .split .left-down{left:140px;}
+  .split .right-down{right:140px;}
+
+  .split .label{
+    position:absolute;
+    top:26px;
+    font-size:13px;
+    color:var(--muted);
+    background:#fff;
+    padding:2px 7px;
+    border-radius:8px;
+  }
+
+  .split .allocation{left:168px;}
+  .split .verification{right:155px;}
+
+  .split .left-down::after,
+  .split .right-down::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:-2px;
+    width:8px;
+    height:8px;
+    border-right:2px solid var(--line);
+    border-bottom:2px solid var(--line);
+    transform:translateX(-50%) rotate(45deg);
+  }
+
+  .branches{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:80px;
+    max-width:800px;
+    margin:0 auto;
+  }
+
+  .branch{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  .branch-title{
+    width:100%;
+    max-width:280px;
+    margin-bottom:12px;
+    text-align:center;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.03em;
+    color:#475467;
+    text-transform:uppercase;
+  }
+
+  .impl{
+    background:var(--impl-bg);
+    border-color:var(--impl-bd);
+  }
+
+  .verify{
+    background:var(--verify-bg);
+    border-color:var(--verify-bd);
+  }
+
+  .merge-zone{
+    max-width:800px;
+    height:110px;
+    margin:6px auto 0;
+    position:relative;
+  }
+
+  .merge-zone .left-up{
+    position:absolute;
+    left:25%;
+    top:0;
+    width:2px;
+    height:30px;
+    background:var(--line);
+  }
+
+  .merge-zone .right-up{
+    position:absolute;
+    right:25%;
+    top:0;
+    width:2px;
+    height:30px;
+    background:var(--line);
+  }
+
+  .merge-zone .bar{
+    position:absolute;
+    top:30px;
+    left:25%;
+    right:25%;
+    height:2px;
+    background:var(--line);
+  }
+
+  .merge-zone .center-down{
+    position:absolute;
+    left:50%;
+    top:30px;
+    width:2px;
+    height:28px;
+    background:var(--line);
+  }
+
+  .merge-zone .center-down::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:-2px;
+    width:8px;
+    height:8px;
+    border-right:2px solid var(--line);
+    border-bottom:2px solid var(--line);
+    transform:translateX(-50%) rotate(45deg);
+  }
+
+  .evidence{
+    position:absolute;
+    top:66px;
+    left:50%;
+    transform:translateX(-50%);
+    min-width:280px;
+    background:var(--evidence-bg);
+    border-color:var(--evidence-bd);
+  }
+
+  .verdict-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin-top:8px;
+  }
+
+  .verdict{
+    min-width:280px;
+    background:var(--verdict-bg);
+    border-color:var(--verdict-bd);
+    font-size:17px;
+  }
+
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px 20px;
+    margin-top:26px;
+    padding-top:20px;
+    border-top:1px solid #eaecf0;
+    color:#475467;
+    font-size:13px;
+  }
+
+  .legend-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .swatch{
+    width:13px;
+    height:13px;
+    border-radius:4px;
+    border:1px solid;
+  }
+
+  .swatch.req{background:var(--req-bg); border-color:var(--req-bd);}
+  .swatch.impl{background:var(--impl-bg); border-color:var(--impl-bd);}
+  .swatch.ver{background:var(--verify-bg); border-color:var(--verify-bd);}
+  .swatch.ev{background:var(--evidence-bg); border-color:var(--evidence-bd);}
+
+  .note{
+    margin-top:18px;
+    padding:15px 18px;
+    border-left:4px solid #98a2b3;
+    background:#f8fafc;
+    border-radius:8px;
+    color:#475467;
+    line-height:1.75;
+    font-size:14px;
+  }
+
+  @media(max-width:900px){
+    .page{padding:24px 14px 36px;}
+    h1{font-size:24px;}
+    .card{padding:24px 16px 30px;}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>软件实现与验证闭环</h1>
+  <div class="subtitle">
+    Feature 通过需求分解形成 Story 与 AC；AC 一方面分配到架构与代码实现，
+    另一方面展开为验证目标、判定标准和测试用例，最终由实现与验证共同汇聚成 Evidence，并形成 Verdict。
+  </div>
+
+  <div class="card">
+    <div class="diagram">
+
+      <div class="top">
+        <div class="node feature">Feature</div>
+        <div class="arrow-down"></div>
+
+        <div class="node decomp">Requirement Decomposition</div>
+        <div class="arrow-down"></div>
+
+        <div class="node stories">Stories</div>
+        <div class="arrow-down"></div>
+
+        <div class="node ac">AC / Requirements</div>
+      </div>
+
+      <div class="split">
+        <div class="stem"></div>
+        <div class="bar"></div>
+        <div class="left-down"></div>
+        <div class="right-down"></div>
+        <div class="label allocation">allocation</div>
+        <div class="label verification">verification</div>
+      </div>
+
+      <div class="branches">
+        <div class="branch">
+          <div class="branch-title">Implementation Decomposition</div>
+
+          <div class="node impl">Architecture</div>
+          <div class="arrow-down"></div>
+
+          <div class="node impl">Components</div>
+          <div class="arrow-down"></div>
+
+          <div class="node impl">Modules / Units</div>
+          <div class="arrow-down"></div>
+
+          <div class="node impl">Code</div>
+        </div>
+
+        <div class="branch">
+          <div class="branch-title">Verification Decomposition</div>
+
+          <div class="node verify">Verification Objectives</div>
+          <div class="arrow-down"></div>
+
+          <div class="node verify">Criteria / Oracle</div>
+          <div class="arrow-down"></div>
+
+          <div class="node verify">Test Conditions</div>
+          <div class="arrow-down"></div>
+
+          <div class="node verify">Test Cases</div>
+        </div>
+      </div>
+
+      <div class="merge-zone">
+        <div class="left-up"></div>
+        <div class="right-up"></div>
+        <div class="bar"></div>
+        <div class="center-down"></div>
+        <div class="node evidence">Evidence</div>
+      </div>
+
+      <div class="verdict-wrap">
+        <div class="arrow-down"></div>
+        <div class="node verdict">Verdict</div>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item"><span class="swatch req"></span> 需求分解</div>
+        <div class="legend-item"><span class="swatch impl"></span> 实现分解</div>
+        <div class="legend-item"><span class="swatch ver"></span> 验证分解</div>
+        <div class="legend-item"><span class="swatch ev"></span> 证据汇聚</div>
+      </div>
+
+      <div class="note">
+        这张图强调三件事：<strong>需求定义“要实现什么”</strong>，
+        <strong>实现分解定义“由什么代码完成”</strong>，
+        <strong>验证分解定义“如何证明完成且正确”</strong>。
+        Code 与 Test Case 本身都不是终点，最终必须共同形成可审计的 Evidence，
+        再由 Evidence 支撑 Verdict。
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>

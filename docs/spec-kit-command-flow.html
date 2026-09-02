@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Spec Kit 命令调用流程</title>
+<style>
+  :root {
+    --bg: #f6f8fb;
+    --card: #ffffff;
+    --text: #172033;
+    --muted: #667085;
+    --line: #667085;
+    --accent: #2563eb;
+    --accent-soft: #eff6ff;
+    --green: #0f9d58;
+    --green-soft: #ecfdf3;
+    --orange: #d97706;
+    --orange-soft: #fff7ed;
+    --border: #d0d5dd;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif;
+  }
+
+  .page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 28px 64px;
+  }
+
+  h1 {
+    margin: 0 0 10px;
+    font-size: 34px;
+    line-height: 1.2;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 16px;
+    margin-bottom: 28px;
+  }
+
+  .section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 28px;
+    box-shadow: 0 8px 28px rgba(16, 24, 40, 0.05);
+  }
+
+  .section h2 {
+    margin: 0 0 20px;
+    font-size: 22px;
+  }
+
+  .flow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .box {
+    min-width: 240px;
+    max-width: 760px;
+    text-align: center;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #fff;
+    font-weight: 600;
+  }
+
+  .box.primary {
+    border-color: #93c5fd;
+    background: var(--accent-soft);
+    color: #1d4ed8;
+  }
+
+  .box.success {
+    border-color: #86efac;
+    background: var(--green-soft);
+    color: #067647;
+  }
+
+  .box.warn {
+    border-color: #fdba74;
+    background: var(--orange-soft);
+    color: #b54708;
+  }
+
+  .arrow {
+    font-size: 25px;
+    color: var(--line);
+    line-height: 1;
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+    width: min(860px, 100%);
+    align-items: start;
+  }
+
+  .split-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .merge-line {
+    width: min(860px, 100%);
+    height: 36px;
+    position: relative;
+  }
+
+  .merge-line::before,
+  .merge-line::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: calc(50% - 1px);
+    height: 18px;
+    border-bottom: 2px solid var(--line);
+  }
+
+  .merge-line::before {
+    left: 0;
+    border-right: 2px solid var(--line);
+  }
+
+  .merge-line::after {
+    right: 0;
+    border-left: 2px solid var(--line);
+  }
+
+  .merge-line .down {
+    position: absolute;
+    left: 50%;
+    top: 16px;
+    transform: translateX(-50%);
+    color: var(--line);
+    font-size: 22px;
+  }
+
+  .workflow {
+    display: grid;
+    grid-template-columns: 240px 52px 1fr;
+    gap: 0 10px;
+    align-items: center;
+  }
+
+  .cmd {
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .wf-arrow {
+    text-align: center;
+    color: var(--line);
+    font-size: 20px;
+  }
+
+  .artifact {
+    color: #344054;
+    padding: 10px 14px;
+    border-left: 3px solid #98a2b3;
+    background: #f9fafb;
+    border-radius: 8px;
+    line-height: 1.7;
+  }
+
+  .down-row {
+    grid-column: 1 / 2;
+    text-align: center;
+    color: var(--line);
+    font-size: 22px;
+    padding: 2px 0;
+  }
+
+  .empty {
+    grid-column: 2 / 4;
+  }
+
+  .loop {
+    margin-top: 8px;
+    border: 1px dashed #98a2b3;
+    border-radius: 14px;
+    padding: 18px;
+    background: #fcfcfd;
+  }
+
+  .loop-title {
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .loop-grid {
+    display: grid;
+    grid-template-columns: 170px 50px 1fr;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .yes, .no {
+    font-weight: 700;
+  }
+
+  .yes { color: #b54708; }
+  .no { color: #067647; }
+
+  .legend {
+    margin-top: 20px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 760px) {
+    .page { padding: 22px 14px 40px; }
+    h1 { font-size: 26px; }
+    .section { padding: 20px 14px; }
+    .split { grid-template-columns: 1fr; }
+    .merge-line { display: none; }
+    .workflow, .loop-grid {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .wf-arrow { transform: rotate(90deg); }
+    .down-row, .empty { grid-column: auto; }
+  }
+</style>
+</head>
+<body>
+  <main class="page">
+    <h1>Spec Kit 命令调用流程</h1>
+    <div class="subtitle">从命令模板编译、Agent 调用，到 SDD 主流程与实现收敛闭环</div>
+
+    <section class="section">
+      <h2>一、单个 Command 的运行机制</h2>
+
+      <div class="flow">
+        <div class="box primary">specify init</div>
+        <div class="arrow">↓</div>
+        <div class="box">编译 templates/commands/*</div>
+        <div class="arrow">↓</div>
+
+        <div class="split">
+          <div class="split-col">
+            <div class="box">Agent Command</div>
+            <div style="font-family:ui-monospace,monospace;color:#475467;">/speckit.xxx</div>
+          </div>
+          <div class="split-col">
+            <div class="box">Agent Skill</div>
+            <div style="font-family:ui-monospace,monospace;color:#475467;">$speckit-xxx</div>
+          </div>
+        </div>
+
+        <div class="merge-line"><span class="down">↓</span></div>
+
+        <div class="box primary">用户调用某个 Command</div>
+        <div class="arrow">↓</div>
+        <div class="box">Pre Extension Hook</div>
+        <div class="arrow">↓</div>
+        <div class="box">Helper Script</div>
+        <div class="arrow">↓</div>
+        <div class="box">Resolve FEATURE_DIR<br><span style="font-weight:400;color:#667085;">.specify/feature.json</span></div>
+        <div class="arrow">↓</div>
+        <div class="box">Load Input Artifacts</div>
+        <div class="arrow">↓</div>
+        <div class="box">Agent Workflow Logic</div>
+        <div class="arrow">↓</div>
+        <div class="box">Validate / Quality Gate</div>
+        <div class="arrow">↓</div>
+        <div class="box">Read / Write Artifacts</div>
+        <div class="arrow">↓</div>
+        <div class="box">Post Extension Hook</div>
+        <div class="arrow">↓</div>
+        <div class="box success">Completion</div>
+        <div class="arrow">↓</div>
+        <div class="box">Handoff</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>二、Spec Kit 完整 SDD 工作流</h2>
+
+      <div class="workflow">
+        <div class="cmd">constitution</div>
+        <div class="wf-arrow">→</div>
+        <div class="artifact">项目级原则与治理约束</div>
+
+        <div class="down-row">↓</div><div class="empty"></div>
+
+        <div class="cmd">specify</div>
+        <div class="wf-arrow">→</div>
+        <div class="artifact"><strong>spec.md</strong></div>
+
+        <div class="down-row">↓</div><div class="empty"></div>
+
+        <div class="cmd">clarify</div>
+        <div class="wf-arrow">→</div>
+        <div class="artifact">update <strong>spec.md</strong></div>
+
+        <div class="down-row">↓</div><div class="empty"></div>
+
+        <div class="cmd">plan</div>
+        <div class="wf-arrow">→</div>
+        <div class="artifact">
+          <strong>plan.md</strong><br>
+          research.md<br>
+          data-model.md<br>
+          contracts/<br>
+          quickstart.md
+        </div>
+
+        <div class="down-row">↓</div><div class="empty"></div>
+
+        <div class="cmd">checklist</div>
+        <div class="wf-arrow">→</div>
+        <div class="artifact"><strong>checklists/*.md</strong></div>
+
+        <div class="down-row">↓</div><div class="empty"></div>
+
+        <div class="cmd">tasks</div>
+        <div class="wf-arrow">→</div>
+        <div class="artifact"><strong>tasks.md</strong></div>
+
+        <div class="down-row">↓</div><div class="empty"></div>
+
+        <div class="cmd">analyze</div>
+        <div class="wf-arrow">→</div>
+        <div class="artifact"><strong>Findings only</strong>（只读分析）</div>
+
+        <div class="down-row">↓</div><div class="empty"></div>
+
+        <div class="cmd">implement</div>
+        <div class="wf-arrow">→</div>
+        <div class="artifact"><strong>Code + [X] tasks</strong></div>
+
+        <div class="down-row">↓</div><div class="empty"></div>
+
+        <div class="cmd">converge</div>
+        <div class="wf-arrow">→</div>
+        <div class="artifact"><strong>检查实现与 spec / plan / tasks 的 gap</strong></div>
+      </div>
+
+      <div class="loop">
+        <div class="loop-title">Convergence 闭环</div>
+        <div class="loop-grid">
+          <div class="cmd">gap?</div>
+          <div class="wf-arrow">→</div>
+          <div class="artifact">
+            <span class="yes">YES：</span>append tasks.md
+            &nbsp;→&nbsp; implement
+            &nbsp;→&nbsp; converge
+            &nbsp;→&nbsp; 重复直到收敛
+          </div>
+
+          <div class="cmd">gap?</div>
+          <div class="wf-arrow">→</div>
+          <div class="artifact">
+            <span class="no">NO：</span>Done / Review / PR
+          </div>
+        </div>
+      </div>
+
+      <div class="legend">
+        核心逻辑：前半段完成 Intent 与 Artifact 的逐层展开，<strong>analyze</strong> 在实现前检查跨文档一致性和覆盖，
+        <strong>implement</strong> 执行任务，<strong>converge</strong> 再把当前代码与 Spec / Plan / Tasks 对齐，
+        对未完成项追加新的任务，从而形成实现闭环。
+      </div>
+    </section>
+  </main>
+</body>
+</html>

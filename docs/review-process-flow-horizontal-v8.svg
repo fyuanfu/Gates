@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="4000" height="1200" viewBox="0 0 4000 1200" role="img" aria-labelledby="title desc">
+  <title id="title">需求与技术方案评审流程（开放探索与答案闭环版）</title>
+  <desc id="desc">阶段使用字母 A、B、C，主流程使用步骤 01 至 11，Discovery 内部使用 D1 至 D6。D2 在不读取风险模式库的条件下冻结开放扫描基线；风险模式库由 D1 锚点独立召回并仅向 D3 增量补充候选。步骤 07 仅对关键或中高风险答案执行闭环检查，并复用 D3 反例。</desc>
+  <defs>
+    <linearGradient id="startGradient" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2f7cdf"/><stop offset="1" stop-color="#1752a9"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="155%"><feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#203c61" flood-opacity="0.13"/></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#7e91a9"/></marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#2468cf"/></marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#b63e3e"/></marker>
+    <marker id="arrowKnowledge" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#bf7a16"/></marker>
+    <style>
+      text { font-family: Inter, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .stage { fill: #fbfcfe; stroke: #d7e1ed; stroke-width: 2.2; }
+      .stage-label { font-size: 25px; font-weight: 850; fill: #354a64; }
+      .stage-sub { font-size: 14px; font-weight: 600; fill: #75859a; }
+      .stage-code { font-size: 22px; font-weight: 900; fill: #fff; text-anchor: middle; dominant-baseline: middle; }
+      .node { fill: #fff; stroke: #a8bdd8; stroke-width: 2; }
+      .node-blue { fill: #eaf2ff; stroke: #6f9fe1; }
+      .node-teal { fill: #e7f7f4; stroke: #66b8ad; }
+      .node-violet { fill: #f1edff; stroke: #9a82d9; }
+      .node-red { fill: #fff0f0; stroke: #d98c8c; }
+      .title { font-size: 20px; font-weight: 850; fill: #17263d; }
+      .detail { font-size: 14px; font-weight: 550; fill: #617188; }
+      .step-code { font-size: 14px; font-weight: 900; fill: #fff; text-anchor: middle; dominant-baseline: middle; }
+      .connector { fill: none; stroke: #7e91a9; stroke-width: 3.2; marker-end: url(#arrow); }
+      .discovery-shell { fill: #f6f9ff; stroke: #6f9fe1; stroke-width: 2.5; }
+      .discovery-card { fill: #fff; stroke: #b7cae5; stroke-width: 1.8; }
+      .discovery-title { font-size: 17px; font-weight: 850; fill: #173f78; }
+      .discovery-text { font-size: 13.5px; font-weight: 600; fill: #52657d; }
+      .sub-code { font-size: 13px; font-weight: 900; fill: #2468cf; text-anchor: middle; dominant-baseline: middle; }
+      .branch-title { font-size: 19px; font-weight: 850; fill: #17263d; }
+      .branch-text { font-size: 14px; font-weight: 600; fill: #52657d; }
+      .branch-output { font-size: 13px; font-weight: 850; }
+      .knowledge-node { fill: #fff8e9; stroke: #d79b3d; stroke-width: 2.2; }
+      .knowledge-link { fill: none; stroke: #bf7a16; stroke-width: 2.7; stroke-dasharray: 10 7; marker-end: url(#arrowKnowledge); }
+      .knowledge-title { font-size: 21px; font-weight: 900; fill: #7a4a00; }
+      .knowledge-detail { font-size: 13.5px; font-weight: 650; fill: #805b25; }
+      .knowledge-port { font-size: 12px; font-weight: 850; fill: #9a5c00; text-anchor: middle; }
+    </style>
+  </defs>
+  <rect width="4000" height="1200" fill="#f3f6fa"/>
+  <text x="2000" y="48" text-anchor="middle" font-size="38" font-weight="850" fill="#17263d">需求与技术方案评审流程</text>
+  <text x="2000" y="78" text-anchor="middle" font-size="16" fill="#617188">阶段 A/B/C · 主步骤 01–11 · Discovery 子步骤 D1–D6</text>
+
+  <rect class="stage" x="30" y="105" width="1760" height="970" rx="24"/>
+  <rect class="stage" x="1820" y="105" width="1190" height="1070" rx="24"/>
+  <rect class="stage" x="3040" y="270" width="930" height="720" rx="24"/>
+
+  <circle cx="78" cy="150" r="24" fill="#2468cf"/><text x="78" y="151" class="stage-code">A</text>
+  <text x="116" y="150" class="stage-label">阶段 A · 探索与建模</text>
+  <text x="116" y="174" class="stage-sub">确定范围，发现原文未覆盖的必要问题，形成候选账本与依赖树</text>
+
+  <g filter="url(#shadow)"><rect x="70" y="225" width="215" height="96" rx="48" fill="url(#startGradient)"/></g>
+  <text x="178" y="263" text-anchor="middle" font-size="20" font-weight="850" fill="#fff">输入材料</text>
+  <text x="178" y="290" text-anchor="middle" font-size="14" fill="#dceaff">PRD · Spec · Design</text>
+  <path class="connector" d="M285 273H320"/>
+  <g filter="url(#shadow)"><rect class="node" x="330" y="225" width="260" height="96" rx="16"/></g>
+  <circle cx="367" cy="261" r="21" fill="#2468cf"/><text x="367" y="262" class="step-code">01</text>
+  <text x="400" y="263" class="title">建立挑战上下文</text>
+  <text x="367" y="295" class="detail">目标 · 范围 · 阶段 · 证据源</text>
+  <path class="connector" d="M590 273H620"/>
+
+  <rect class="discovery-shell" x="630" y="185" width="1115" height="675" rx="22"/>
+  <circle cx="674" cy="229" r="22" fill="#2468cf"/><text x="674" y="230" class="step-code">02</text>
+  <text x="709" y="228" font-size="23" font-weight="900" fill="#173f78">Discovery：发现原文未提及的必要问题</text>
+  <text x="709" y="253" class="detail">因果建模 · 开放扫描与知识增强并行 · 最小反例 · 风险筛选 · 完整性分类</text>
+
+  <g filter="url(#shadow)"><rect class="discovery-card" x="665" y="285" width="235" height="215" rx="16"/></g>
+  <rect x="683" y="303" width="44" height="26" rx="13" fill="#eaf2ff"/><text x="705" y="317" class="sub-code">D1</text>
+  <text x="683" y="359" class="discovery-title">建立 Feature 因果模型</text>
+  <text x="683" y="390" class="discovery-text">目标 · Actor · 对象 · 动作</text><text x="683" y="417" class="discovery-text">状态 · 副作用 · 系统边界</text>
+  <text x="683" y="444" class="discovery-text">依赖 · 不变量 · 证据源</text><text x="683" y="471" class="discovery-text">只建模，不生成候选问题</text>
+  <path class="connector" d="M900 393H918"/>
+
+  <g filter="url(#shadow)"><rect class="discovery-card" x="928" y="285" width="250" height="215" rx="16"/></g>
+  <rect x="946" y="303" width="44" height="26" rx="13" fill="#eaf2ff"/><text x="968" y="317" class="sub-code">D2</text>
+  <text x="946" y="359" class="discovery-title">无知识库开放扫描</text>
+  <text x="946" y="390" class="discovery-text">隔离风险模式库内容</text><text x="946" y="417" class="discovery-text">场景 · 状态 · 规则 · 数据</text>
+  <text x="946" y="444" class="discovery-text">依赖 · 失败 · 环境 · 质量</text><text x="946" y="471" class="discovery-text">冻结 Baseline Map</text>
+  <path class="connector" d="M1178 393H1196"/>
+
+  <g filter="url(#shadow)"><rect class="discovery-card" x="1206" y="285" width="250" height="215" rx="16"/></g>
+  <rect x="1224" y="303" width="44" height="26" rx="13" fill="#eaf2ff"/><text x="1246" y="317" class="sub-code">D3</text>
+  <text x="1224" y="359" class="discovery-title">合并候选并反例化</text>
+  <text x="1224" y="390" class="discovery-text">开放候选 + 历史模式</text><text x="1224" y="417" class="discovery-text">去重 · 交叉 · 新型组合</text>
+  <text x="1224" y="444" class="discovery-text">生成最小失败事件序列</text><text x="1224" y="471" class="discovery-text">风险模式只做加法</text>
+  <path class="connector" d="M1456 393H1474"/>
+
+  <g filter="url(#shadow)"><rect class="discovery-card" x="1484" y="285" width="225" height="215" rx="16"/></g>
+  <rect x="1502" y="303" width="44" height="26" rx="13" fill="#eaf2ff"/><text x="1524" y="317" class="sub-code">D4</text>
+  <text x="1502" y="359" class="discovery-title">相关性与风险筛选</text>
+  <text x="1502" y="390" class="discovery-text">用户可见行为变化</text><text x="1502" y="417" class="discovery-text">跨信任 / 持久化边界</text>
+  <text x="1502" y="444" class="discovery-text">不可逆 · 泄露 · 长期不一致</text><text x="1502" y="471" class="discovery-text">保留 NOVEL 风险候选</text>
+  <path d="M1597 500V535H1085V558" fill="none" stroke="#7e91a9" stroke-width="3.2" marker-end="url(#arrow)"/>
+
+  <g filter="url(#shadow)"><rect class="discovery-card" x="915" y="568" width="340" height="205" rx="16"/></g>
+  <rect x="935" y="588" width="44" height="26" rx="13" fill="#eaf2ff"/><text x="957" y="602" class="sub-code">D5</text>
+  <text x="935" y="643" class="discovery-title">完整性分类</text>
+  <text x="935" y="678" class="discovery-text">REQUIRED：当前范围必须定义</text><text x="935" y="705" class="discovery-text">CONDITIONAL：条件成立时必须定义</text>
+  <text x="935" y="732" class="discovery-text">OPTIONAL / NOT APPLICABLE</text><text x="935" y="755" font-size="12.5" font-weight="750" fill="#b63e3e">不能因文档未写就判为 OPTIONAL</text>
+  <path class="connector" d="M1255 670H1292"/>
+
+  <g filter="url(#shadow)"><rect x="1302" y="568" width="365" height="205" rx="16" fill="#e7f7f4" stroke="#66b8ad" stroke-width="2"/></g>
+  <rect x="1322" y="588" width="44" height="26" rx="13" fill="#d8f1ed"/><text x="1344" y="602" font-size="13" font-weight="900" fill="#087c70" text-anchor="middle" dominant-baseline="middle">D6</text>
+  <text x="1322" y="643" font-size="18" font-weight="900" fill="#075e56">生成 Exploration Map</text>
+  <text x="1322" y="678" class="discovery-text">来源锚点 · 问题空间 · 覆盖状态</text><text x="1322" y="705" class="discovery-text">相关性 · 证据需求 · 风险边界</text>
+  <text x="1322" y="732" class="discovery-text">来源：OPEN · PATTERN · NOVEL</text>
+  <text x="1322" y="757" font-size="12.5" font-weight="850" fill="#087c70">候选：FACT · DECISION · UNKNOWN · FINDING</text>
+
+  <path class="connector" d="M1485 773V895"/>
+  <g filter="url(#shadow)"><rect class="node node-teal" x="1120" y="910" width="550" height="112" rx="18"/></g>
+  <circle cx="1160" cy="950" r="22" fill="#087c70"/><text x="1160" y="951" class="step-code">03</text>
+  <text x="1197" y="949" class="title" fill="#075e56">建立统一候选账本与决策依赖树</text>
+  <text x="1197" y="979" class="detail">分类 FACT / DECISION / UNKNOWN，连接前置依赖</text>
+  <text x="1197" y="1004" class="detail">仅将有范围、证据和影响的问题升级为 Finding 候选</text>
+  <path d="M1670 966H1810V265H1860" fill="none" stroke="#7e91a9" stroke-width="3.2" marker-end="url(#arrow)"/>
+
+  <circle cx="1868" cy="150" r="24" fill="#6948bd"/><text x="1868" y="151" class="stage-code">B</text>
+  <text x="1906" y="150" class="stage-label">阶段 B · 动态求解与挑战</text>
+  <text x="1906" y="174" class="stage-sub">Agent 先查事实，Owner 决策；关键或中高风险答案关闭前执行增量挑战</text>
+
+  <g filter="url(#shadow)"><rect class="node node-teal" x="1860" y="220" width="350" height="90" rx="16"/></g>
+  <circle cx="1898" cy="257" r="21" fill="#087c70"/><text x="1898" y="258" class="step-code">04</text>
+  <text x="1932" y="256" class="title" fill="#075e56">优先自主查证 FACT</text><text x="1932" y="283" class="detail">支持证据 + 反证 + 适用边界</text>
+  <path class="connector" d="M2210 265H2236"/>
+
+  <g filter="url(#shadow)"><polygon points="2575,210 2890,265 2575,320 2260,265" fill="#fff" stroke="#8da2ba" stroke-width="2.2"/></g>
+  <circle cx="2375" cy="265" r="20" fill="#6948bd"/><text x="2375" y="266" class="step-code">05</text>
+  <text x="2600" y="256" text-anchor="middle" font-size="19" font-weight="850" fill="#17263d">选择最高价值前沿问题</text>
+  <text x="2600" y="284" text-anchor="middle" class="detail">无未决前置依赖 · 解锁价值 · 风险 · 不可逆性</text>
+  <path class="connector" d="M2575 320V347"/>
+
+  <g filter="url(#shadow)"><rect class="node node-violet" x="2185" y="355" width="780" height="82" rx="17"/></g>
+  <circle cx="2225" cy="396" r="21" fill="#6948bd"/><text x="2225" y="397" class="step-code">06</text>
+  <text x="2262" y="390" class="title" fill="#3d2a72">按节点类型选择处理方式</text>
+  <text x="2262" y="418" class="detail">分支代码使用 F / D / U，不与阶段或主步骤编号混用</text>
+  <path d="M2575 437V466H2040V492" fill="none" stroke="#7e91a9" stroke-width="3.2" marker-end="url(#arrow)"/>
+  <path class="connector" d="M2575 437V492"/><path d="M2575 466H2810V492" fill="none" stroke="#7e91a9" stroke-width="3.2" marker-end="url(#arrow)"/>
+
+  <g filter="url(#shadow)"><rect x="1855" y="500" width="360" height="220" rx="17" fill="#fff" stroke="#66b8ad" stroke-width="2.2"/><rect x="2230" y="500" width="360" height="220" rx="17" fill="#fff" stroke="#d7a14a" stroke-width="2.2"/><rect x="2605" y="500" width="360" height="220" rx="17" fill="#fff" stroke="#b9a57e" stroke-width="2.2"/></g>
+  <rect x="1877" y="521" width="88" height="30" rx="15" fill="#e7f7f4"/><text x="1921" y="542" text-anchor="middle" font-size="13" font-weight="900" fill="#087c70">F · FACT</text>
+  <text x="1877" y="585" class="branch-title">Agent 查证事实</text><text x="1877" y="617" class="branch-text">代码、配置、接口、测试、契约</text><text x="1877" y="646" class="branch-text">记录范围、时效性和置信度</text>
+  <line x1="1877" y1="670" x2="2192" y2="670" stroke="#b9d8d3" stroke-dasharray="6 5"/><text x="1877" y="698" class="branch-output" fill="#087c70">Confirmed Fact / Evidence Gap</text>
+
+  <rect x="2252" y="521" width="116" height="30" rx="15" fill="#fff3d9"/><text x="2310" y="542" text-anchor="middle" font-size="13" font-weight="900" fill="#a56400">D · DECISION</text>
+  <text x="2252" y="585" class="branch-title">Owner 做语义与取舍决策</text><text x="2252" y="617" class="branch-text">一次一个问题 + 互斥选项</text><text x="2252" y="646" class="branch-text">记录选择、条件、例外和 Owner</text>
+  <line x1="2252" y1="670" x2="2567" y2="670" stroke="#e0c487" stroke-dasharray="6 5"/><text x="2252" y="698" class="branch-output" fill="#a56400">Resolved Decision / Open Decision</text>
+
+  <rect x="2627" y="521" width="116" height="30" rx="15" fill="#f6f0e6"/><text x="2685" y="542" text-anchor="middle" font-size="13" font-weight="900" fill="#73582d">U · UNKNOWN</text>
+  <text x="2627" y="585" class="branch-title">显式记录未知</text><text x="2627" y="617" class="branch-text">缺少什么证据或决策权限</text><text x="2627" y="646" class="branch-text">Owner、阻塞状态与关闭条件</text>
+  <line x1="2627" y1="670" x2="2942" y2="670" stroke="#d7c9ae" stroke-dasharray="6 5"/><text x="2627" y="698" class="branch-output" fill="#73582d">Residual Unknown / Reclassify Later</text>
+
+  <path d="M2035 720V750H2575" fill="none" stroke="#7e91a9" stroke-width="3.2"/><path d="M2410 720V750" fill="none" stroke="#7e91a9" stroke-width="3.2"/><path d="M2785 720V750H2575" fill="none" stroke="#7e91a9" stroke-width="3.2"/><path class="connector" d="M2575 750V770"/>
+  <path d="M2575 750H2158V943H2175" fill="none" stroke="#7e91a9" stroke-width="2.7" stroke-dasharray="9 7" marker-end="url(#arrow)"/>
+  <rect x="2250" y="734" width="250" height="30" rx="15" fill="#f7f9fc" stroke="#c8d3e0"/><text x="2375" y="754" text-anchor="middle" font-size="12.5" font-weight="800" fill="#617188">低风险 / 直接证据：跳过挑战</text>
+  <g filter="url(#shadow)"><rect class="node node-violet" x="2185" y="778" width="780" height="92" rx="17"/></g>
+  <circle cx="2225" cy="824" r="21" fill="#6948bd"/><text x="2225" y="825" class="step-code">07</text>
+  <text x="2262" y="817" class="title" fill="#3d2a72">关键答案闭环检查（按风险触发）</text><text x="2262" y="846" class="detail">答案匹配 · 复用 D3 反例 · 证据充分性 · 新假设 · 仅检查增量</text>
+  <path class="connector" d="M2575 870V892"/>
+
+  <g filter="url(#shadow)"><rect class="node node-violet" x="2185" y="900" width="780" height="86" rx="17"/></g>
+  <circle cx="2225" cy="943" r="21" fill="#6948bd"/><text x="2225" y="944" class="step-code">08</text>
+  <text x="2262" y="937" class="title" fill="#3d2a72">更新决策树与探索空间</text><text x="2262" y="965" class="detail">解决 · 拆分 · 失效 · 重分类 · 新假设触发局部 Discovery</text>
+  <path class="connector" d="M2575 986V1006"/>
+
+  <g filter="url(#shadow)"><polygon points="2575,1014 2970,1070 2575,1126 2180,1070" fill="#f1edff" stroke="#9a82d9" stroke-width="2.2"/></g>
+  <circle cx="2310" cy="1070" r="20" fill="#6948bd"/><text x="2310" y="1071" class="step-code">09</text>
+  <text x="2615" y="1062" text-anchor="middle" font-size="19" font-weight="850" fill="#3d2a72">仍有可处理的阻塞前沿问题？</text><text x="2615" y="1090" text-anchor="middle" class="detail">每轮回答后重新计算，不沿用旧问题列表</text>
+  <path d="M2180 1070H1845V335H2250V265" fill="none" stroke="#2468cf" stroke-width="3.4" stroke-dasharray="10 7" marker-end="url(#arrowBlue)"/>
+  <rect x="1860" y="1022" width="178" height="32" rx="16" fill="#eaf2ff" stroke="#b6cef0"/><text x="1949" y="1044" text-anchor="middle" font-size="13" font-weight="850" fill="#2468cf">是：返回主步骤 05</text>
+  <path d="M2970 1070H3025V530H3080" fill="none" stroke="#b63e3e" stroke-width="3.4" marker-end="url(#arrowRed)"/>
+  <rect x="2980" y="1025" width="50" height="28" rx="14" fill="#fff0f0"/><text x="3005" y="1045" text-anchor="middle" font-size="12" font-weight="850" fill="#b63e3e">否</text>
+
+  <circle cx="3088" cy="315" r="24" fill="#b63e3e"/><text x="3088" y="316" class="stage-code">C</text>
+  <text x="3126" y="315" class="stage-label">阶段 C · 问题固化与准出</text><text x="3126" y="339" class="stage-sub">将已证实的缺陷、缺口和风险转为可追溯的 Gate 结论</text>
+  <g filter="url(#shadow)"><rect class="node node-red" x="3080" y="390" width="850" height="96" rx="17"/></g>
+  <circle cx="3122" cy="438" r="22" fill="#b63e3e"/><text x="3122" y="439" class="step-code">10</text>
+  <text x="3159" y="430" class="title" fill="#832f2f">生成正式 Finding</text><text x="3159" y="459" class="detail">问题对象 + 质量属性 + 证据 + 推理 + 反例 + 影响 + 所需解决项</text>
+  <path class="connector" d="M3505 486V512"/>
+
+  <g filter="url(#shadow)"><polygon points="3505,520 3910,600 3505,680 3100,600" fill="#fff0f0" stroke="#d98c8c" stroke-width="2.4"/></g>
+  <circle cx="3230" cy="600" r="21" fill="#b63e3e"/><text x="3230" y="601" class="step-code">11</text>
+  <text x="3545" y="592" text-anchor="middle" font-size="22" font-weight="900" fill="#832f2f">Gate 准出判定</text><text x="3545" y="622" text-anchor="middle" class="detail">阻塞决策 · 未证实关键假设 · 验收缺口 · 残留风险</text>
+  <path d="M3100 600H3180V748" fill="none" stroke="#257849" stroke-width="3.4" marker-end="url(#arrow)"/><path d="M3505 680V748" fill="none" stroke="#a56400" stroke-width="3.4" marker-end="url(#arrow)"/><path d="M3910 600H3830V748" fill="none" stroke="#b63e3e" stroke-width="3.4" marker-end="url(#arrowRed)"/>
+  <g filter="url(#shadow)"><rect x="3080" y="758" width="250" height="92" rx="18" fill="#e9f7ef" stroke="#64a47e" stroke-width="2"/><rect x="3355" y="758" width="300" height="92" rx="18" fill="#fff3d9" stroke="#d7a14a" stroke-width="2"/><rect x="3680" y="758" width="250" height="92" rx="18" fill="#fff0f0" stroke="#d98c8c" stroke-width="2"/></g>
+  <text x="3205" y="796" text-anchor="middle" font-size="21" font-weight="900" fill="#257849">PASS</text><text x="3205" y="825" text-anchor="middle" font-size="13" fill="#257849">无阻塞问题或关键假设</text>
+  <text x="3505" y="796" text-anchor="middle" font-size="18" font-weight="900" fill="#8f5900">CONDITIONAL PASS</text><text x="3505" y="825" text-anchor="middle" font-size="13" fill="#8f5900">未知有 Owner 和关闭条件</text>
+  <text x="3805" y="796" text-anchor="middle" font-size="21" font-weight="900" fill="#b63e3e">BLOCK</text><text x="3805" y="825" text-anchor="middle" font-size="13" fill="#b63e3e">存在阻塞性风险或缺口</text>
+
+  <rect x="3075" y="895" width="860" height="58" rx="16" fill="#f7f9fc" stroke="#d7e1ed"/>
+  <circle cx="3110" cy="924" r="17" fill="#2468cf"/><text x="3110" y="925" class="step-code">01</text><text x="3138" y="930" font-size="14" font-weight="700" fill="#52657d">主步骤</text>
+  <rect x="3260" y="910" width="46" height="28" rx="14" fill="#eaf2ff"/><text x="3283" y="925" class="sub-code">D1</text><text x="3318" y="930" font-size="14" font-weight="700" fill="#52657d">Discovery 子步骤</text>
+  <rect x="3525" y="910" width="86" height="28" rx="14" fill="#fff3d9"/><text x="3568" y="930" text-anchor="middle" font-size="12" font-weight="900" fill="#a56400">D · DECISION</text><text x="3625" y="930" font-size="14" font-weight="700" fill="#52657d">处理分支</text>
+  <!-- 风险模式库与步骤 03 同行，置于其左侧；D1 提供召回锚点，知识只在 D3 合流 -->
+  <path class="knowledge-link" d="M782 500V900"/>
+  <rect x="708" y="846" width="148" height="28" rx="14" fill="#fff8e9" stroke="#e1b76f"/><text x="782" y="865" class="knowledge-port">D1 锚点独立召回</text>
+  <path class="knowledge-link" d="M1000 910V880H1765V520H1331V501"/>
+  <rect x="1360" y="864" width="318" height="30" rx="15" fill="#fff8e9" stroke="#e1b76f"/><text x="1519" y="884" class="knowledge-port">只补充已知模式，不限定 D2 开放扫描</text>
+
+  <g filter="url(#shadow)">
+    <rect class="knowledge-node" x="630" y="910" width="440" height="112" rx="18"/>
+  </g>
+  <circle cx="670" cy="950" r="22" fill="#bf7a16"/>
+  <text x="670" y="951" class="stage-code">K</text>
+  <text x="707" y="949" class="knowledge-title">已审核风险模式库</text>
+  <text x="707" y="979" class="knowledge-detail">由 D1 锚点独立召回</text>
+  <text x="707" y="1004" class="knowledge-detail">只增加候选，未命中不代表无风险</text>
+</svg>
+
+
+
+

@@ -1,0 +1,14 @@
+interface:
+  display_name: Universal Converge
+  short_description: Verify delivery evidence against accepted intent
+  default_prompt: Use $universal-converge to verify whether this implementation satisfies
+    its accepted product and engineering intent.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

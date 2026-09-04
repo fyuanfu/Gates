@@ -116,6 +116,7 @@ docs: simplify verification traceability model [DR-0001]
 |---|---|---|---|
 | [DR-0001](./DR-0001-verification-obligation-not-first-class.md) | Verification Obligation 不作为 V1 一等追溯对象 | Accepted | 2026-08-25 |
 | [DR-0002](./DR-0002-task-story-and-implementation-coverage.md) | Task 以 Story 为主归属，并用 Requirement Coverage Review 保证实现完整性 | Accepted | 2026-08-25 |
+| [DR-0003](./DR-0003-universal-converge-gate.md) | 引入 Universal Converge 实现收敛门禁 | Accepted | 2026-09-04 |
 
 ## 7. 历史补录策略
 

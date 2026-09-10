@@ -1,0 +1,233 @@
+{
+  "type": "object",
+  "properties": {
+    "inventory": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "line": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "path",
+              "line"
+            ],
+            "additionalProperties": false
+          },
+          "behavior": {
+            "type": "string",
+            "minLength": 1
+          },
+          "observable_results": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "required": [
+          "id",
+          "source",
+          "behavior",
+          "observable_results"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "documents_reviewed": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "stages_completed": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "coverage",
+          "clarity_verifiability",
+          "consistency",
+          "confirmation"
+        ]
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "MISSING",
+              "AMBIGUOUS",
+              "INCONSISTENT",
+              "UNVERIFIABLE"
+            ]
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "P0",
+              "P1",
+              "P2",
+              "P3"
+            ]
+          },
+          "confirmation_status": {
+            "type": "string",
+            "enum": [
+              "confirmed",
+              "pending",
+              "rejected"
+            ]
+          },
+          "subject": {
+            "type": "string",
+            "minLength": 1
+          },
+          "claim": {
+            "type": "string",
+            "minLength": 1
+          },
+          "impact": {
+            "type": "string",
+            "minLength": 1
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "quote": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "path",
+                "line",
+                "quote"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1
+          },
+          "counter_evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "quote": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "path",
+                "line",
+                "quote"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "search_log": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "query": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "result": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "path",
+                "query",
+                "result"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1
+          },
+          "resolution_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "severity",
+          "confirmation_status",
+          "subject",
+          "claim",
+          "impact",
+          "question",
+          "evidence",
+          "counter_evidence",
+          "search_log",
+          "resolution_reason"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "inventory",
+    "documents_reviewed",
+    "stages_completed",
+    "findings"
+  ],
+  "additionalProperties": false
+}

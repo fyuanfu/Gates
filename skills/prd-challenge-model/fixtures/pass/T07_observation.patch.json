@@ -1,0 +1,5 @@
+{
+  "observations": [{"id": "O-0001", "title": "术语大小写不一致", "description": "不改变行为、实现或验证结果。", "requirement_ids": ["R-001-0001"], "evidence": [{"artifact_id": "A-001", "requirement_id": "R-001-0001", "source_path": "fixture/prd.md", "section": "1", "quote": "服务端确认持久化后显示上传完成。"}]}],
+  "summary": {"finding_count": 0, "blocking_finding_count": 0, "observation_count": 1, "open_question_count": 0, "severity_counts": {"P0": 0, "P1": 0, "P2": 0, "P3": 0}}
+}
+

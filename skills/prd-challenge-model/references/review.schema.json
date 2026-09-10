@@ -1,0 +1,342 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/prd-challenge-model/review.schema.json",
+  "title": "PRD Challenge Model Review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "review_id",
+    "review_status",
+    "verdict",
+    "verdict_reasons",
+    "summary",
+    "artifacts",
+    "requirements",
+    "review_slices",
+    "critical_decisions",
+    "findings",
+    "observations",
+    "open_questions",
+    "coverage",
+    "execution_issues",
+    "metrics"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "review_id": {"type": "string", "pattern": "^REV-[0-9]{8}-[0-9]{6}$"},
+    "review_status": {"enum": ["COMPLETED", "INCOMPLETE"]},
+    "verdict": {"enum": ["review_passed", "review_failed", "review_incomplete"]},
+    "verdict_reasons": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "summary": {"$ref": "#/$defs/summary"},
+    "artifacts": {"type": "array", "items": {"$ref": "#/$defs/artifact"}},
+    "requirements": {"type": "array", "items": {"$ref": "#/$defs/requirement"}},
+    "review_slices": {"type": "array", "items": {"$ref": "#/$defs/review_slice"}},
+    "critical_decisions": {"type": "array", "items": {"$ref": "#/$defs/critical_decision"}},
+    "findings": {"type": "array", "items": {"$ref": "#/$defs/finding"}},
+    "observations": {"type": "array", "items": {"$ref": "#/$defs/observation"}},
+    "open_questions": {"type": "array", "items": {"$ref": "#/$defs/open_question"}},
+    "coverage": {"$ref": "#/$defs/coverage"},
+    "execution_issues": {"type": "array", "items": {"$ref": "#/$defs/execution_issue"}},
+    "metrics": {"$ref": "#/$defs/metrics"}
+  },
+  "$defs": {
+    "non_empty_string": {"type": "string", "minLength": 1},
+    "artifact_id": {"type": "string", "pattern": "^A-[0-9]{3}$"},
+    "requirement_id": {"type": "string", "pattern": "^R-[0-9]{3}-[0-9]{4}$"},
+    "slice_id": {"type": "string", "pattern": "^S-(BEH|RULE|CON|NFR)-[0-9]{3}$"},
+    "artifact_type": {
+      "enum": ["PRD", "USER_STORY", "AC", "UX", "BUSINESS_RULE", "STATE", "CONSTRAINT", "NFR", "EXISTING_BEHAVIOR", "RISK_PATTERN", "OTHER_REQUIREMENT"]
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["finding_count", "blocking_finding_count", "observation_count", "open_question_count", "severity_counts"],
+      "properties": {
+        "finding_count": {"type": "integer", "minimum": 0},
+        "blocking_finding_count": {"type": "integer", "minimum": 0},
+        "observation_count": {"type": "integer", "minimum": 0},
+        "open_question_count": {"type": "integer", "minimum": 0},
+        "severity_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["P0", "P1", "P2", "P3"],
+          "properties": {
+            "P0": {"type": "integer", "minimum": 0},
+            "P1": {"type": "integer", "minimum": 0},
+            "P2": {"type": "integer", "minimum": 0},
+            "P3": {"type": "integer", "minimum": 0}
+          }
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "path", "type", "authority", "required", "parse_status", "parse_error"],
+      "properties": {
+        "id": {"$ref": "#/$defs/artifact_id"},
+        "path": {"$ref": "#/$defs/non_empty_string"},
+        "type": {"$ref": "#/$defs/artifact_type"},
+        "authority": {"enum": ["PRIMARY", "SUPPORTING", "CONTEXT"]},
+        "required": {"type": "boolean"},
+        "parse_status": {"enum": ["PARSED", "FAILED"]},
+        "parse_error": {"type": ["string", "null"]}
+      }
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "artifact_id", "source_requirement_id", "section", "source_order", "type", "title", "text", "coverage_status", "exclusion_reason"],
+      "properties": {
+        "id": {"$ref": "#/$defs/requirement_id"},
+        "artifact_id": {"$ref": "#/$defs/artifact_id"},
+        "source_requirement_id": {"type": ["string", "null"]},
+        "section": {"type": "string"},
+        "source_order": {"type": "integer", "minimum": 1},
+        "type": {"$ref": "#/$defs/artifact_type"},
+        "title": {"$ref": "#/$defs/non_empty_string"},
+        "text": {"$ref": "#/$defs/non_empty_string"},
+        "coverage_status": {"enum": ["ASSIGNED_TO_SLICE", "STANDALONE_REVIEW", "EXCLUDED_WITH_REASON", "UNASSIGNED"]},
+        "exclusion_reason": {"type": ["string", "null"], "enum": [null, "OUT_OF_SCOPE_TECHNICAL", "DUPLICATE_SOURCE", "SUPERSEDED", "NON_REQUIREMENT_CONTENT", "USER_EXCLUDED"]}
+      }
+    },
+    "measurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["condition_defined", "start_point_defined", "end_point_defined", "threshold_defined", "environment_defined"],
+      "properties": {
+        "condition_defined": {"type": "boolean"},
+        "start_point_defined": {"type": "boolean"},
+        "end_point_defined": {"type": "boolean"},
+        "threshold_defined": {"type": "boolean"},
+        "environment_defined": {"type": "boolean"}
+      }
+    },
+    "testability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["trigger_determinable", "precondition_constructible", "outcome_observable", "oracle_deterministic", "measurement"],
+      "properties": {
+        "trigger_determinable": {"type": "boolean"},
+        "precondition_constructible": {"type": "boolean"},
+        "outcome_observable": {"type": "boolean"},
+        "oracle_deterministic": {"type": "boolean"},
+        "measurement": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/measurement"}]}
+      }
+    },
+    "review_slice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "title", "goal_or_rule", "requirement_ids", "cross_slice_ids", "integrity_status", "fast_scan_done", "minimal_challenge", "deep_challenge_status", "risk_signals", "testability"],
+      "properties": {
+        "id": {"$ref": "#/$defs/slice_id"},
+        "type": {"enum": ["BEHAVIOR", "BUSINESS_RULE", "CONSTRAINT", "NFR"]},
+        "title": {"$ref": "#/$defs/non_empty_string"},
+        "goal_or_rule": {"$ref": "#/$defs/non_empty_string"},
+        "requirement_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/requirement_id"}},
+        "cross_slice_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/slice_id"}},
+        "integrity_status": {"enum": ["VALID", "MERGE_REQUIRED", "SPLIT_REQUIRED", "CROSS_SLICE_RELATION_REQUIRED"]},
+        "fast_scan_done": {"type": "boolean"},
+        "minimal_challenge": {"enum": ["NO_SUSPICION", "SUSPICIOUS", "NOT_RUN"]},
+        "deep_challenge_status": {"enum": ["DONE", "NOT_REQUIRED", "NOT_RUN"]},
+        "risk_signals": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"enum": ["ASYNC_OPERATION", "EXTERNAL_DEPENDENCY", "PERSISTENT_STATE", "DESTRUCTIVE_ACTION", "RETRY", "MULTI_STEP_OPERATION", "LIFECYCLE_CHANGE", "IDENTITY_CONTEXT_CHANGE", "CONCURRENCY", "REPEATED_ACTION", "USER_VISIBLE_SUCCESS_FAILURE", "LOAD_SENSITIVE", "ENVIRONMENT_SENSITIVE", "TIME_BOUND", "CAPACITY_BOUND", "AVAILABILITY_BOUND"]}
+        },
+        "testability": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/testability"}]}
+      }
+    },
+    "critical_decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "subject", "action", "property", "scope", "value", "requirement_ids"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^D-[0-9]{4}$"},
+        "subject": {"$ref": "#/$defs/non_empty_string"},
+        "action": {"$ref": "#/$defs/non_empty_string"},
+        "property": {"enum": ["STATE", "SUCCESS_DEFINITION", "FAILURE_DEFINITION", "PERMISSION", "OWNERSHIP", "DELETION_EFFECT", "PERSISTENCE", "RETRY", "DEFAULT", "DATA_EFFECT", "RECOVERY", "IDENTITY_SCOPE"]},
+        "scope": {"$ref": "#/$defs/non_empty_string"},
+        "value": {"type": ["string", "number", "boolean"]},
+        "requirement_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/requirement_id"}}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "requirement_id", "source_path", "section", "quote"],
+      "properties": {
+        "artifact_id": {"$ref": "#/$defs/artifact_id"},
+        "requirement_id": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/requirement_id"}]},
+        "source_path": {"$ref": "#/$defs/non_empty_string"},
+        "section": {"type": "string"},
+        "quote": {"$ref": "#/$defs/non_empty_string"}
+      }
+    },
+    "disproof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["executed", "scope", "outcome", "checked_requirement_ids", "summary"],
+      "properties": {
+        "executed": {"const": true},
+        "scope": {"enum": ["BASIC", "LOCAL", "TARGETED", "GLOBAL"]},
+        "outcome": {"const": "CONFIRMED"},
+        "checked_requirement_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/requirement_id"}},
+        "summary": {"$ref": "#/$defs/non_empty_string"}
+      }
+    },
+    "failure_witness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["given", "when", "then"],
+      "properties": {
+        "given": {"$ref": "#/$defs/non_empty_string"},
+        "when": {"$ref": "#/$defs/non_empty_string"},
+        "then": {"$ref": "#/$defs/non_empty_string"}
+      }
+    },
+    "statement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requirement_id", "meaning"],
+      "properties": {
+        "requirement_id": {"$ref": "#/$defs/requirement_id"},
+        "meaning": {"$ref": "#/$defs/non_empty_string"}
+      }
+    },
+    "contradiction_proof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["statement_a", "statement_b"],
+      "properties": {
+        "statement_a": {"$ref": "#/$defs/statement"},
+        "statement_b": {"$ref": "#/$defs/statement"}
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status", "severity", "quality_dimension", "defect_type", "consequence_types", "review_slice_ids", "requirement_ids", "title", "problem", "impact", "required_decision", "evidence", "testability", "detected_by", "disproof", "failure_witness", "contradiction_proof"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^F-[0-9]{4}$"},
+        "status": {"const": "CONFIRMED"},
+        "severity": {"enum": ["P0", "P1", "P2", "P3"]},
+        "quality_dimension": {"enum": ["COMPLETENESS", "CLARITY", "CONSISTENCY"]},
+        "defect_type": {"enum": ["MISSING", "AMBIGUOUS", "CONTRADICTORY"]},
+        "consequence_types": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["IMPLEMENTATION_UNCERTAINTY", "VERIFICATION_UNCERTAINTY", "BEHAVIORAL_CONTRADICTION", "USER_VISIBLE_FAILURE"]}},
+        "review_slice_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/slice_id"}},
+        "requirement_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/requirement_id"}},
+        "title": {"$ref": "#/$defs/non_empty_string"},
+        "problem": {"$ref": "#/$defs/non_empty_string"},
+        "impact": {"$ref": "#/$defs/non_empty_string"},
+        "required_decision": {"$ref": "#/$defs/non_empty_string"},
+        "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evidence"}},
+        "testability": {"$ref": "#/$defs/testability"},
+        "detected_by": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["QUALITY_SCAN", "TESTABILITY_PROBE", "MINIMAL_CHALLENGE", "LOCAL_CONSISTENCY", "GLOBAL_DECISION_GUARD", "DEEP_CHALLENGE", "RISK_PATTERN"]}},
+        "disproof": {"$ref": "#/$defs/disproof"},
+        "failure_witness": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/failure_witness"}]},
+        "contradiction_proof": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/contradiction_proof"}]}
+      }
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "description", "requirement_ids", "evidence"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^O-[0-9]{4}$"},
+        "title": {"$ref": "#/$defs/non_empty_string"},
+        "description": {"$ref": "#/$defs/non_empty_string"},
+        "requirement_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/requirement_id"}},
+        "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}}
+      }
+    },
+    "open_question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "question", "reason", "requirement_ids", "blocking", "requested_from"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^Q-[0-9]{4}$"},
+        "question": {"$ref": "#/$defs/non_empty_string"},
+        "reason": {"$ref": "#/$defs/non_empty_string"},
+        "requirement_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/requirement_id"}},
+        "blocking": {"type": "boolean"},
+        "requested_from": {"enum": ["PRODUCT", "UX", "BUSINESS", "REQUIREMENT_OWNER", "UNKNOWN"]}
+      }
+    },
+    "execution_issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "code", "message", "blocking", "artifact_ids", "requirement_ids"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^E-[0-9]{4}$"},
+        "code": {"enum": ["NO_REQUIREMENT_INPUT", "UNSUPPORTED_FORMAT", "ARTIFACT_PARSE_FAILED", "REQUIREMENT_UNASSIGNED", "SLICE_INTEGRITY_UNRESOLVED", "REQUIRED_STEP_MISSING", "CRITICAL_EVIDENCE_UNAVAILABLE", "CONTRACT_VALIDATION_FAILED", "RENDER_FAILED", "CONTEXT_CAPACITY_EXCEEDED", "PROMPT_INJECTION_IGNORED", "INTERNAL_EXECUTION_ERROR"]},
+        "message": {"$ref": "#/$defs/non_empty_string"},
+        "blocking": {"type": "boolean"},
+        "artifact_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/artifact_id"}},
+        "requirement_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/requirement_id"}}
+      }
+    },
+    "artifact_coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "parsed", "failed"],
+      "properties": {
+        "total": {"type": "integer", "minimum": 0},
+        "parsed": {"type": "integer", "minimum": 0},
+        "failed": {"type": "integer", "minimum": 0}
+      }
+    },
+    "requirement_coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "assigned", "standalone", "excluded", "unassigned"],
+      "properties": {
+        "total": {"type": "integer", "minimum": 0},
+        "assigned": {"type": "integer", "minimum": 0},
+        "standalone": {"type": "integer", "minimum": 0},
+        "excluded": {"type": "integer", "minimum": 0},
+        "unassigned": {"type": "integer", "minimum": 0}
+      }
+    },
+    "slice_coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "integrity_valid", "fast_scan_done", "minimal_challenge_done", "deep_challenge_done", "deep_challenge_not_required"],
+      "properties": {
+        "total": {"type": "integer", "minimum": 0},
+        "integrity_valid": {"type": "integer", "minimum": 0},
+        "fast_scan_done": {"type": "integer", "minimum": 0},
+        "minimal_challenge_done": {"type": "integer", "minimum": 0},
+        "deep_challenge_done": {"type": "integer", "minimum": 0},
+        "deep_challenge_not_required": {"type": "integer", "minimum": 0}
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifacts", "requirements", "review_slices", "critical_decision_guard_done", "completion_guard_done"],
+      "properties": {
+        "artifacts": {"$ref": "#/$defs/artifact_coverage"},
+        "requirements": {"$ref": "#/$defs/requirement_coverage"},
+        "review_slices": {"$ref": "#/$defs/slice_coverage"},
+        "critical_decision_guard_done": {"type": "boolean"},
+        "completion_guard_done": {"type": "boolean"}
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raw_candidate_count", "qualified_candidate_count", "confirmed_candidate_count", "rejected_candidate_count", "dropped_candidate_count", "deep_challenge_trigger_count", "review_slice_count"],
+      "properties": {
+        "raw_candidate_count": {"type": "integer", "minimum": 0},
+        "qualified_candidate_count": {"type": "integer", "minimum": 0},
+        "confirmed_candidate_count": {"type": "integer", "minimum": 0},
+        "rejected_candidate_count": {"type": "integer", "minimum": 0},
+        "dropped_candidate_count": {"type": "integer", "minimum": 0},
+        "deep_challenge_trigger_count": {"type": "integer", "minimum": 0},
+        "review_slice_count": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

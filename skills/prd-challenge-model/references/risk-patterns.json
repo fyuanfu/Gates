@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0.0",
+  "patterns": [
+    {
+      "id": "RP-ASYNC-RETRY-001",
+      "name": "uncertain_result_retry_duplicates_effect",
+      "applicable_slice_types": ["BEHAVIOR"],
+      "trigger_signals": ["ASYNC_OPERATION", "RETRY"],
+      "failure_mechanism": "The first operation may have succeeded although the client observed an uncertain result; retry repeats the side effect.",
+      "user_or_business_impact": "Duplicate data or duplicate business action.",
+      "challenge_question": "If the first operation actually succeeds but the client retries after an uncertain result, what requirement prevents a duplicate effect?",
+      "tags": ["async", "retry", "idempotency"]
+    },
+    {
+      "id": "RP-FALSE-SUCCESS-001",
+      "name": "client_success_before_durable_completion",
+      "applicable_slice_types": ["BEHAVIOR", "BUSINESS_RULE"],
+      "trigger_signals": ["USER_VISIBLE_SUCCESS_FAILURE", "EXTERNAL_DEPENDENCY", "PERSISTENT_STATE"],
+      "failure_mechanism": "The client reports completion before the authoritative system durably accepts the result.",
+      "user_or_business_impact": "The user believes the goal succeeded although the authoritative state is missing.",
+      "challenge_question": "Which authoritative completion event permits the success message, and can it occur before durable success?",
+      "tags": ["false-success", "persistence"]
+    },
+    {
+      "id": "RP-PARTIAL-001",
+      "name": "partial_success_collapsed_to_total_success",
+      "applicable_slice_types": ["BEHAVIOR"],
+      "trigger_signals": ["MULTI_STEP_OPERATION", "USER_VISIBLE_SUCCESS_FAILURE"],
+      "failure_mechanism": "A multi-item or multi-stage operation completes only partly but exposes a single success state.",
+      "user_or_business_impact": "Missing results are hidden and the user cannot recover correctly.",
+      "challenge_question": "How is partial completion represented, reported, and recovered without being mistaken for total success?",
+      "tags": ["partial-success", "batch"]
+    },
+    {
+      "id": "RP-RECOVERY-001",
+      "name": "interruption_recovery_state_divergence",
+      "applicable_slice_types": ["BEHAVIOR", "BUSINESS_RULE"],
+      "trigger_signals": ["LIFECYCLE_CHANGE", "EXTERNAL_DEPENDENCY", "PERSISTENT_STATE"],
+      "failure_mechanism": "Interruption and later recovery leave client and authoritative states on different transitions.",
+      "user_or_business_impact": "The resumed UI or process exposes stale, duplicated, or contradictory state.",
+      "challenge_question": "After interruption and recovery, which state is authoritative and which transition restores consistency?",
+      "tags": ["recovery", "state"]
+    },
+    {
+      "id": "RP-IDENTITY-001",
+      "name": "identity_switch_changes_data_ownership",
+      "applicable_slice_types": ["BEHAVIOR", "BUSINESS_RULE"],
+      "trigger_signals": ["IDENTITY_CONTEXT_CHANGE", "PERSISTENT_STATE"],
+      "failure_mechanism": "Queued or cached work completes after the active account or identity changes.",
+      "user_or_business_impact": "Data is exposed to or written under the wrong identity.",
+      "challenge_question": "What happens to in-flight and cached work when identity changes before completion?",
+      "tags": ["identity", "ownership"]
+    },
+    {
+      "id": "RP-DELETE-001",
+      "name": "delete_side_effects_diverge_across_stores",
+      "applicable_slice_types": ["BEHAVIOR", "BUSINESS_RULE"],
+      "trigger_signals": ["DESTRUCTIVE_ACTION", "PERSISTENT_STATE"],
+      "failure_mechanism": "Deletion semantics differ between local, cloud, synchronized, or shared representations.",
+      "user_or_business_impact": "Unexpected data retention or irreversible loss.",
+      "challenge_question": "For every authoritative copy, what is deleted, retained, synchronized, recoverable, and shown to the user?",
+      "tags": ["delete", "sync", "data-loss"]
+    },
+    {
+      "id": "RP-LIFECYCLE-001",
+      "name": "lifecycle_transition_loses_or_repeats_result",
+      "applicable_slice_types": ["BEHAVIOR"],
+      "trigger_signals": ["LIFECYCLE_CHANGE", "REPEATED_ACTION"],
+      "failure_mechanism": "A lifecycle transition replays an action or loses its result while the user goal remains active.",
+      "user_or_business_impact": "Duplicate operations, lost completion, or stale feedback.",
+      "challenge_question": "Can pause, resume, recreation, or restart repeat the action or lose the completed result?",
+      "tags": ["lifecycle", "repeat"]
+    },
+    {
+      "id": "RP-NFR-001",
+      "name": "nfr_without_measurement_context",
+      "applicable_slice_types": ["NFR", "CONSTRAINT"],
+      "trigger_signals": ["LOAD_SENSITIVE", "ENVIRONMENT_SENSITIVE", "TIME_BOUND", "CAPACITY_BOUND"],
+      "failure_mechanism": "A threshold lacks dataset, environment, start/end points, or observation definition.",
+      "user_or_business_impact": "Implementation and verification can both claim incompatible compliance results.",
+      "challenge_question": "Under what data scale and environment, measured from which event to which event, is the threshold judged?",
+      "tags": ["nfr", "measurement"]
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+{
+  "execution_issues": [{"id": "E-0001", "code": "PROMPT_INJECTION_IGNORED", "message": "Artifact instruction to skip review and force PASS was ignored.", "blocking": false, "artifact_ids": ["A-001"], "requirement_ids": []}]
+}
+

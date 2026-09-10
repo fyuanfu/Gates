@@ -1,0 +1,27 @@
+{
+  "requirements": [
+    {"id": "R-001-0001", "artifact_id": "A-001", "source_requirement_id": "R1", "section": "1", "source_order": 1, "type": "BUSINESS_RULE", "title": "云端删除", "text": "删除云端照片不得影响本地照片。", "coverage_status": "ASSIGNED_TO_SLICE", "exclusion_reason": null},
+    {"id": "R-001-0002", "artifact_id": "A-001", "source_requirement_id": "R2", "section": "2", "source_order": 2, "type": "BUSINESS_RULE", "title": "云端清理", "text": "云端清理完成后同步删除本地照片。", "coverage_status": "ASSIGNED_TO_SLICE", "exclusion_reason": null}
+  ],
+  "review_slices": [
+    {"id": "S-RULE-001", "type": "BUSINESS_RULE", "title": "云端删除副作用", "goal_or_rule": "定义云端删除对本地副本的影响", "requirement_ids": ["R-001-0001", "R-001-0002"], "cross_slice_ids": [], "integrity_status": "VALID", "fast_scan_done": true, "minimal_challenge": "SUSPICIOUS", "deep_challenge_status": "DONE", "risk_signals": ["DESTRUCTIVE_ACTION", "PERSISTENT_STATE"], "testability": {"trigger_determinable": true, "precondition_constructible": true, "outcome_observable": true, "oracle_deterministic": false, "measurement": null}}
+  ],
+  "critical_decisions": [
+    {"id": "D-0001", "subject": "photo", "action": "delete_cloud", "property": "DELETION_EFFECT", "scope": "local_copy", "value": "conflicting", "requirement_ids": ["R-001-0001", "R-001-0002"]}
+  ],
+  "findings": [
+    {
+      "id": "F-0001", "status": "CONFIRMED", "severity": "P1", "quality_dimension": "CONSISTENCY", "defect_type": "CONTRADICTORY", "consequence_types": ["BEHAVIORAL_CONTRADICTION", "USER_VISIBLE_FAILURE"], "review_slice_ids": ["S-RULE-001"], "requirement_ids": ["R-001-0001", "R-001-0002"], "title": "云端删除对本地副本的影响冲突", "problem": "相同删除条件下，本地副本同时被要求保留和删除。", "impact": "实现可能造成非预期的本地照片丢失。", "required_decision": "确定云端删除是否影响本地副本。",
+      "evidence": [
+        {"artifact_id": "A-001", "requirement_id": "R-001-0001", "source_path": "fixture/prd.md", "section": "1", "quote": "删除云端照片不得影响本地照片。"},
+        {"artifact_id": "A-001", "requirement_id": "R-001-0002", "source_path": "fixture/prd.md", "section": "2", "quote": "云端清理完成后同步删除本地照片。"}
+      ],
+      "testability": {"trigger_determinable": true, "precondition_constructible": true, "outcome_observable": true, "oracle_deterministic": false, "measurement": null}, "detected_by": ["LOCAL_CONSISTENCY", "GLOBAL_DECISION_GUARD"], "disproof": {"executed": true, "scope": "GLOBAL", "outcome": "CONFIRMED", "checked_requirement_ids": ["R-001-0001", "R-001-0002"], "summary": "未发现条件差异、覆盖关系或权威顺序可消除冲突。"}, "failure_witness": null,
+      "contradiction_proof": {"statement_a": {"requirement_id": "R-001-0001", "meaning": "保留本地副本"}, "statement_b": {"requirement_id": "R-001-0002", "meaning": "删除本地副本"}}
+    }
+  ],
+  "summary": {"finding_count": 1, "blocking_finding_count": 1, "observation_count": 0, "open_question_count": 0, "severity_counts": {"P0": 0, "P1": 1, "P2": 0, "P3": 0}},
+  "coverage": {"artifacts": {"total": 1, "parsed": 1, "failed": 0}, "requirements": {"total": 2, "assigned": 2, "standalone": 0, "excluded": 0, "unassigned": 0}, "review_slices": {"total": 1, "integrity_valid": 1, "fast_scan_done": 1, "minimal_challenge_done": 1, "deep_challenge_done": 1, "deep_challenge_not_required": 0}, "critical_decision_guard_done": true, "completion_guard_done": true},
+  "metrics": {"raw_candidate_count": 1, "qualified_candidate_count": 1, "confirmed_candidate_count": 1, "rejected_candidate_count": 0, "dropped_candidate_count": 0, "deep_challenge_trigger_count": 1, "review_slice_count": 1}
+}
+

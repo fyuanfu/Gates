@@ -1,0 +1,20 @@
+{
+  "review_slices": [
+    {"id": "S-BEH-001", "type": "BEHAVIOR", "title": "上传照片", "goal_or_rule": "用户将照片可靠上传到云端", "requirement_ids": ["R-001-0001"], "cross_slice_ids": [], "integrity_status": "VALID", "fast_scan_done": true, "minimal_challenge": "SUSPICIOUS", "deep_challenge_status": "DONE", "risk_signals": ["USER_VISIBLE_SUCCESS_FAILURE", "EXTERNAL_DEPENDENCY"], "testability": {"trigger_determinable": true, "precondition_constructible": true, "outcome_observable": false, "oracle_deterministic": false, "measurement": null}}
+  ],
+  "findings": [
+    {
+      "id": "F-0001", "status": "CONFIRMED", "severity": "P1", "quality_dimension": "CLARITY", "defect_type": "AMBIGUOUS",
+      "consequence_types": ["VERIFICATION_UNCERTAINTY", "USER_VISIBLE_FAILURE"], "review_slice_ids": ["S-BEH-001"], "requirement_ids": ["R-001-0001"],
+      "title": "上传成功判定不明确", "problem": "需求未说明客户端发送完成还是服务端持久化才算成功。", "impact": "界面可能显示成功但云端没有照片。", "required_decision": "明确唯一的业务成功事件。",
+      "evidence": [{"artifact_id": "A-001", "requirement_id": "R-001-0001", "source_path": "fixture/prd.md", "section": "1", "quote": "服务端确认持久化后显示上传完成。"}],
+      "testability": {"trigger_determinable": true, "precondition_constructible": true, "outcome_observable": false, "oracle_deterministic": false, "measurement": null},
+      "detected_by": ["MINIMAL_CHALLENGE", "DEEP_CHALLENGE"], "disproof": {"executed": true, "scope": "TARGETED", "outcome": "CONFIRMED", "checked_requirement_ids": ["R-001-0001"], "summary": "相关需求没有给出可排除错误成功的唯一完成事件。"},
+      "failure_witness": {"given": "用户上传照片", "when": "客户端请求完成但服务端尚未持久化", "then": "当前解释允许界面提前显示成功"}, "contradiction_proof": null
+    }
+  ],
+  "summary": {"finding_count": 1, "blocking_finding_count": 1, "observation_count": 0, "open_question_count": 0, "severity_counts": {"P0": 0, "P1": 1, "P2": 0, "P3": 0}},
+  "coverage": {"artifacts": {"total": 1, "parsed": 1, "failed": 0}, "requirements": {"total": 1, "assigned": 1, "standalone": 0, "excluded": 0, "unassigned": 0}, "review_slices": {"total": 1, "integrity_valid": 1, "fast_scan_done": 1, "minimal_challenge_done": 1, "deep_challenge_done": 1, "deep_challenge_not_required": 0}, "critical_decision_guard_done": true, "completion_guard_done": true},
+  "metrics": {"raw_candidate_count": 1, "qualified_candidate_count": 1, "confirmed_candidate_count": 1, "rejected_candidate_count": 0, "dropped_candidate_count": 0, "deep_challenge_trigger_count": 1, "review_slice_count": 1}
+}
+

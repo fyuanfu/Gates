@@ -1,0 +1,15 @@
+{
+  "cases": [
+    {"id": "T01", "file": "pass/T01_review_passed.json", "expected_verdict": "review_passed", "markdown_contains": "## Verdict"},
+    {"id": "T02", "file": "failed/T02_false_success.patch.json", "expected_verdict": "review_failed", "markdown_contains": "F-0001"},
+    {"id": "T03", "file": "failed/T03_contradiction.patch.json", "expected_verdict": "review_failed", "markdown_contains": "Contradiction Proof"},
+    {"id": "T04", "file": "incomplete/T04_parse_failure.patch.json", "expected_verdict": "review_incomplete", "markdown_contains": "ARTIFACT_PARSE_FAILED"},
+    {"id": "T05", "file": "incomplete/T05_unassigned.patch.json", "expected_verdict": "review_incomplete", "markdown_contains": "REQUIREMENT_UNASSIGNED"},
+    {"id": "T06", "file": "incomplete/T06_integrity.patch.json", "expected_verdict": "review_incomplete", "markdown_contains": "SLICE_INTEGRITY_UNRESOLVED"},
+    {"id": "T07", "file": "pass/T07_observation.patch.json", "expected_verdict": "review_passed", "markdown_contains": "O-0001"},
+    {"id": "T08", "file": "pass/T08_nfr_ambiguous.patch.json", "expected_verdict": "review_passed", "markdown_contains": "加载性能不可客观判定"},
+    {"id": "T09", "file": "pass/T09_rejected.patch.json", "expected_verdict": "review_passed", "markdown_contains": "无。"},
+    {"id": "T10", "file": "failed/T10_missing_witness_invalid.patch.json", "expected_error": "P0/P1 requires failure_witness or contradiction_proof"},
+    {"id": "T11", "file": "pass/T11_prompt_injection.patch.json", "expected_verdict": "review_passed", "markdown_contains": "PROMPT_INJECTION_IGNORED"}
+  ]
+}

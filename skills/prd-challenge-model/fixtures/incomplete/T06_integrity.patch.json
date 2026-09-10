@@ -1,0 +1,7 @@
+{
+  "review_status": "INCOMPLETE",
+  "review_slices": [{"id": "S-BEH-001", "type": "BEHAVIOR", "title": "上传照片", "goal_or_rule": "用户将照片可靠上传到云端", "requirement_ids": ["R-001-0001"], "cross_slice_ids": [], "integrity_status": "MERGE_REQUIRED", "fast_scan_done": false, "minimal_challenge": "NOT_RUN", "deep_challenge_status": "NOT_RUN", "risk_signals": [], "testability": null}],
+  "execution_issues": [{"id": "E-0001", "code": "SLICE_INTEGRITY_UNRESOLVED", "message": "A related Requirement still needs to be merged into the Slice.", "blocking": true, "artifact_ids": ["A-001"], "requirement_ids": ["R-001-0001"]}],
+  "coverage": {"artifacts": {"total": 1, "parsed": 1, "failed": 0}, "requirements": {"total": 1, "assigned": 1, "standalone": 0, "excluded": 0, "unassigned": 0}, "review_slices": {"total": 1, "integrity_valid": 0, "fast_scan_done": 0, "minimal_challenge_done": 0, "deep_challenge_done": 0, "deep_challenge_not_required": 0}, "critical_decision_guard_done": true, "completion_guard_done": true}
+}
+

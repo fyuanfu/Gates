@@ -162,13 +162,13 @@ Search in order: related requirements, same Slice, cross-Slice relations, Critic
 
 Disproof must also test scope: search for text that narrows the affected condition out of the current iteration or proves that the allegedly required behavior is intentionally excluded. If so, reject the candidate rather than silently expanding scope.
 
-Use this state machine:
+Use this state machine; the Scope Guard is a mandatory qualification check and does not introduce a new contract state:
 
 ```text
 DISCOVERED
-  -> SCOPE_GUARDED -> QUALIFIED -> CONFIRMED
-                                 -> REJECTED
-                                 -> NEEDS_CONTEXT
+  -> QUALIFIED -> CONFIRMED
+               -> REJECTED
+               -> NEEDS_CONTEXT
   -> OBSERVATION
   -> DROPPED
 ```

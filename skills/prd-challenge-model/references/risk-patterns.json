@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "2.0.0",
   "patterns": [
     {
       "id": "RP-ASYNC-RETRY-001",
@@ -80,6 +80,36 @@
       "user_or_business_impact": "Implementation and verification can both claim incompatible compliance results.",
       "challenge_question": "Under what data scale and environment, measured from which event to which event, is the threshold judged?",
       "tags": ["nfr", "measurement"]
+    },
+    {
+      "id": "RP-DATA-EFFECT-001",
+      "name": "data_effect_undefined_across_representations",
+      "applicable_slice_types": ["BEHAVIOR", "BUSINESS_RULE"],
+      "trigger_signals": ["DATA_MUTATION", "PERSISTENT_STATE"],
+      "failure_mechanism": "A mutation defines the primary result but leaves cached, synchronized, shared, or derived representations unspecified.",
+      "user_or_business_impact": "Users observe stale, duplicated, exposed, or irreversibly lost data.",
+      "challenge_question": "Within the approved operation, which representations change, remain unchanged, become stale, or can be recovered?",
+      "tags": ["data-effect", "cache", "sync"]
+    },
+    {
+      "id": "RP-PERMISSION-001",
+      "name": "permission_denial_or_revocation_has_no_behavior",
+      "applicable_slice_types": ["BEHAVIOR", "BUSINESS_RULE"],
+      "trigger_signals": ["PERMISSION_BOUNDARY"],
+      "failure_mechanism": "The required permission is denied, partially granted, or revoked while the behavior remains reachable.",
+      "user_or_business_impact": "The feature fails silently, exposes misleading success, or accesses data outside user consent.",
+      "challenge_question": "What user-visible state applies when the in-scope permission is denied, partial, or revoked before completion?",
+      "tags": ["permission", "privacy", "failure"]
+    },
+    {
+      "id": "RP-CONCURRENCY-001",
+      "name": "concurrent_actions_break_single_operation_rules",
+      "applicable_slice_types": ["BEHAVIOR", "BUSINESS_RULE"],
+      "trigger_signals": ["CONCURRENCY", "REPEATED_ACTION"],
+      "failure_mechanism": "Two in-scope actions overlap and apply incompatible transitions or duplicate a non-repeatable effect.",
+      "user_or_business_impact": "The final state depends on timing and can include duplication, overwrite, or contradictory feedback.",
+      "challenge_question": "If two allowed actions overlap, which ordering and final state does the requirement authorize?",
+      "tags": ["concurrency", "ordering", "state"]
     }
   ]
 }

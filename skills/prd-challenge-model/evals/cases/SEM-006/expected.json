@@ -1,0 +1,14 @@
+{
+  "case_id": "SEM-006",
+  "expected_verdict": "review_passed",
+  "must_find": [
+    {
+      "source_requirement_id": "AC-UNLINKED-01",
+      "defect_type": "MISSING",
+      "consequence_type": "IMPLEMENTATION_UNCERTAINTY",
+      "minimum_severity": "P2",
+      "text_pattern": "依据|对应|孤儿|未关联"
+    }
+  ],
+  "must_not_find": []
+}

@@ -1,0 +1,9 @@
+{
+  "case_id": "SEM-007",
+  "expected_verdict": "review_passed",
+  "must_find": [],
+  "must_not_find": [
+    {"source_requirement_id": "RULE-FAV-01", "text_pattern": "孤儿|未关联|没有.*行为"}
+  ],
+  "maximum_finding_count": 0
+}

@@ -1,0 +1,9 @@
+{
+  "case_id": "SEM-010",
+  "expected_verdict": "review_passed",
+  "must_find": [],
+  "must_not_find": [
+    {"text_pattern": "自动备份|后台自动上传|跨设备同步"}
+  ],
+  "maximum_finding_count": 0
+}

@@ -22,7 +22,7 @@ Use P0 only when supplied evidence establishes both extraordinary impact and a c
 - major privacy, security, financial, or regulated-data exposure;
 - unrecoverable failure of a business-critical capability at broad scope.
 
-Irreversibility alone does not make an issue P0. Accidental deletion of one ordinary user item, without evidence of broader scale or exceptional criticality, is normally P1 because it is a serious user-goal failure but not yet a catastrophic incident. If scale or criticality is unknown, retain the supported severity and ask a separate non-blocking question; do not speculate upward.
+Irreversibility alone does not make an issue P0. Accidental deletion of one ordinary user item, without evidence of broader scale or exceptional criticality, is normally P1 because it is a serious user-goal failure but not yet a catastrophic incident. If scale or criticality is unknown, retain the supported severity and ask a separate question; do not speculate upward. Questions never change a completed review to `review_incomplete`; only blocking execution issues do.
 
 ## Confirmation evidence
 

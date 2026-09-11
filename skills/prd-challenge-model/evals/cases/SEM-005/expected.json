@@ -1,0 +1,14 @@
+{
+  "case_id": "SEM-005",
+  "expected_verdict": "review_passed",
+  "must_find": [
+    {
+      "source_requirement_id": "RQ-UNDO-01",
+      "defect_type": "MISSING",
+      "consequence_type": "VERIFICATION_UNCERTAINTY",
+      "minimum_severity": "P2",
+      "text_pattern": "验收|验证|判定"
+    }
+  ],
+  "must_not_find": []
+}

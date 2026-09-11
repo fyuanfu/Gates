@@ -1,0 +1,14 @@
+{
+  "case_id": "SEM-008",
+  "expected_verdict": "review_passed",
+  "must_find": [
+    {
+      "source_requirement_id": "RQ-CAMERA-01",
+      "defect_type": "MISSING",
+      "consequence_type": "USER_VISIBLE_FAILURE",
+      "minimum_severity": "P2",
+      "text_pattern": "拒绝|撤销|权限"
+    }
+  ],
+  "must_not_find": []
+}

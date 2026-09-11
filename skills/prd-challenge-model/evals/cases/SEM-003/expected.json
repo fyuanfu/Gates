@@ -1,0 +1,9 @@
+{
+  "case_id": "SEM-003",
+  "expected_verdict": "review_passed",
+  "must_find": [],
+  "must_not_find": [
+    {"text_pattern": "成功.*不明确|oracle.*缺失|验收.*缺失"}
+  ],
+  "maximum_finding_count": 0
+}

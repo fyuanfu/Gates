@@ -1,38 +1,42 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "2.0.0",
+  "review_context": {
+    "skill_version": "2.0.0",
+    "scope_snapshot": {"iteration_goal": "Review manual photo upload", "included_sections": ["1"], "excluded_sections": []},
+    "input_fingerprint": "33f2ea02a07f30c5735447f53d35b394a24adda9cfd3ab4afcabc49fc62f24fd"
+  },
   "review_id": "REV-20260910-120000",
   "review_status": "COMPLETED",
   "verdict": "review_passed",
   "verdict_reasons": [],
-  "summary": {
-    "finding_count": 0,
-    "blocking_finding_count": 0,
-    "observation_count": 0,
-    "open_question_count": 0,
-    "severity_counts": {"P0": 0, "P1": 0, "P2": 0, "P3": 0}
-  },
+  "summary": {"finding_count": 0, "blocking_finding_count": 0, "observation_count": 0, "open_question_count": 0, "severity_counts": {"P0": 0, "P1": 0, "P2": 0, "P3": 0}},
   "artifacts": [
-    {"id": "A-001", "path": "fixture/prd.md", "type": "PRD", "authority": "PRIMARY", "required": true, "parse_status": "PARSED", "parse_error": null}
+    {"id": "A-001", "path": "fixture/prd.md", "type": "PRD", "authority": "PRIMARY", "required": true, "parse_status": "PARSED", "parse_error": null, "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "source_version": null}
   ],
   "requirements": [
     {"id": "R-001-0001", "artifact_id": "A-001", "source_requirement_id": "AC-1", "section": "1", "source_order": 1, "type": "AC", "title": "上传完成", "text": "服务端确认持久化后显示上传完成。", "coverage_status": "ASSIGNED_TO_SLICE", "exclusion_reason": null}
   ],
   "review_slices": [
     {
-      "id": "S-BEH-001",
-      "type": "BEHAVIOR",
-      "title": "上传照片",
-      "goal_or_rule": "用户将照片可靠上传到云端",
-      "requirement_ids": ["R-001-0001"],
-      "cross_slice_ids": [],
-      "integrity_status": "VALID",
-      "fast_scan_done": true,
-      "minimal_challenge": "NO_SUSPICION",
-      "deep_challenge_status": "NOT_REQUIRED",
-      "risk_signals": [],
-      "testability": {"trigger_determinable": true, "precondition_constructible": true, "outcome_observable": true, "oracle_deterministic": true, "measurement": null}
+      "id": "S-BEH-001", "type": "BEHAVIOR", "title": "上传照片", "goal_or_rule": "用户将照片可靠上传到云端",
+      "requirement_bindings": [{"requirement_id": "R-001-0001", "roles": ["DEFINES_BEHAVIOR", "VERIFIES_BEHAVIOR"]}],
+      "cross_slice_links": [], "traceability_exemption": null, "integrity_status": "VALID", "fast_scan_done": true,
+      "minimal_challenge": "NO_SUSPICION", "deep_challenge_status": "NOT_REQUIRED", "risk_signals": [],
+      "testability": {"trigger_determinable": true, "precondition_constructible": true, "outcome_observable": true, "oracle_deterministic": true, "measurement": null},
+      "behavior_coverage": [
+        {"dimension": "ACTOR", "status": "DEFINED", "requirement_ids": ["R-001-0001"], "rationale": "The reviewed behavior identifies the user context."},
+        {"dimension": "TRIGGER", "status": "DEFINED", "requirement_ids": ["R-001-0001"], "rationale": "Upload completion is tied to server confirmation."},
+        {"dimension": "PRECONDITION", "status": "DEFINED", "requirement_ids": ["R-001-0001"], "rationale": "An upload must be in progress before completion."},
+        {"dimension": "SUCCESS", "status": "DEFINED", "requirement_ids": ["R-001-0001"], "rationale": "Success requires server persistence confirmation."},
+        {"dimension": "FAILURE", "status": "DEFINED", "requirement_ids": ["R-001-0001"], "rationale": "Absence of server confirmation excludes success."},
+        {"dimension": "RECOVERY", "status": "NOT_APPLICABLE", "requirement_ids": [], "rationale": "This atomic completion criterion does not define a recovery workflow."},
+        {"dimension": "STATE", "status": "DEFINED", "requirement_ids": ["R-001-0001"], "rationale": "The completed state follows durable server confirmation."},
+        {"dimension": "FEEDBACK", "status": "DEFINED", "requirement_ids": ["R-001-0001"], "rationale": "The UI displays upload completion after success."}
+      ],
+      "verification": {"status": "COMPLETE", "basis": "EXPLICIT_SOURCE", "requirement_ids": ["R-001-0001"], "condition": "The server confirms durable persistence.", "expected_observable_result": "The UI displays upload completion.", "decision_rule": "Do not display completion before durable server confirmation.", "missing_elements": [], "rationale": "The source provides a deterministic success oracle."}
     }
   ],
+  "traceability": {"guard_done": true},
   "critical_decisions": [],
   "findings": [],
   "observations": [],
@@ -41,10 +45,11 @@
     "artifacts": {"total": 1, "parsed": 1, "failed": 0},
     "requirements": {"total": 1, "assigned": 1, "standalone": 0, "excluded": 0, "unassigned": 0},
     "review_slices": {"total": 1, "integrity_valid": 1, "fast_scan_done": 1, "minimal_challenge_done": 1, "deep_challenge_done": 0, "deep_challenge_not_required": 1},
+    "behavior_dimensions": {"total": 8, "defined": 7, "partial": 0, "missing": 0, "not_applicable": 1},
+    "verification": {"total": 1, "complete": 1, "partial": 0, "missing": 0, "not_applicable": 0},
     "critical_decision_guard_done": true,
     "completion_guard_done": true
   },
   "execution_issues": [],
   "metrics": {"raw_candidate_count": 0, "qualified_candidate_count": 0, "confirmed_candidate_count": 0, "rejected_candidate_count": 0, "dropped_candidate_count": 0, "deep_challenge_trigger_count": 0, "review_slice_count": 1}
 }
-

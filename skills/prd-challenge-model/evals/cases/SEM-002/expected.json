@@ -1,0 +1,14 @@
+{
+  "case_id": "SEM-002",
+  "expected_verdict": "review_passed",
+  "must_find": [
+    {
+      "source_requirement_id": "RQ-ORDER-01",
+      "defect_type": "MISSING",
+      "consequence_type": "IMPLEMENTATION_UNCERTAINTY",
+      "minimum_severity": "P2",
+      "text_pattern": "恢复|重试|失败后"
+    }
+  ],
+  "must_not_find": []
+}

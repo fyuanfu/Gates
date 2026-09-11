@@ -1,0 +1,14 @@
+{
+  "case_id": "SEM-004",
+  "expected_verdict": "review_failed",
+  "must_find": [
+    {
+      "source_requirement_id": "RQ-DOC-01",
+      "defect_type": "AMBIGUOUS",
+      "consequence_type": "IMPLEMENTATION_UNCERTAINTY",
+      "minimum_severity": "P1",
+      "text_pattern": "完成|成功定义"
+    }
+  ],
+  "must_not_find": []
+}

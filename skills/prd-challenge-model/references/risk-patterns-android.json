@@ -1,0 +1,60 @@
+{
+  "schema_version": "2.0.0",
+  "activation": {
+    "platform": "ANDROID",
+    "requires_explicit_platform_scope": true,
+    "requires_matching_risk_signal": true
+  },
+  "patterns": [
+    {
+      "id": "RP-ANDROID-PERMISSION-001",
+      "name": "android_permission_scope_changes_during_use",
+      "applicable_slice_types": ["BEHAVIOR"],
+      "trigger_signals": ["PERMISSION_BOUNDARY", "LIFECYCLE_CHANGE"],
+      "failure_mechanism": "Android permission scope can be denied, limited, or revoked while the user journey remains active.",
+      "user_or_business_impact": "The UI may expose unavailable media, misleading success, or a dead-end flow.",
+      "challenge_question": "For the approved Android permission dependency, what behavior applies after denial, limited access, or revocation?",
+      "tags": ["android", "permission", "privacy"]
+    },
+    {
+      "id": "RP-ANDROID-PROCESS-001",
+      "name": "process_recreation_loses_operation_state",
+      "applicable_slice_types": ["BEHAVIOR"],
+      "trigger_signals": ["LIFECYCLE_CHANGE", "PERSISTENT_STATE"],
+      "failure_mechanism": "The Android process is recreated while an in-scope user operation is pending or completed.",
+      "user_or_business_impact": "The operation is lost, repeated, or shown with stale status.",
+      "challenge_question": "When Android recreates the process during this in-scope journey, which user-visible state must be restored?",
+      "tags": ["android", "process-death", "state"]
+    },
+    {
+      "id": "RP-ANDROID-BACKGROUND-001",
+      "name": "background_restriction_interrupts_visible_goal",
+      "applicable_slice_types": ["BEHAVIOR"],
+      "trigger_signals": ["ASYNC_OPERATION", "LIFECYCLE_CHANGE", "AVAILABILITY_BOUND"],
+      "failure_mechanism": "The app leaves the foreground and the in-scope operation is delayed or stopped by platform constraints.",
+      "user_or_business_impact": "The user receives stale progress, false completion, or no recoverable next action.",
+      "challenge_question": "If the approved operation is interrupted after the app backgrounds, what status and recovery behavior is required?",
+      "tags": ["android", "background", "recovery"]
+    },
+    {
+      "id": "RP-ANDROID-CONFIG-001",
+      "name": "configuration_change_repeats_or_loses_action",
+      "applicable_slice_types": ["BEHAVIOR"],
+      "trigger_signals": ["LIFECYCLE_CHANGE", "REPEATED_ACTION"],
+      "failure_mechanism": "A configuration or window change recreates visible state while a non-repeatable action is active.",
+      "user_or_business_impact": "The action is duplicated, progress disappears, or feedback contradicts the authoritative result.",
+      "challenge_question": "During an in-scope configuration or window change, what state persists and what action must not repeat?",
+      "tags": ["android", "configuration", "multi-window"]
+    },
+    {
+      "id": "RP-ANDROID-PLATFORM-001",
+      "name": "declared_platform_partition_changes_behavior",
+      "applicable_slice_types": ["BEHAVIOR", "CONSTRAINT"],
+      "trigger_signals": ["ENVIRONMENT_SENSITIVE"],
+      "failure_mechanism": "A device, OS, or OEM partition already declared in scope produces materially different product behavior.",
+      "user_or_business_impact": "Supported users receive inconsistent behavior or cannot complete the committed journey.",
+      "challenge_question": "Across the Android partitions explicitly declared in scope, which behavior differences are allowed and which outcome must remain invariant?",
+      "tags": ["android", "os", "oem", "compatibility"]
+    }
+  ]
+}

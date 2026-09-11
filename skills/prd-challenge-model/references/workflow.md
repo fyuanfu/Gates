@@ -1,151 +1,145 @@
-# Review workflow
+# Review workflow · RGQ 2.0
 
 ## Contents
 
-1. Mission and scope
+1. Mission and boundaries
 2. Fixed pipeline
-3. Review Slice rules
-4. Fast scan
-5. Global decisions
-6. Challenge and qualification
-7. Disproof and candidate lifecycle
-8. Completion and delegation
+3. Indexing and Slice Integrity
+4. RGQ Fast Scan
+5. Global and Deep Challenge
+6. Qualification and disproof
+7. Traceability and completion
+8. Delegation and cost controls
 
-## Mission and scope
+## Mission and boundaries
 
-Find requirement defects that can propagate into implementation uncertainty, verification uncertainty, contradictory behavior, or user-visible failure. Do not score writing quality. Do not assess technical design or product strategy.
+Find requirement defects that can cause divergent implementation, non-deterministic verification, conflict with authoritative product behavior, or user-visible failure. Work only inside the approved product scope. Treat scope as an input boundary, not an object for value or priority review.
 
-The only Finding dimensions are `COMPLETENESS`, `CLARITY`, and `CONSISTENCY`. Testability is a probe that must resolve to one of those dimensions.
+Review only product behavior. Ignore technical implementation text except to classify it as non-requirement input. Never recommend architecture, APIs, storage, frameworks, jobs, or additional features.
+
+The only Finding dimensions are `COMPLETENESS`, `CLARITY`, and `CONSISTENCY`. Coverage, Verification, Robustness Challenge, and Traceability are detection activities whose candidates must resolve to one of those three dimensions.
 
 ## Fixed pipeline
 
-Execute all stages in this order:
+Execute in order:
 
-| Stage | Action | Required evidence of completion |
+| Stage | Output | Stop condition |
 |---|---|---|
-| P0 | Initialize run | Fresh output directory and normalized input |
-| P1 | Parse artifacts | Artifact parse status and errors |
-| P2 | Artifact Index | Stable IDs for every artifact |
-| P3 | Requirement Index | Atomic requirements with source order and quotes |
-| P4 | Review Slices | All reviewable requirements assigned or standalone |
-| P5 | Slice Integrity | Every Slice resolves to `VALID` |
-| P6 | Coverage Guard | No unassigned Requirement |
-| P7 | Unified Fast Scan | Four scans complete per Slice |
-| P8 | Global Critical Decision Guard | One global index complete |
-| P9 | Deep selection | Suspicion and deterministic signals recorded |
-| P10 | Deep Challenge | `DONE` or `NOT_REQUIRED` per Slice |
-| P11 | Consequence mapping | At least one consequence per retained candidate |
-| P12 | Cheap qualification | Scope/evidence checks complete |
-| P13 | Targeted disproof | Budget selected and executed |
-| P14 | Resolve candidate | Final candidate state |
-| P15 | Dedup and severity | One Finding per root cause |
-| P16 | Completion Guard | `COMPLETED` or `INCOMPLETE` |
-| P17 | Validate model | Pre-adjudication validation succeeds |
-| P18 | Adjudicate | Deterministic Verdict written |
-| P19 | Render Markdown | Human view generated from JSON |
-| P20 | Contract verification | Final JSON validation succeeds |
+| P1 | Invocation and scope snapshot | Boundary cannot be established |
+| P2 | Artifact hashes and input fingerprint | Required input inaccessible |
+| P3 | Artifact Index and parse results | Required parse failure |
+| P4 | Requirement Index | No product requirement input |
+| P5 | Typed Review Slices | Requirement cannot be assigned |
+| P6 | Slice Integrity | Merge/split/relation unresolved |
+| P7 | Behavior Coverage | Fast Scan cannot complete |
+| P8 | Clarity and local consistency | Fast Scan cannot complete |
+| P9 | Testability and Verification Profile | Fast Scan cannot complete |
+| P10 | Minimal Challenge | Any Slice not challenged |
+| P11 | Global Critical Decision Guard | Global guard cannot run |
+| P12 | Risk selection | Record only fired signals |
+| P13 | Conditional Deep Challenge | Required challenge not run |
+| P14 | Consequence mapping | Drop candidates without a permitted consequence |
+| P15 | Finding qualification | Drop enhancements, preferences, and guesses |
+| P16 | Disproof | Do not confirm unresolved candidates |
+| P17 | Candidate lifecycle | CONFIRMED / REJECTED / NEEDS_CONTEXT / OBSERVATION / DROPPED |
+| P18 | Traceability Guard | Guard cannot complete |
+| P19 | Deduplication and severity | Preserve strongest evidence and consequence |
+| P20 | Completion Guard | Any execution protection missing |
+| P21 | Canonical `review.json` | Schema or invariant failure |
+| P22 | Adjudicate, revalidate, render | Script failure |
 
-Add a blocking Execution Issue when a required stage cannot complete. Do not continue with a false success.
+An empty Findings array never proves that the pipeline completed.
 
-## Review Slice rules
+## Indexing and Slice Integrity
 
-Use four Slice types:
+Parse every supplied Artifact and calculate SHA-256 from exact bytes. Extract atomic product Requirements in source order without repairing missing behavior. Bind each assigned Requirement to exactly one primary Slice with one or more roles.
 
-### BEHAVIOR
+Build:
 
-Model Actor, Object, Trigger, Precondition, State, Success, Failure, Recovery, Dependency, and Feedback.
+- `BEHAVIOR`: actor, object, trigger, precondition, state, success, failure, recovery, dependency, and feedback belonging to one user/business behavior;
+- `BUSINESS_RULE`: authoritative permission, prohibition, calculation, ownership, default, retention, retry, or data-effect rule;
+- `CONSTRAINT`: product boundary or externally imposed product constraint;
+- `NFR`: measurable performance, stability, availability, security, privacy, capacity, or compatibility commitment.
 
-Minimal Challenge: "If implemented exactly as written, what is the smallest in-scope situation in which the user can still observe a wrong result?"
+Keep related Requirements together. Split independent behaviors. Use typed Cross-Slice links for Rules, Constraints, and NFRs consumed by a Behavior. Use a traceability exemption only when source text explicitly defines a global applicability scope.
 
-### BUSINESS_RULE
+## RGQ Fast Scan
 
-Model Condition, Scope, Exception, Conflict, and Observable Effect.
+Run the following exactly once per valid Slice.
 
-Minimal Challenge: "Is there a valid business situation in which this rule becomes contradictory, ambiguous, or impossible to apply?"
+### 1. Behavior Coverage
 
-### CONSTRAINT
+For each BEHAVIOR assess `ACTOR`, `TRIGGER`, `PRECONDITION`, `SUCCESS`, `FAILURE`, `RECOVERY`, `STATE`, and `FEEDBACK` as `DEFINED`, `PARTIAL`, `MISSING`, or `NOT_APPLICABLE`. Cite source or in-scope anchor Requirement IDs and give an auditable rationale.
 
-Model Applicability, Boundary, Exception, and Enforcement expectation.
+Do not assume every gap is a defect. Ask whether the missing or partial behavior permits materially different implementations, prevents deterministic verification, contradicts authoritative behavior, or exposes a wrong user result.
 
-Minimal Challenge: "Is there a boundary, exception, or scope interpretation that prevents unique enforcement?"
+### 2. Clarity and consistency
 
-### NFR
+Check ambiguous terms, conditions, quantities, ownership, state, ordering, exceptions, feedback, and metrics. Confirm AMBIGUOUS only when at least two reasonable product behaviors remain possible. Compare local actor/object/action/state/rule/result/term meanings within the Slice.
 
-Model Measurement Condition, Environment, Dataset scale, Start point, End point, Threshold, and Observable Result.
+### 3. Testability and Verification
 
-Minimal Challenge: "Is there a reasonable test condition under which satisfaction cannot be judged objectively?"
+Complete Testability booleans and the Verification Profile. Extract or normalize only source-determined condition, observable result, and decision rule. Mark missing elements rather than inventing an Oracle.
 
-### Slice Integrity
+For NFR/Constraint also assess Measurement Condition, Environment, Dataset scale, Start point, End point, Threshold, and Observable Result.
 
-Before review, detect requirements outside a Slice that share Actor, Object, State, Rule, Goal, Dependency, Outcome, or Constraint. Merge, split, or add a cross-Slice relation. The final `integrity_status` must be `VALID`.
+### 4. Minimal Challenge
 
-Every Requirement must be exactly one of:
+Ask one bounded question per Slice:
 
-- `ASSIGNED_TO_SLICE`
-- `STANDALONE_REVIEW`
-- `EXCLUDED_WITH_REASON`
+> If this requirement were implemented literally, what is the smallest in-scope condition that could still produce a materially wrong user or business result?
 
-Never leave `UNASSIGNED`. Exclusion requires one reason allowed by the contract.
+Set `NO_SUSPICION` only when no deterministic risk signal, semantic gap, or counterexample is found.
 
-## Unified Fast Scan
+## Global and Deep Challenge
 
-Run exactly once for every Slice:
+Build a Critical Decision Index using `subject + action + property + scope`. Compare state, success, failure, permission, ownership, deletion effect, persistence, retry, default, data effect, recovery, and identity scope across all authoritative inputs.
 
-1. **Quality Scan:** look for missing, ambiguous, or contradictory Trigger, Precondition, Behavior, Result, Rule, State, Boundary, Exception, Dependency, Feedback, Constraint, and measurement condition.
-2. **Testability Probe:** decide the fixed boolean fields from the contract. For NFR/Constraint, also complete Measurement.
-3. **Minimal Challenge:** set `NO_SUSPICION` or `SUSPICIOUS` using the Slice-specific question.
-4. **Local Consistency:** compare only related requirements clustered by Actor, Object, Action, State, Rule, Result, Term, Dependency, Goal, Constraint, or Metric.
+Run Deep Challenge only when Minimal Challenge is suspicious or a deterministic signal fires. Select only applicable families: state, timing, failure, recovery, dependency, boundary, partial success, repeated action, data effect, permission, identity, concurrency, or NFR measurement.
 
-Do not confirm Findings or assign final severity during Fast Scan.
+Read `risk-patterns.json` only after a matching signal fires. Read `risk-patterns-android.json` only when all are true:
 
-## Global Critical Decision Guard
+1. the supplied product scope explicitly identifies Android;
+2. the reviewed behavior includes the relevant platform dependency;
+3. a matching risk signal fires.
 
-Build a lightweight index keyed by `subject + action + property + scope`. Index at least state, success/failure definition, permission, ownership, deletion effect, persistence, retry, default, data effect, recovery, and identity scope. Generate a Consistency Candidate when the same key has mutually exclusive values.
+Use Android patterns to challenge product behavior after denial, interruption, or platform variation already in scope. Never convert them into implementation prescriptions or requests to support additional devices, OS versions, or OEMs.
 
-Do not build a full knowledge graph or compare every Requirement pair.
+Preserve one open challenge beyond historical patterns so the library does not limit exploration.
 
-## Deep Challenge
+## Qualification and disproof
 
-Run only when Minimal Challenge is `SUSPICIOUS` or a deterministic risk signal fires. Select only relevant families: State, Timing, Failure, Recovery, Dependency, Context, Boundary, Partial Success, Repeated Action, and Risk Pattern.
-
-A candidate remains in scope only if it affects the current goal, changes a defined state/result, is a natural failure/interruption, matches a risk pattern, conflicts with supplied behavior/rules, or prevents unique implementation/verification. Drop feature enhancements and speculative preferences.
-
-## Consequence and qualification
-
-Map every retained candidate to at least one contract consequence. Then require all of:
-
-- a Source Anchor;
-- current scope relevance;
-- an effect on defined behavior;
-- a real downstream consequence;
-- not a product enhancement;
-- not a technical preference;
-- not an unsupported guess.
-
-Candidates failing these checks become Observation or DROPPED.
-
-## Disproof and lifecycle
-
-Search in order: related requirements, same Slice, cross-Slice relations, Critical Decision Index, local evidence, then global authorized evidence when necessary. Actively try to show the candidate is false.
-
-Use this state machine:
+Keep a candidate only if it maps to one or more:
 
 ```text
-DISCOVERED
-  -> QUALIFIED -> CONFIRMED
-               -> REJECTED
-               -> NEEDS_CONTEXT
-  -> OBSERVATION
-  -> DROPPED
+IMPLEMENTATION_UNCERTAINTY
+VERIFICATION_UNCERTAINTY
+BEHAVIORAL_CONTRADICTION
+USER_VISIBLE_FAILURE
 ```
 
-Only CONFIRMED candidates become Findings. If disproof succeeds, use REJECTED rather than lowering severity. NEEDS_CONTEXT becomes an Open Question unless the missing decision itself proves a MISSING defect.
+Drop style comments, optional improvements, preferences, technical suggestions, new-feature proposals, or risks unsupported by the supplied scope.
 
-## Completion and delegation
+Before confirming every candidate, search for conditions, precedence, definitions, exclusions, later sections, global rules, or contextual evidence that resolves it. Use at least BASIC disproof for P3, LOCAL for P2, TARGETED for P1, and GLOBAL for P0. P0/P1 also requires a concrete Failure Witness or mutually exclusive Contradiction Proof.
 
-Set `INCOMPLETE` when a required artifact fails parsing, a Requirement is unassigned, integrity remains unresolved, a required stage is missing, critical evidence is unavailable, coverage arithmetic is inconsistent, the Global Guard is absent, a blocking issue/question exists, validation fails, or context capacity prevents full protection.
+When missing product information itself already makes implementation or verification indeterminate, confirm a MISSING Finding and optionally attach an answer-required Open Question. Do not change the run to `INCOMPLETE`.
 
-When delegating, the coordinator owns parsing, indexing, slicing, integrity, coverage, the Global Guard, deduplication, severity, completion, and Verdict. Delegate only Slice packets; never duplicate full-document review.
+## Traceability and completion
 
-The non-removable protections are Coverage Guard, Slice Integrity, Minimal Challenge for every Slice, Global Critical Decision Guard, P0/P1 disproof, P0/P1 witness/proof, source evidence for every Finding, Completion Guard, open challenge beyond patterns, and deterministic final validation/adjudication.
+After candidate resolution, run the Traceability Guard over typed relations. Derive, but do not persist, missing Behavior sources, orphan ACs, incomplete Behavior Verification, and unlinked supporting Slices. A derived gap is a candidate, not automatic proof of a defect.
 
+Set `INCOMPLETE` only for execution failure: missing/unreadable required input, unresolved boundary, unassigned Requirement, unresolved Slice Integrity, missing required scan/challenge/global/traceability stage, invalid evidence or fingerprint, context exhaustion, or failed validation/rendering. Every incomplete result needs a blocking Execution Issue.
+
+Questions discovered during a completed review never make the run incomplete. They must link to confirmed Findings when an answer is required.
+
+## Delegation and cost controls
+
+- At most 40 Requirements: use one agent.
+- 41–150: delegate only independent canonical Slice packets when subagents are available.
+- More than 150: batch by Slice while keeping one coordinator for indexing, global decisions, traceability, deduplication, completion, and Verdict.
+- Fall back to one agent without reducing baseline coverage.
+- Never ask multiple agents to reread the complete document.
+- Do not load Android patterns or Deep Challenge without matching signals.
+- Render only gaps and critical evidence in Markdown; keep the full matrix in JSON.
+
+The non-removable protections are Artifact fingerprinting, Requirement Coverage, Slice Integrity, eight-dimension Behavior Coverage, Verification Profile, Minimal Challenge, Global Critical Decision Guard, conditional open challenge, evidence, disproof, P0/P1 proof, Traceability Guard, Completion Guard, and deterministic final scripts.

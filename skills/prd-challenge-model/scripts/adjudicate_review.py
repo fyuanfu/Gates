@@ -18,7 +18,6 @@ def adjudicate(review: dict) -> dict:
     review["verdict"] = verdict
     if verdict == "review_incomplete":
         ids = [item["id"] for item in review["execution_issues"] if item["blocking"]]
-        ids += [item["id"] for item in review["open_questions"] if item["blocking"]]
         review["verdict_reasons"] = [f"Review incomplete: {item_id}" for item_id in sorted(set(ids))]
     elif verdict == "review_failed":
         ids = [item["id"] for item in review["findings"] if item["severity"] in {"P0", "P1"}]
@@ -68,4 +67,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

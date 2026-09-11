@@ -1,7 +1,7 @@
 interface:
-  display_name: "PRD Challenge Model"
-  short_description: "评审产品需求缺陷、异常场景和规则冲突，输出可追溯的分级准出结论"
-  default_prompt: "Use $prd-challenge-model to review these requirement artifacts and return review.md and review.json."
+  display_name: "PRD Challenge Model · RGQ 2.0"
+  short_description: "在既定范围内检查需求覆盖、健壮性、清晰性、一致性、可验证性与追踪闭环"
+  default_prompt: "Use $prd-challenge-model to run the RGQ 2.0 review on these requirement artifacts and return review.md and review.json."
 
 policy:
   allow_implicit_invocation: true

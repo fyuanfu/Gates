@@ -1,10 +1,11 @@
 {
   "review_status": "INCOMPLETE",
-  "artifacts": [{"id": "A-001", "path": "fixture/prd.pdf", "type": "PRD", "authority": "PRIMARY", "required": true, "parse_status": "FAILED", "parse_error": "PDF parser unavailable"}],
+  "review_context": {"skill_version": "2.0.0", "scope_snapshot": {"iteration_goal": "Review manual photo upload", "included_sections": ["1"], "excluded_sections": []}, "input_fingerprint": "ed24ddb2add7957111b7cb1f18e5c6eda5604bed8e2b3c0fd950104c0c7584cf"},
+  "artifacts": [{"id": "A-001", "path": "fixture/prd.pdf", "type": "PRD", "authority": "PRIMARY", "required": true, "parse_status": "FAILED", "parse_error": "PDF parser unavailable", "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "source_version": null}],
   "requirements": [],
   "review_slices": [],
+  "traceability": {"guard_done": false},
   "execution_issues": [{"id": "E-0001", "code": "ARTIFACT_PARSE_FAILED", "message": "Required PRD could not be parsed.", "blocking": true, "artifact_ids": ["A-001"], "requirement_ids": []}],
-  "coverage": {"artifacts": {"total": 1, "parsed": 0, "failed": 1}, "requirements": {"total": 0, "assigned": 0, "standalone": 0, "excluded": 0, "unassigned": 0}, "review_slices": {"total": 0, "integrity_valid": 0, "fast_scan_done": 0, "minimal_challenge_done": 0, "deep_challenge_done": 0, "deep_challenge_not_required": 0}, "critical_decision_guard_done": false, "completion_guard_done": true},
+  "coverage": {"artifacts": {"total": 1, "parsed": 0, "failed": 1}, "requirements": {"total": 0, "assigned": 0, "standalone": 0, "excluded": 0, "unassigned": 0}, "review_slices": {"total": 0, "integrity_valid": 0, "fast_scan_done": 0, "minimal_challenge_done": 0, "deep_challenge_done": 0, "deep_challenge_not_required": 0}, "behavior_dimensions": {"total": 0, "defined": 0, "partial": 0, "missing": 0, "not_applicable": 0}, "verification": {"total": 0, "complete": 0, "partial": 0, "missing": 0, "not_applicable": 0}, "critical_decision_guard_done": false, "completion_guard_done": true},
   "metrics": {"raw_candidate_count": 0, "qualified_candidate_count": 0, "confirmed_candidate_count": 0, "rejected_candidate_count": 0, "dropped_candidate_count": 0, "deep_challenge_trigger_count": 0, "review_slice_count": 0}
 }
-

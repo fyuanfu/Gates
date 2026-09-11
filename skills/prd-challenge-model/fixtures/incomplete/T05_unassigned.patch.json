@@ -2,8 +2,8 @@
   "review_status": "INCOMPLETE",
   "requirements": [{"id": "R-001-0001", "artifact_id": "A-001", "source_requirement_id": "AC-1", "section": "1", "source_order": 1, "type": "AC", "title": "上传完成", "text": "服务端确认持久化后显示上传完成。", "coverage_status": "UNASSIGNED", "exclusion_reason": null}],
   "review_slices": [],
+  "traceability": {"guard_done": false},
   "execution_issues": [{"id": "E-0001", "code": "REQUIREMENT_UNASSIGNED", "message": "One Requirement was not assigned to review.", "blocking": true, "artifact_ids": ["A-001"], "requirement_ids": ["R-001-0001"]}],
-  "coverage": {"artifacts": {"total": 1, "parsed": 1, "failed": 0}, "requirements": {"total": 1, "assigned": 0, "standalone": 0, "excluded": 0, "unassigned": 1}, "review_slices": {"total": 0, "integrity_valid": 0, "fast_scan_done": 0, "minimal_challenge_done": 0, "deep_challenge_done": 0, "deep_challenge_not_required": 0}, "critical_decision_guard_done": true, "completion_guard_done": true},
+  "coverage": {"artifacts": {"total": 1, "parsed": 1, "failed": 0}, "requirements": {"total": 1, "assigned": 0, "standalone": 0, "excluded": 0, "unassigned": 1}, "review_slices": {"total": 0, "integrity_valid": 0, "fast_scan_done": 0, "minimal_challenge_done": 0, "deep_challenge_done": 0, "deep_challenge_not_required": 0}, "behavior_dimensions": {"total": 0, "defined": 0, "partial": 0, "missing": 0, "not_applicable": 0}, "verification": {"total": 0, "complete": 0, "partial": 0, "missing": 0, "not_applicable": 0}, "critical_decision_guard_done": true, "completion_guard_done": true},
   "metrics": {"raw_candidate_count": 0, "qualified_candidate_count": 0, "confirmed_candidate_count": 0, "rejected_candidate_count": 0, "dropped_candidate_count": 0, "deep_challenge_trigger_count": 0, "review_slice_count": 0}
 }
-

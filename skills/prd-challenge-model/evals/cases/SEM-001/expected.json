@@ -1,0 +1,13 @@
+{
+  "case_id": "SEM-001",
+  "expected_verdict": "review_failed",
+  "must_find": [
+    {
+      "source_requirement_id": "RQ-UP-01",
+      "consequence_type": "USER_VISIBLE_FAILURE",
+      "minimum_severity": "P1",
+      "text_pattern": "成功|云端|服务端"
+    }
+  ],
+  "must_not_find": []
+}

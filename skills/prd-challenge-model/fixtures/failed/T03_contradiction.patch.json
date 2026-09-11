@@ -4,7 +4,7 @@
     {"id": "R-001-0002", "artifact_id": "A-001", "source_requirement_id": "R2", "section": "2", "source_order": 2, "type": "BUSINESS_RULE", "title": "云端清理", "text": "云端清理完成后同步删除本地照片。", "coverage_status": "ASSIGNED_TO_SLICE", "exclusion_reason": null}
   ],
   "review_slices": [
-    {"id": "S-RULE-001", "type": "BUSINESS_RULE", "title": "云端删除副作用", "goal_or_rule": "定义云端删除对本地副本的影响", "requirement_ids": ["R-001-0001", "R-001-0002"], "cross_slice_ids": [], "integrity_status": "VALID", "fast_scan_done": true, "minimal_challenge": "SUSPICIOUS", "deep_challenge_status": "DONE", "risk_signals": ["DESTRUCTIVE_ACTION", "PERSISTENT_STATE"], "testability": {"trigger_determinable": true, "precondition_constructible": true, "outcome_observable": true, "oracle_deterministic": false, "measurement": null}}
+    {"id": "S-RULE-001", "type": "BUSINESS_RULE", "title": "云端删除副作用", "goal_or_rule": "定义云端删除对本地副本的影响", "requirement_bindings": [{"requirement_id": "R-001-0001", "roles": ["DEFINES_RULE"]}, {"requirement_id": "R-001-0002", "roles": ["DEFINES_RULE"]}], "cross_slice_links": [], "traceability_exemption": {"reason": "This fixture reviews a globally applicable deletion rule conflict.", "requirement_ids": ["R-001-0001", "R-001-0002"]}, "integrity_status": "VALID", "fast_scan_done": true, "minimal_challenge": "SUSPICIOUS", "deep_challenge_status": "DONE", "risk_signals": ["DESTRUCTIVE_ACTION", "PERSISTENT_STATE"], "testability": {"trigger_determinable": true, "precondition_constructible": true, "outcome_observable": true, "oracle_deterministic": false, "measurement": null}, "behavior_coverage": null, "verification": {"status": "NOT_APPLICABLE", "basis": "NOT_APPLICABLE", "requirement_ids": [], "condition": null, "expected_observable_result": null, "decision_rule": null, "missing_elements": [], "rationale": "The contradictory rule is verified through applying behaviors rather than a standalone oracle."}}
   ],
   "critical_decisions": [
     {"id": "D-0001", "subject": "photo", "action": "delete_cloud", "property": "DELETION_EFFECT", "scope": "local_copy", "value": "conflicting", "requirement_ids": ["R-001-0001", "R-001-0002"]}
@@ -21,7 +21,6 @@
     }
   ],
   "summary": {"finding_count": 1, "blocking_finding_count": 1, "observation_count": 0, "open_question_count": 0, "severity_counts": {"P0": 0, "P1": 1, "P2": 0, "P3": 0}},
-  "coverage": {"artifacts": {"total": 1, "parsed": 1, "failed": 0}, "requirements": {"total": 2, "assigned": 2, "standalone": 0, "excluded": 0, "unassigned": 0}, "review_slices": {"total": 1, "integrity_valid": 1, "fast_scan_done": 1, "minimal_challenge_done": 1, "deep_challenge_done": 1, "deep_challenge_not_required": 0}, "critical_decision_guard_done": true, "completion_guard_done": true},
+  "coverage": {"artifacts": {"total": 1, "parsed": 1, "failed": 0}, "requirements": {"total": 2, "assigned": 2, "standalone": 0, "excluded": 0, "unassigned": 0}, "review_slices": {"total": 1, "integrity_valid": 1, "fast_scan_done": 1, "minimal_challenge_done": 1, "deep_challenge_done": 1, "deep_challenge_not_required": 0}, "behavior_dimensions": {"total": 0, "defined": 0, "partial": 0, "missing": 0, "not_applicable": 0}, "verification": {"total": 1, "complete": 0, "partial": 0, "missing": 0, "not_applicable": 1}, "critical_decision_guard_done": true, "completion_guard_done": true},
   "metrics": {"raw_candidate_count": 1, "qualified_candidate_count": 1, "confirmed_candidate_count": 1, "rejected_candidate_count": 0, "dropped_candidate_count": 0, "deep_challenge_trigger_count": 1, "review_slice_count": 1}
 }
-

@@ -1,0 +1,7 @@
+{
+  "case_id": "SEM-011",
+  "expected_verdict": "review_incomplete",
+  "must_find": [],
+  "must_not_find": [],
+  "maximum_finding_count": 0
+}

@@ -3,9 +3,9 @@ name: prd-challenge-model
 description: Review product requirement artifacts such as PRDs, user stories, acceptance criteria, interaction specifications, business rules, constraints, and NFRs. Use before design or development to find missing, ambiguous, or contradictory requirements; challenge abnormal and failure scenarios without expanding product scope; classify confirmed findings as P0-P3; and return review_passed, review_failed, or review_incomplete with human-readable Markdown and machine-readable JSON evidence.
 ---
 
-# PRD Challenge Model
+# PRD Challenge Model · RGQ 2.0
 
-Review requirement behavior, not prose quality. Block real requirement defects before they force downstream teams to invent product decisions, implement divergent behavior, use a non-deterministic oracle, violate an authoritative rule, or expose a user-visible failure.
+Apply a Requirement Quality Gate (RGQ) to approved product scope. Review requirement behavior, not prose quality or product value. Detect defects before downstream teams must invent decisions, implement divergent behavior, use a non-deterministic oracle, violate an authoritative rule, or expose a user-visible failure.
 
 ## Non-negotiable rules
 
@@ -16,7 +16,8 @@ Review requirement behavior, not prose quality. Block real requirement defects b
 - Cite original source text. Never present a model summary as a quote.
 - Run disproof before confirming every candidate. Use the stronger budget required for potential P0/P1 findings.
 - Generate `review.json` first. Derive Verdict and `review.md` through the bundled scripts; never infer the final Verdict in prose.
-- Fail closed. Any required parse, coverage, integrity, evidence, validation, or execution gap produces `review_incomplete`.
+- Treat the approved goal and scope as input boundaries. Do not reassess their value, priority, ROI, or strategic correctness.
+- Fail closed. Any required parse, coverage, integrity, evidence, validation, or execution gap produces `review_incomplete`. Product questions found by a completed review do not.
 
 ## Start the review
 
@@ -24,8 +25,8 @@ Review requirement behavior, not prose quality. Block real requirement defects b
 2. Create a fresh output directory. Use `prd-challenge-model-output` unless the user selects another path.
 3. Read [contracts.md](references/contracts.md) and [workflow.md](references/workflow.md) completely.
 4. Read [prompts.md](references/prompts.md) before semantic review. Read [severity.md](references/severity.md) before assigning severity.
-5. Read [risk-patterns.json](references/risk-patterns.json) only after a deterministic risk signal fires or a Deep Challenge is required.
-6. Normalize the invocation into the input object from `contracts.md`. Assign stable IDs exactly as specified there.
+5. Read [risk-patterns.json](references/risk-patterns.json) only after a matching deterministic risk signal fires. Read [risk-patterns-android.json](references/risk-patterns-android.json) only when Android is explicitly in scope and a matching Android risk signal fires.
+6. Normalize the invocation into the input object from `contracts.md`. Assign stable IDs, hash exact artifact bytes, and calculate the input fingerprint exactly as specified there.
 
 ## Execute the fixed pipeline
 
@@ -38,18 +39,20 @@ Execute these stages in order:
 5. build BEHAVIOR, BUSINESS_RULE, CONSTRAINT, and NFR Review Slices;
 6. resolve Slice Integrity;
 7. prove Requirement Coverage;
-8. run Quality Scan, Testability Probe, Minimal Challenge, and Local Consistency exactly once per Slice;
-9. build the Global Critical Decision Index and detect conflicting values;
-10. select and run only justified Deep Challenges;
-11. map candidates to downstream consequences;
-12. qualify candidates and discard enhancements, preferences, and unsupported guesses;
-13. actively search for disproof;
-14. classify candidates as CONFIRMED, REJECTED, NEEDS_CONTEXT, OBSERVATION, or DROPPED;
-15. deduplicate confirmed findings and assign P0-P3 severity;
-16. execute the Completion Guard;
-17. write the Canonical Review Model to `<output_dir>/review.json`;
-18. validate, adjudicate, revalidate, and render using the commands below;
-19. run final contract verification and return the two reports.
+8. build the eight-dimension Behavior Coverage Map for every BEHAVIOR Slice;
+9. run Clarity, Local Consistency, Testability, Verification, and Minimal Challenge exactly once per Slice;
+10. build the Global Critical Decision Index and detect conflicting values;
+11. select and run only justified Deep Challenges;
+12. map candidates to downstream consequences;
+13. qualify candidates and discard enhancements, preferences, and unsupported guesses;
+14. actively search for disproof;
+15. classify candidates as CONFIRMED, REJECTED, NEEDS_CONTEXT, OBSERVATION, or DROPPED;
+16. execute the Traceability Guard over typed Requirement, Slice, Rule, Constraint, NFR, and verification relations;
+17. deduplicate confirmed findings and assign P0-P3 severity;
+18. execute the Completion Guard;
+19. write the Canonical Review Model to `<output_dir>/review.json`;
+20. validate, adjudicate, revalidate, and render using the commands below;
+21. run final contract verification and return the two reports.
 
 Follow the stage definitions and stop conditions in `references/workflow.md`. Never treat an empty Findings array as proof that the review completed.
 
@@ -69,7 +72,7 @@ Write a JSON object that conforms to [review.schema.json](references/review.sche
 
 - Put only CONFIRMED defects in `findings`.
 - Put harmless wording and formatting issues in `observations` without severity.
-- Put genuine unanswered decisions in `open_questions`.
+- Put genuine unanswered decisions in `open_questions`. An answer-required question must link to a confirmed Finding.
 - Convert missing information into a MISSING Finding when the absence itself already makes implementation or verification indeterminate.
 - Record every blocking execution limitation in `execution_issues`.
 - Keep natural-language fields in the artifact language; keep keys and enum values exactly as specified.
@@ -93,7 +96,7 @@ Return:
 
 1. the final Verdict;
 2. the P0/P1 count and IDs;
-3. blocking Open Questions or Execution Issues;
+3. answer-required Open Questions and blocking Execution Issues, clearly separated;
 4. paths to `review.json` and `review.md`;
 5. a short statement that PASS means the completed review found no confirmed P0/P1, not that the product is globally development-ready.
 

@@ -7,13 +7,16 @@
 3. Review Slice rules
 4. Fast scan
 5. Global decisions
-6. Challenge and qualification
-7. Disproof and candidate lifecycle
-8. Completion and delegation
+6. Challenge and scope guard
+7. Consequence and qualification
+8. Disproof and candidate lifecycle
+9. Completion and delegation
 
 ## Mission and scope
 
 Find requirement defects that can propagate into implementation uncertainty, verification uncertainty, contradictory behavior, or user-visible failure. Do not score writing quality. Do not assess technical design or product strategy.
+
+Treat the supplied product goal and iteration scope as fixed review axioms. The review does not ask whether the product should pursue another goal, serve another actor, add another capability, or expand to another platform/channel. It asks whether the already-committed behavior is sufficiently complete, clear, and consistent to remain correct and verifiable under realistic in-scope conditions.
 
 The only Finding dimensions are `COMPLETENESS`, `CLARITY`, and `CONSISTENCY`. Testability is a probe that must resolve to one of those dimensions.
 
@@ -35,15 +38,16 @@ Execute all stages in this order:
 | P9 | Deep selection | Suspicion and deterministic signals recorded |
 | P10 | Deep Challenge | `DONE` or `NOT_REQUIRED` per Slice |
 | P11 | Consequence mapping | At least one consequence per retained candidate |
-| P12 | Cheap qualification | Scope/evidence checks complete |
-| P13 | Targeted disproof | Budget selected and executed |
-| P14 | Resolve candidate | Final candidate state |
-| P15 | Dedup and severity | One Finding per root cause |
-| P16 | Completion Guard | `COMPLETED` or `INCOMPLETE` |
-| P17 | Validate model | Pre-adjudication validation succeeds |
-| P18 | Adjudicate | Deterministic Verdict written |
-| P19 | Render Markdown | Human view generated from JSON |
-| P20 | Contract verification | Final JSON validation succeeds |
+| P12 | Scope Guard | Every retained candidate proves relation to the current promise and is not scope expansion |
+| P13 | Evidence qualification | Source/effect checks complete |
+| P14 | Targeted disproof | Budget selected and executed |
+| P15 | Resolve candidate | Final candidate state |
+| P16 | Dedup and severity | One Finding per root cause |
+| P17 | Completion Guard | `COMPLETED` or `INCOMPLETE` |
+| P18 | Validate model | Pre-adjudication validation succeeds |
+| P19 | Adjudicate | Deterministic Verdict written |
+| P20 | Render Markdown | Human view generated from JSON |
+| P21 | Contract verification | Final JSON validation succeeds |
 
 Add a blocking Execution Issue when a required stage cannot complete. Do not continue with a false success.
 
@@ -96,6 +100,8 @@ Run exactly once for every Slice:
 3. **Minimal Challenge:** set `NO_SUSPICION` or `SUSPICIOUS` using the Slice-specific question.
 4. **Local Consistency:** compare only related requirements clustered by Actor, Object, Action, State, Rule, Result, Term, Dependency, Goal, Constraint, or Metric.
 
+For any missing-behavior candidate, identify the existing requirement or promised outcome that makes the missing behavior relevant. Do not create a candidate merely because a similar product could support it.
+
 Do not confirm Findings or assign final severity during Fast Scan.
 
 ## Global Critical Decision Guard
@@ -108,11 +114,37 @@ Do not build a full knowledge graph or compare every Requirement pair.
 
 Run only when Minimal Challenge is `SUSPICIOUS` or a deterministic risk signal fires. Select only relevant families: State, Timing, Failure, Recovery, Dependency, Context, Boundary, Partial Success, Repeated Action, and Risk Pattern.
 
-A candidate remains in scope only if it affects the current goal, changes a defined state/result, is a natural failure/interruption, matches a risk pattern, conflicts with supplied behavior/rules, or prevents unique implementation/verification. Drop feature enhancements and speculative preferences.
+Construct challenges around the current promise, not adjacent product possibilities. Prefer the question: **"Under what realistic in-scope condition could the promised result become wrong, undefined, misleading, contradictory, unrecoverable, or unverifiable?"**
+
+Risk patterns and industry knowledge may suggest realistic failure mechanisms, but they do not authorize new product scope. A pattern is useful only when it exposes a failure of behavior already promised by the supplied requirements.
+
+## Scope Guard
+
+Apply the Scope Guard to every candidate before evidence qualification.
+
+A candidate may continue only when all of the following are true:
+
+1. **Scope anchor:** at least one supplied requirement, rule, scenario, interaction, constraint, NFR, or explicitly stated outcome proves that the affected behavior is already in scope.
+2. **Promise relation:** the candidate protects the correctness, determinism, recoverability, consistency, or verifiability of that existing behavior.
+3. **Failure witness:** there is a realistic condition under which omitting or leaving the candidate unresolved can make the current promise fail, become ambiguous, produce a wrong/false result, or prevent unique verification.
+4. **No new product objective:** resolving the candidate does not require introducing a materially new product goal, actor, standalone capability, supported platform/channel, external integration, monetization model, or unrelated future use case.
+
+Use this decisive test:
+
+> **If this candidate is rejected, can the current in-scope promise still be implemented and verified correctly under the identified realistic condition?**
+
+- If **yes**, classify it as enhancement, preference, future idea, or unrelated scope and drop it from Findings.
+- If **no**, retain it for completeness/clarity/consistency qualification.
+
+Do not confuse failure handling with feature expansion. For example, specifying what happens when an in-scope upload is interrupted may be required to prevent false success or inconsistent state; proposing support for a new cloud provider is a new capability and must be dropped unless that provider is already in scope.
+
+Typical **in-scope completeness** candidates include missing behavior for an already-relevant state transition, natural interruption, partial success, retry/recovery semantics, dependency failure, duplicate action, boundary condition, or user feedback where omission can break the current promised result.
+
+Typical **scope expansion** candidates include new target users, new business goals, optional convenience features, unrelated channels/platforms, additional third-party services, new monetization, new sharing/collaboration modes, or speculative future scenarios whose absence does not break the current promise.
 
 ## Consequence and qualification
 
-Map every retained candidate to at least one contract consequence. Then require all of:
+Map every Scope-Guard-retained candidate to at least one contract consequence. Then require all of:
 
 - a Source Anchor;
 - current scope relevance;
@@ -128,13 +160,15 @@ Candidates failing these checks become Observation or DROPPED.
 
 Search in order: related requirements, same Slice, cross-Slice relations, Critical Decision Index, local evidence, then global authorized evidence when necessary. Actively try to show the candidate is false.
 
+Disproof must also test scope: search for text that narrows the affected condition out of the current iteration or proves that the allegedly required behavior is intentionally excluded. If so, reject the candidate rather than silently expanding scope.
+
 Use this state machine:
 
 ```text
 DISCOVERED
-  -> QUALIFIED -> CONFIRMED
-               -> REJECTED
-               -> NEEDS_CONTEXT
+  -> SCOPE_GUARDED -> QUALIFIED -> CONFIRMED
+                                 -> REJECTED
+                                 -> NEEDS_CONTEXT
   -> OBSERVATION
   -> DROPPED
 ```
@@ -145,7 +179,6 @@ Only CONFIRMED candidates become Findings. If disproof succeeds, use REJECTED ra
 
 Set `INCOMPLETE` when a required artifact fails parsing, a Requirement is unassigned, integrity remains unresolved, a required stage is missing, critical evidence is unavailable, coverage arithmetic is inconsistent, the Global Guard is absent, a blocking issue/question exists, validation fails, or context capacity prevents full protection.
 
-When delegating, the coordinator owns parsing, indexing, slicing, integrity, coverage, the Global Guard, deduplication, severity, completion, and Verdict. Delegate only Slice packets; never duplicate full-document review.
+When delegating, the coordinator owns parsing, indexing, slicing, integrity, coverage, the Global Guard, Scope Guard, deduplication, severity, completion, and Verdict. Delegate only Slice packets; never duplicate full-document review.
 
-The non-removable protections are Coverage Guard, Slice Integrity, Minimal Challenge for every Slice, Global Critical Decision Guard, P0/P1 disproof, P0/P1 witness/proof, source evidence for every Finding, Completion Guard, open challenge beyond patterns, and deterministic final validation/adjudication.
-
+The non-removable protections are Coverage Guard, Slice Integrity, Minimal Challenge for every Slice, Global Critical Decision Guard, Scope Guard, P0/P1 disproof, P0/P1 witness/proof, source evidence for every Finding, Completion Guard, open challenge beyond patterns, and deterministic final validation/adjudication.

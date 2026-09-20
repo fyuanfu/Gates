@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/technical-challenge-model/report.schema.json",
+  "title": "Technical Challenge Model Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "design_stage", "verdict", "assurance_level",
+    "obligations", "system_constraints", "decisions", "mechanisms", "claims",
+    "coverage", "counterexamples", "evidence", "findings", "requirement_gaps",
+    "evidence_gaps", "open_decisions"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "design_stage": {"enum": ["architecture", "high_level", "detailed"]},
+    "verdict": {"enum": ["PASS", "PASS_WITH_ACTIONS", "NEEDS_DECISION", "BLOCKED"]},
+    "assurance_level": {"enum": ["DOCUMENT_ONLY", "CONTEXT_GROUNDED", "REPOSITORY_GROUNDED", "EVIDENCE_VERIFIED"]},
+    "obligations": {"type": "array", "items": {"$ref": "#/$defs/obligation"}},
+    "system_constraints": {"type": "array", "items": {"$ref": "#/$defs/constraint"}},
+    "decisions": {"type": "array", "items": {"$ref": "#/$defs/decision"}},
+    "mechanisms": {"type": "array", "items": {"$ref": "#/$defs/mechanism"}},
+    "claims": {"type": "array", "items": {"$ref": "#/$defs/claim"}},
+    "coverage": {"type": "array", "items": {"$ref": "#/$defs/coverage"}},
+    "counterexamples": {"type": "array", "items": {"$ref": "#/$defs/counterexample"}},
+    "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
+    "findings": {"type": "array", "items": {"$ref": "#/$defs/finding"}},
+    "requirement_gaps": {"type": "array", "items": {"$ref": "#/$defs/requirement_gap"}},
+    "evidence_gaps": {"type": "array", "items": {"$ref": "#/$defs/evidence_gap"}},
+    "open_decisions": {"type": "array", "items": {"$ref": "#/$defs/open_decision"}}
+  },
+  "$defs": {
+    "string_array": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "obligation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "source_ref", "statement", "invariants"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^OBL-[0-9]{3}$"},
+        "source_ref": {"type": "string"},
+        "statement": {"type": "string", "minLength": 1},
+        "invariants": {"$ref": "#/$defs/string_array"}
+      }
+    },
+    "constraint": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "statement", "authority", "source"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^CON-[0-9]{3}$"},
+        "statement": {"type": "string", "minLength": 1},
+        "authority": {"enum": ["verified", "curated", "inferred"]},
+        "source": {"type": "string", "minLength": 1}
+      }
+    },
+    "decision": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "statement", "supports", "preserves"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^DEC-[0-9]{3}$"},
+        "statement": {"type": "string", "minLength": 1},
+        "supports": {"$ref": "#/$defs/string_array"},
+        "preserves": {"$ref": "#/$defs/string_array"}
+      }
+    },
+    "mechanism": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "decision_id", "type", "lifecycle", "statement"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^MEC-[0-9]{3}$"},
+        "decision_id": {"type": "string"},
+        "type": {"type": "string", "minLength": 1},
+        "lifecycle": {"enum": ["existing", "planned", "modified", "removed"]},
+        "statement": {"type": "string", "minLength": 1}
+      }
+    },
+    "claim": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "kind", "statement", "decision_id", "mechanism_ids", "status"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^CLM-[0-9]{3}$"},
+        "kind": {"enum": ["precondition", "design-guarantee", "existing-system-fact", "platform", "api", "performance", "compatibility"]},
+        "statement": {"type": "string", "minLength": 1},
+        "decision_id": {"type": ["string", "null"]},
+        "mechanism_ids": {"$ref": "#/$defs/string_array"},
+        "status": {"enum": ["VERIFIED", "SUPPORTED", "ASSUMED", "UNKNOWN", "CONTRADICTED"]}
+      }
+    },
+    "coverage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["anchor_type", "anchor_id", "decision_ids", "mechanism_ids", "status"],
+      "properties": {
+        "anchor_type": {"enum": ["obligation", "constraint"]},
+        "anchor_id": {"type": "string"},
+        "decision_ids": {"$ref": "#/$defs/string_array"},
+        "mechanism_ids": {"$ref": "#/$defs/string_array"},
+        "status": {"enum": ["COVERED", "PARTIAL", "MISSING", "CONTRADICTED", "UNCLEAR"]}
+      }
+    },
+    "counterexample": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "claim_id", "mutation", "failure_path", "violated_anchors", "plausibility"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^CE-[0-9]{3}$"},
+        "claim_id": {"type": "string"},
+        "mutation": {"type": "string", "minLength": 1},
+        "failure_path": {"$ref": "#/$defs/string_array"},
+        "violated_anchors": {"$ref": "#/$defs/string_array"},
+        "plausibility": {"enum": ["PLAUSIBLE", "UNRESOLVED", "REFUTED"]}
+      }
+    },
+    "evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "claim_id", "type", "source", "summary", "adequacy"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^EV-[0-9]{3}$"},
+        "claim_id": {"type": ["string", "null"]},
+        "type": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1},
+        "summary": {"type": "string", "minLength": 1},
+        "adequacy": {"enum": ["APPROPRIATE", "SUPPORTING_ONLY", "WEAK", "INAPPROPRIATE_FOR_PLANNED_MECHANISM"]}
+      }
+    },
+    "finding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "type", "title", "severity", "linked_obligations", "linked_constraints", "decision_id", "mechanism_ids", "claim_id", "counterexample_id", "evidence_ids", "impact", "required_action"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^F-[0-9]{3}$"},
+        "type": {"enum": ["DESIGN_COVERAGE_GAP", "DESIGN_CONTRADICTION", "INVALID_ASSUMPTION", "STATE_MODEL_GAP", "TIMING_ORDERING_GAP", "CONCURRENCY_GAP", "IDEMPOTENCY_GAP", "ATOMICITY_GAP", "DATA_INTEGRITY_GAP", "DEPENDENCY_FAILURE_GAP", "COMPATIBILITY_MIGRATION_GAP", "ARCHITECTURE_CONFORMANCE_GAP", "UNSUPPORTED_CRITICAL_DESIGN_CLAIM"]},
+        "path": {"enum": ["coverage", "counterexample"]},
+        "title": {"type": "string", "minLength": 1},
+        "severity": {"enum": ["BLOCKER", "HIGH", "MEDIUM", "LOW"]},
+        "linked_obligations": {"$ref": "#/$defs/string_array"},
+        "linked_constraints": {"$ref": "#/$defs/string_array"},
+        "decision_id": {"type": ["string", "null"]},
+        "mechanism_ids": {"$ref": "#/$defs/string_array"},
+        "claim_id": {"type": ["string", "null"]},
+        "counterexample_id": {"type": ["string", "null"]},
+        "evidence_ids": {"$ref": "#/$defs/string_array"},
+        "impact": {"type": "string", "minLength": 1},
+        "required_action": {"type": "string", "minLength": 1}
+      }
+    },
+    "requirement_gap": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "question", "blocking", "source_ref"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^RG-[0-9]{3}$"},
+        "question": {"type": "string", "minLength": 1},
+        "blocking": {"type": "boolean"},
+        "source_ref": {"type": "string"}
+      }
+    },
+    "evidence_gap": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "claim_id", "critical", "required_evidence"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^EG-[0-9]{3}$"},
+        "claim_id": {"type": "string"},
+        "critical": {"type": "boolean"},
+        "required_evidence": {"type": "string", "minLength": 1}
+      }
+    },
+    "open_decision": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "decision", "blocking", "owner"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^OD-[0-9]{3}$"},
+        "decision": {"type": "string", "minLength": 1},
+        "blocking": {"type": "boolean"},
+        "owner": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "case_count": 30,
+  "axes": {
+    "design_stage": {
+      "high_level": ["tc-dev-001","tc-dev-002","tc-dev-003","tc-dev-004","tc-dev-005","tc-dev-010","tc-dev-012","tc-dev-013","tc-dev-016","tc-dev-018","tc-holdout-002","tc-holdout-005","tc-holdout-006"],
+      "detailed": ["tc-dev-006","tc-dev-007","tc-dev-008","tc-dev-009","tc-dev-011","tc-dev-020","tc-holdout-001","tc-holdout-004","tc-holdout-008","tc-holdout-010"],
+      "architecture": ["tc-dev-014","tc-dev-015","tc-dev-017","tc-dev-019","tc-holdout-003","tc-holdout-007","tc-holdout-009"]
+    },
+    "mechanism_lifecycle": {
+      "planned": ["tc-dev-001","tc-dev-002","tc-dev-003","tc-dev-004","tc-dev-007","tc-dev-011","tc-dev-012","tc-dev-014","tc-dev-015","tc-dev-016","tc-dev-018","tc-dev-019","tc-holdout-001","tc-holdout-003","tc-holdout-005","tc-holdout-006","tc-holdout-009"],
+      "modified": ["tc-dev-005","tc-dev-006","tc-dev-008","tc-dev-009","tc-holdout-002","tc-holdout-004","tc-holdout-008"],
+      "existing": ["tc-dev-010","tc-dev-013","tc-dev-020","tc-holdout-010"],
+      "removed": ["tc-dev-017","tc-holdout-007"]
+    },
+    "primary_lens": {
+      "idempotency": ["tc-dev-001","tc-dev-003","tc-dev-020","tc-holdout-001"],
+      "coverage": ["tc-dev-002","tc-dev-012","tc-dev-014","tc-dev-015","tc-holdout-003","tc-holdout-005"],
+      "dependency": ["tc-dev-004","tc-dev-010","tc-dev-019","tc-holdout-004","tc-holdout-006","tc-holdout-009"],
+      "architecture-conformance": ["tc-dev-005","tc-dev-013","tc-dev-017","tc-holdout-007"],
+      "lifecycle": ["tc-dev-006","tc-dev-018"],
+      "concurrency": ["tc-dev-007","tc-holdout-010"],
+      "atomicity": ["tc-dev-008"],
+      "migration": ["tc-dev-009","tc-holdout-008"],
+      "ordering": ["tc-dev-011"],
+      "persistence": ["tc-dev-016"],
+      "compatibility": ["tc-holdout-002"]
+    },
+    "expected_output": {
+      "finding": ["tc-dev-001","tc-dev-005","tc-dev-006","tc-dev-007","tc-dev-008","tc-dev-009","tc-dev-010","tc-dev-011","tc-dev-015","tc-dev-016","tc-dev-017","tc-dev-018","tc-holdout-001","tc-holdout-002","tc-holdout-004","tc-holdout-007","tc-holdout-008","tc-holdout-010"],
+      "requirement_gap": ["tc-dev-002","tc-holdout-005"],
+      "pass": ["tc-dev-003","tc-dev-012","tc-dev-014","tc-dev-020","tc-holdout-003"],
+      "evidence_gap": ["tc-dev-004","tc-dev-013","tc-holdout-006"],
+      "open_decision": ["tc-dev-019","tc-holdout-009"]
+    },
+    "claim_kind": {
+      "precondition": ["tc-dev-001","tc-dev-003","tc-dev-006","tc-dev-007","tc-dev-008","tc-dev-011","tc-holdout-001","tc-holdout-004","tc-holdout-010"],
+      "design-guarantee": ["tc-dev-002","tc-dev-012","tc-dev-014","tc-dev-015","tc-dev-016","tc-dev-019","tc-holdout-003","tc-holdout-005","tc-holdout-009"],
+      "performance": ["tc-dev-004","tc-holdout-006"],
+      "existing-system-fact": ["tc-dev-005","tc-dev-013","tc-dev-017","tc-holdout-007"],
+      "compatibility": ["tc-dev-009","tc-holdout-002","tc-holdout-008"],
+      "api": ["tc-dev-010","tc-dev-020"],
+      "platform": ["tc-dev-018"]
+    }
+  }
+}

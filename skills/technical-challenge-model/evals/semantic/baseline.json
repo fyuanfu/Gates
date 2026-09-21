@@ -1,0 +1,6 @@
+{
+  "branch": "technical-challenge-model-semantic-baseline-v1",
+  "sha": "fda6916c0121823b8fe012f11b4ad619b8f98878",
+  "frozen": true,
+  "purpose": "semantic acceptance baseline before fresh-context evaluation"
+}

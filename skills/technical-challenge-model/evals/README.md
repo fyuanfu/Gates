@@ -51,6 +51,10 @@ tc-dev-001/run-01/F-002
 
 Copy `adjudication-template.json` and use these namespaced keys. Real Finding Precision is undefined while required adjudications remain unresolved.
 
+## Holdout sealing status
+
+The current 10 `holdout/cases.json` fixtures are **candidate holdout cases, not an acceptance-sealed set for this authoring session**. Their expected answers were inspected while verifying the evaluation harness. They remain useful as regression fixtures, but production semantic acceptance requires an independent curator/runner to replace or re-seal an unseen holdout set before execution.
+
 ## Semantic acceptance
 
 When a fresh-context runner is available:

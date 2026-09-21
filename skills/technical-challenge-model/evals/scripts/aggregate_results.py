@@ -12,11 +12,11 @@ from pathlib import Path
 VALID_ADJUDICATIONS = {"valid", "invalid", "duplicate", "unverifiable"}
 
 
-def _adjudication_key(run: dict, finding_id: string) -> string:
+def _adjudication_key(run: dict, finding_id: str) -> str:
     case_id = run.get("case_id")
     run_id = run.get("run_id")
     if case_id and run_id:
-        return `${case_id}/${run_id}/${finding_id}`
+        return f"{case_id}/{run_id}/{finding_id}"
     return finding_id
 
 
@@ -36,7 +36,7 @@ def aggregate(runs: list[dict], adjudications: dict[str, str]) -> dict:
         for finding_id in run["score"].get("needs_expert_adjudication", []):
             key = _adjudication_key(run, finding_id)
             label = adjudications.get(key)
-            if label is None and not (run.get("case_id") && run.get("run_id")):
+            if label is None and not (run.get("case_id") and run.get("run_id")):
                 label = adjudications.get(finding_id)
             if label not in VALID_ADJUDICATIONS:
                 unresolved.add(key)

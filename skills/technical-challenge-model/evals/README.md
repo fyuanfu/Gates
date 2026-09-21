@@ -37,7 +37,19 @@ Unexpected Findings require an expert label:
 valid | invalid | duplicate | unverifiable
 ```
 
-Copy `adjudication-template.json` and key labels by stable evaluation Finding ID. Real Finding Precision is undefined while required adjudications remain unresolved.
+Because report-local Finding IDs such as `F-001` repeat across cases and repetitions, adjudication keys MUST be globally scoped as:
+
+```text
+<case_id>/<run_id>/<finding_id>
+```
+
+Example:
+
+```text
+tc-dev-001/run-01/F-002
+```
+
+Copy `adjudication-template.json` and use these namespaced keys. Real Finding Precision is undefined while required adjudications remain unresolved.
 
 ## Semantic acceptance
 
@@ -46,7 +58,7 @@ When a fresh-context runner is available:
 1. Run each dev variant at least five times while developing wording.
 2. Freeze Skill wording.
 3. Run holdout cases without exposing answer keys.
-4. Expert-adjudicate unexpected Findings.
+4. Expert-adjudicate unexpected Findings using namespaced evaluation keys.
 5. Report Recall, Precision, verdict accuracy, false positives on clean cases, and inter-run variance.
 
 Any Skill change motivated by holdout failure invalidates that holdout attempt. Move the exposed case into dev and replace it with a new unseen holdout case.

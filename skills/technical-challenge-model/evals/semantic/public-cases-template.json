@@ -1,0 +1,16 @@
+{
+  "cases": [
+    {
+      "case_id": "sealed-001",
+      "metadata": {
+        "design_stage": "high_level",
+        "mechanism_lifecycle": "planned",
+        "primary_lens": "idempotency",
+        "expected_output": "finding",
+        "claim_kind": "precondition"
+      },
+      "input": "<technical design review case visible to the review model>",
+      "context": {}
+    }
+  ]
+}

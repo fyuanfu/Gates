@@ -1,3 +1,4 @@
+import json
 import unittest
 from pathlib import Path
 
@@ -10,6 +11,9 @@ class SemanticAcceptanceStructureTests(unittest.TestCase):
             ROOT / "semantic" / "curator-guide.md",
             ROOT / "semantic" / "runner-contract.md",
             ROOT / "semantic" / "adjudication-template.json",
+            ROOT / "semantic" / "baseline.json",
+            ROOT / "semantic" / "public-cases-template.json",
+            ROOT / "semantic" / "oracle-template.json",
         ]
         self.assertEqual([], [str(p) for p in required if not p.is_file()])
 
@@ -18,6 +22,12 @@ class SemanticAcceptanceStructureTests(unittest.TestCase):
         self.assertIn("independent curator", text)
         self.assertIn("hard negative", text)
         self.assertIn("oracle must stay outside", text)
+
+    def test_baseline_is_frozen_to_expected_sha(self):
+        baseline = json.loads((ROOT / "semantic" / "baseline.json").read_text(encoding="utf-8"))
+        self.assertEqual("technical-challenge-model-semantic-baseline-v1", baseline["branch"])
+        self.assertEqual("fda6916c0121823b8fe012f11b4ad619b8f98878", baseline["sha"])
+        self.assertTrue(baseline["frozen"])
 
     def test_runner_contract_contains_failure_taxonomy(self):
         text = (ROOT / "semantic" / "runner-contract.md").read_text(encoding="utf-8")

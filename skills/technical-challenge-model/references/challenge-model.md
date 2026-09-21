@@ -25,7 +25,7 @@ Authority:
 - `curated`: intentionally maintained architecture/domain constraint with an identifiable source.
 - `inferred`: discovered from history, Feature Tree relations, naming, code shape, or model inference and not yet independently verified.
 
-An `inferred` SystemConstraint is a challenge candidate, not an independent Blocker anchor until verified.
+An `inferred` SystemConstraint is a challenge candidate, not a formal Finding anchor until independently verified. Route unresolved inferred constraints to EvidenceGap/OpenDecision rather than severity-bearing Findings.
 
 ## DesignDecision
 

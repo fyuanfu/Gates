@@ -92,13 +92,14 @@ one-way: hidden complexity discovered mid-task upgrades the path — stop,
 say so, and step up. Nothing downgrades mid-task. Acceptance depth follows
 the selected path; it does not justify expanding feature scope.
 
-## Anti-Pattern: "Too Simple To Need Approval"
+## Anti-Pattern: "Too Simple To Need Acceptance"
 
-Every path ends with your human partner approving the required design
-before implementation. A bounded change may need only two sentences in
-chat. A new todo-list project is architectural and requires the written
-spec and planning handoffs. Scale the artifact to the selected path;
-complete that path's reviews before implementation.
+Every path defines the acceptance artifact appropriate to its risk and gets
+human approval before implementation. A bounded change may need only a few
+lines of Mini Acceptance Contract plus a short design; it does not need a
+full spec. A new project is architectural and requires the full contract,
+written spec, readiness gate, and planning handoff. Scale the artifact;
+never skip the correctness contract.
 
 ## Red Flags
 
@@ -111,6 +112,10 @@ complete that path's reviews before implementation.
 | "The spike works, so I'll keep the code" | A spike's output is an answer. Keeping the code is a new request — classify it. |
 | "It grew, but I'm almost done — no need to re-classify" | Hidden complexity upgrades the path mid-task. Stop and say so. |
 | "They approved the spike, so the follow-up change is approved too" | Each task gets its own classification and its own approval. |
+| "The success criteria are obvious; tests can define them later" | Tests cannot repair an undefined correctness contract. Define the path-sized acceptance artifact before design/implementation. |
+| "The requirement is ambiguous, but I can choose the reasonable interpretation" | If the choice changes observable behavior or acceptance semantics, it is a behavioral decision for the human partner. |
+| "Acceptance means listing every edge case" | No. Capture only obligations that materially constrain correctness, design, or release confidence. |
+| "The user approved the design, so Acceptance Readiness is unnecessary" | Approval and artifact readiness are separate gates; one does not substitute for the other. |
 
 ## Checklist
 

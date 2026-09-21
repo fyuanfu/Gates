@@ -137,6 +137,8 @@ def validate_report(report: dict[str, Any]) -> list[str]:
 
     constraints = {item.get("id"): item for item in report["system_constraints"]}
     mechanisms = {item.get("id"): item for item in report["mechanisms"]}
+    counterexamples = {item.get("id"): item for item in report["counterexamples"]}
+    evidence_by_id = {item.get("id"): item for item in report["evidence"]}
 
     for item in report["system_constraints"]:
         if item.get("authority") not in VALID_CONSTRAINT_AUTHORITY:
@@ -218,6 +220,10 @@ def validate_report(report: dict[str, Any]) -> list[str]:
         linked_constraints = item.get("linked_constraints", [])
         if not linked_obligations and not linked_constraints:
             errors.append(f"{fid}: missing requirement/system anchor")
+        if not linked_obligations and linked_constraints:
+            authorities = [constraints.get(cid, {}).get("authority") for cid in linked_constraints]
+            if authorities and all(value == "inferred" for value in authorities):
+                errors.append(f"{fid}: finding cannot rely only on inferred constraints")
         for oid in linked_obligations:
             if oid not in obligation_ids:
                 errors.append(f"{fid}: unknown obligation id {oid}")
@@ -247,11 +253,22 @@ def validate_report(report: dict[str, Any]) -> list[str]:
                 errors.append(f"{fid}: counterexample finding requires claim_id")
             if item.get("counterexample_id") is None:
                 errors.append(f"{fid}: counterexample finding requires counterexample_id")
+            elif (
+                item.get("counterexample_id") in counterexamples
+                and item.get("claim_id") is not None
+                and counterexamples[item.get("counterexample_id")].get("claim_id") != item.get("claim_id")
+            ):
+                errors.append(f"{fid}: counterexample claim does not match finding claim")
         if item.get("severity") not in VALID_SEVERITY:
             errors.append(f"{fid}: invalid severity")
         if item.get("severity") == "BLOCKER":
             if not item.get("evidence_ids"):
                 errors.append(f"{fid}: blocker missing evidence")
+            elif not any(
+                evidence_by_id.get(eid, {}).get("adequacy") == "APPROPRIATE"
+                for eid in item.get("evidence_ids", [])
+            ):
+                errors.append(f"{fid}: blocker lacks appropriate evidence")
             if linked_constraints and not linked_obligations:
                 authorities = [constraints.get(cid, {}).get("authority") for cid in linked_constraints]
                 if authorities and all(value == "inferred" for value in authorities):

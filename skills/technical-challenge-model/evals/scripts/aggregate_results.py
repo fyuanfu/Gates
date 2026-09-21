@@ -12,6 +12,14 @@ from pathlib import Path
 VALID_ADJUDICATIONS = {"valid", "invalid", "duplicate", "unverifiable"}
 
 
+def _adjudication_key(run: dict, finding_id: string) -> string:
+    case_id = run.get("case_id")
+    run_id = run.get("run_id")
+    if case_id and run_id:
+        return `${case_id}/${run_id}/${finding_id}`
+    return finding_id
+
+
 def aggregate(runs: list[dict], adjudications: dict[str, str]) -> dict:
     required_total = sum(item["score"].get("required_total", 0) for item in runs)
     required_detected = sum(item["score"].get("required_detected", 0) for item in runs)
@@ -26,9 +34,12 @@ def aggregate(runs: list[dict], adjudications: dict[str, str]) -> dict:
 
     for run in runs:
         for finding_id in run["score"].get("needs_expert_adjudication", []):
-            label = adjudications.get(finding_id)
+            key = _adjudication_key(run, finding_id)
+            label = adjudications.get(key)
+            if label is None and not (run.get("case_id") && run.get("run_id")):
+                label = adjudications.get(finding_id)
             if label not in VALID_ADJUDICATIONS:
-                unresolved.add(finding_id)
+                unresolved.add(key)
                 continue
             if label == "valid":
                 extra_valid_count += 1
@@ -37,7 +48,7 @@ def aggregate(runs: list[dict], adjudications: dict[str, str]) -> dict:
             elif label == "duplicate":
                 duplicate_count += 1
             elif label == "unverifiable":
-                unresolved.add(finding_id)
+                unresolved.add(key)
 
     finding_precision = None
     if not unresolved:

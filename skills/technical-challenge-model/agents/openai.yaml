@@ -1,0 +1,7 @@
+interface:
+  display_name: "Technical Challenge Model"
+  short_description: "挑战技术方案是否满足需求并保持现有系统约束，输出可追溯的技术 Finding"
+  default_prompt: "Use $technical-challenge-model to challenge this technical design against accepted requirements and system constraints, then return report.json and report.md."
+
+policy:
+  allow_implicit_invocation: true

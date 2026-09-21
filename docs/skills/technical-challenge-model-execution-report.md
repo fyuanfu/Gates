@@ -100,3 +100,21 @@ fresh-context semantic evaluation
 ```
 
 The branch has not been merged into `main`.
+
+
+## Semantic acceptance preparation — 2026-09-21
+
+The next-phase semantic acceptance harness is now implemented.
+
+Completed:
+
+- frozen baseline branch `technical-challenge-model-semantic-baseline-v1`;
+- baseline SHA `fda6916c0121823b8fe012f11b4ad619b8f98878`;
+- isolated case × repetition batch builder;
+- evaluator-side semantic run recorder;
+- external-oracle support for truly sealed holdout;
+- semantic metrics for Recall, expert-adjudicated Precision, clean-case FP, inter-run stability, scope expansion, and A–G failure classes;
+- independent curator guide and runner contract;
+- public case/oracle templates.
+
+This does **not** change release status. Actual fresh-context model runs and an independently curated unseen holdout are still required before promotion from `PILOT`.

@@ -230,3 +230,91 @@ class SchemaAndFindingPathTests(unittest.TestCase):
         errors = validate_report(report)
         self.assertIn('F-003: counterexample finding requires claim_id', errors)
         self.assertIn('F-003: counterexample finding requires counterexample_id', errors)
+
+
+class EvidenceChainIntegrityTests(unittest.TestCase):
+    def test_finding_cannot_rely_only_on_inferred_constraint_at_any_severity(self):
+        report = base_report()
+        report['system_constraints'] = [{
+            'id': 'CON-001',
+            'statement': 'Historical flow may preserve drafts.',
+            'authority': 'inferred',
+            'source': 'historical bug',
+        }]
+        report['findings'] = [{
+            'id': 'F-010',
+            'type': 'DESIGN_CONTRADICTION',
+            'path': 'coverage',
+            'title': 'Design conflicts with inferred constraint',
+            'severity': 'HIGH',
+            'linked_obligations': [],
+            'linked_constraints': ['CON-001'],
+            'decision_id': 'DEC-001',
+            'mechanism_ids': ['MEC-001'],
+            'claim_id': None,
+            'counterexample_id': None,
+            'evidence_ids': ['EV-001'],
+            'impact': 'Potentially violates historical behavior.',
+            'required_action': 'Verify the constraint first.',
+        }]
+        errors = validate_report(report)
+        self.assertIn('F-010: finding cannot rely only on inferred constraints', errors)
+
+    def test_counterexample_finding_claim_must_match_counterexample_claim(self):
+        report = base_report()
+        report['claims'].append({
+            'id': 'CLM-002',
+            'kind': 'precondition',
+            'statement': 'Second independent claim.',
+            'decision_id': 'DEC-001',
+            'mechanism_ids': ['MEC-001'],
+            'status': 'SUPPORTED',
+        })
+        report['counterexamples'] = [{
+            'id': 'CE-001',
+            'claim_id': 'CLM-001',
+            'mutation': 'Duplicate',
+            'failure_path': ['retry executes twice'],
+            'violated_anchors': ['OBL-001'],
+            'plausibility': 'PLAUSIBLE',
+        }]
+        report['findings'] = [{
+            'id': 'F-011',
+            'type': 'IDEMPOTENCY_GAP',
+            'path': 'counterexample',
+            'title': 'Mismatched chain',
+            'severity': 'HIGH',
+            'linked_obligations': ['OBL-001'],
+            'linked_constraints': [],
+            'decision_id': 'DEC-001',
+            'mechanism_ids': ['MEC-001'],
+            'claim_id': 'CLM-002',
+            'counterexample_id': 'CE-001',
+            'evidence_ids': ['EV-001'],
+            'impact': 'Broken trace chain.',
+            'required_action': 'Use consistent claim references.',
+        }]
+        errors = validate_report(report)
+        self.assertIn('F-011: counterexample claim does not match finding claim', errors)
+
+    def test_blocker_requires_at_least_one_appropriate_evidence(self):
+        report = base_report()
+        report['evidence'][0]['adequacy'] = 'WEAK'
+        report['findings'] = [{
+            'id': 'F-012',
+            'type': 'DESIGN_COVERAGE_GAP',
+            'path': 'coverage',
+            'title': 'Coverage blocker with weak evidence only',
+            'severity': 'BLOCKER',
+            'linked_obligations': ['OBL-001'],
+            'linked_constraints': [],
+            'decision_id': 'DEC-001',
+            'mechanism_ids': [],
+            'claim_id': None,
+            'counterexample_id': None,
+            'evidence_ids': ['EV-001'],
+            'impact': 'Core invariant may be violated.',
+            'required_action': 'Provide adequate evidence.',
+        }]
+        errors = validate_report(report)
+        self.assertIn('F-012: blocker lacks appropriate evidence', errors)

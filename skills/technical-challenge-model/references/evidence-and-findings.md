@@ -29,7 +29,7 @@ A targeted search that finds nothing means **no supporting evidence found in the
 
 A `verified` or `curated` SystemConstraint may directly anchor a Finding.
 
-An **inferred SystemConstraint** must first be independently verified. Until then, route uncertainty to `EvidenceGap` or `OpenDecision`; it cannot independently support a Blocker.
+An **inferred SystemConstraint** must first be independently verified. Until then, route uncertainty to `EvidenceGap` or `OpenDecision`; it cannot independently anchor a Technical Finding at any severity.
 
 Historical bugs, RiskPatterns, and Feature Tree relations are Challenge Seeds. Verify the current design before creating a Finding.
 
@@ -62,7 +62,7 @@ Typical types include state, timing, concurrency, idempotency, atomicity, depend
 
 ## Severity
 
-- `BLOCKER`: a core obligation/constraint can be violated and no acceptable mitigation exists; adequate evidence is mandatory.
+- `BLOCKER`: a core obligation/constraint can be violated and no acceptable mitigation exists; at least one referenced Evidence item with `adequacy=APPROPRIATE` is mandatory.
 - `HIGH`: serious violation is plausible and supported, but uncertainty or partial mitigation remains.
 - `MEDIUM`: real weakness with bounded impact or easy implementation-stage closure.
 - `LOW`: non-blocking robustness or technical debt.

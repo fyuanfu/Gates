@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/report-engineering/v1.1/release-manifest.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.1"
+    },
+    "report_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "released_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "html_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "qa_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "approvals": {
+      "type": "object",
+      "properties": {
+        "G1": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "G2": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "G3": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "G4": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "G5": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "report_id",
+    "released_at",
+    "html_sha256",
+    "qa_sha256",
+    "approvals"
+  ],
+  "additionalProperties": false
+}

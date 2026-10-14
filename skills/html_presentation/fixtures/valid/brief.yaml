@@ -1,0 +1,13 @@
+schema_version: '1.1'
+report_id: demo-report
+title: 演示型质量汇报
+audience: 研发负责人
+desired_outcome: 理解质量保障的责任分布
+desired_action: 批准一个小范围试点
+core_thesis: 质量要内建于研发过程
+reading_mode: self_reading
+output_format: html-scroll
+constraints:
+- 不可把测试样本当业务事实
+research_questions:
+- 研发质量的主要阻碍是什么？

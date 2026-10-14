@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/report-engineering/v1.1/evidence.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.1"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^SRC-[0-9]{3,}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "manifest_ref": {
+            "type": "string",
+            "pattern": "^SRC-[0-9]{3,}$"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "manifest_ref"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^E-[0-9]{3,}$"
+          },
+          "source_ref": {
+            "type": "string",
+            "pattern": "^SRC-[0-9]{3,}$"
+          },
+          "location": {
+            "type": "string",
+            "minLength": 1
+          },
+          "excerpt": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "source_ref",
+          "location",
+          "excerpt"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^C-[0-9]{3,}$"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": [
+              "factual",
+              "inference",
+              "hypothesis",
+              "recommendation"
+            ]
+          },
+          "critical": {
+            "type": "boolean"
+          },
+          "verification": {
+            "enum": [
+              "verified",
+              "pending",
+              "unsupported",
+              "contradicted",
+              "not_applicable"
+            ]
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^E-[0-9]{3,}$"
+            }
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "disclosure": {
+            "type": "string"
+          },
+          "verification_result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "verdict": {
+                    "enum": [
+                      "verified",
+                      "pending",
+                      "unsupported",
+                      "contradicted",
+                      "not_applicable"
+                    ]
+                  },
+                  "evidence_refs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^E-[0-9]{3,}$"
+                    }
+                  },
+                  "source_locations": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "reviewer": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "checked_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "verdict",
+                  "evidence_refs",
+                  "source_locations",
+                  "reviewer",
+                  "checked_at",
+                  "reason"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "text",
+          "kind",
+          "critical",
+          "verification",
+          "evidence_refs",
+          "reason",
+          "verification_result"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "sources",
+    "evidence",
+    "claims"
+  ],
+  "additionalProperties": false
+}

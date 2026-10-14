@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/report-engineering/v1.1/design-spec.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.1"
+    },
+    "tokens": {
+      "type": "object",
+      "properties": {
+        "colors": {
+          "type": "object",
+          "properties": {
+            "background": {
+              "type": "string",
+              "pattern": "^#[a-fA-F0-9]{6}$"
+            },
+            "text": {
+              "type": "string",
+              "pattern": "^#[a-fA-F0-9]{6}$"
+            },
+            "accent": {
+              "type": "string",
+              "pattern": "^#[a-fA-F0-9]{6}$"
+            }
+          },
+          "required": [
+            "background",
+            "text",
+            "accent"
+          ],
+          "additionalProperties": false
+        },
+        "typography": {
+          "type": "object",
+          "properties": {
+            "font_family": {
+              "type": "string",
+              "minLength": 1
+            },
+            "body_px": {
+              "type": "integer",
+              "minimum": 12,
+              "maximum": 26
+            }
+          },
+          "required": [
+            "font_family",
+            "body_px"
+          ],
+          "additionalProperties": false
+        },
+        "spacing_base_px": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 32
+        }
+      },
+      "required": [
+        "colors",
+        "typography",
+        "spacing_base_px"
+      ],
+      "additionalProperties": false
+    },
+    "layout_modes": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "narrative",
+          "comparison",
+          "data",
+          "architecture",
+          "summary"
+        ]
+      }
+    },
+    "preview_paths": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^(?!/)(?![a-zA-Z]:)(?!.*(?:^|/)\\.\\.(?:/|$))[a-zA-Z0-9_./-]+$"
+      },
+      "uniqueItems": true
+    },
+    "resource_policy": {
+      "const": "inline_only"
+    }
+  },
+  "required": [
+    "schema_version",
+    "tokens",
+    "layout_modes",
+    "preview_paths",
+    "resource_policy"
+  ],
+  "additionalProperties": false
+}

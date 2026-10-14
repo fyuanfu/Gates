@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/report-engineering/v1.1/content-review.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.1"
+    },
+    "report_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "review_kind": {
+      "enum": [
+        "content",
+        "reader"
+      ]
+    },
+    "reviewer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "properties": {
+          "dimension": {
+            "enum": [
+              "goal_coverage",
+              "argument_consistency",
+              "evidence_strength",
+              "content_completeness",
+              "limitations",
+              "reader_comprehension",
+              "expression"
+            ]
+          },
+          "status": {
+            "enum": [
+              "pass",
+              "needs_revision",
+              "human_review"
+            ]
+          },
+          "location": {
+            "type": "string",
+            "minLength": 1
+          },
+          "findings": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "required": [
+          "dimension",
+          "status",
+          "location",
+          "findings"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "open_blockers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "report_id",
+    "review_kind",
+    "reviewer",
+    "reviewed_at",
+    "checks",
+    "open_blockers"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,35 @@
+schema_version: '1.1'
+report_id: demo-report
+review_kind: content
+reviewer: fixture-validator
+reviewed_at: '2026-10-14T10:10:00+08:00'
+checks:
+- dimension: goal_coverage
+  status: pass
+  location: S-01
+  findings: []
+- dimension: argument_consistency
+  status: pass
+  location: S-01
+  findings: []
+- dimension: evidence_strength
+  status: pass
+  location: S-01
+  findings: []
+- dimension: content_completeness
+  status: pass
+  location: S-01
+  findings: []
+- dimension: limitations
+  status: pass
+  location: S-01
+  findings: []
+- dimension: reader_comprehension
+  status: pass
+  location: S-01
+  findings: []
+- dimension: expression
+  status: pass
+  location: S-01
+  findings: []
+open_blockers: []

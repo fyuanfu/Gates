@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/report-engineering/v1.1/brief.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.1"
+    },
+    "report_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,63}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "audience": {
+      "type": "string",
+      "minLength": 1
+    },
+    "desired_outcome": {
+      "type": "string",
+      "minLength": 1
+    },
+    "desired_action": {
+      "type": "string",
+      "minLength": 1
+    },
+    "core_thesis": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reading_mode": {
+      "const": "self_reading"
+    },
+    "output_format": {
+      "const": "html-scroll"
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "research_questions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "report_id",
+    "title",
+    "audience",
+    "desired_outcome",
+    "desired_action",
+    "core_thesis",
+    "reading_mode",
+    "output_format",
+    "constraints",
+    "research_questions"
+  ],
+  "additionalProperties": false
+}

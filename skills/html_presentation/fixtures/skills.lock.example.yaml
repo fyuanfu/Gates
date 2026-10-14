@@ -1,0 +1,74 @@
+schema_version: '1.1'
+skills:
+- id: report-orchestrator
+  source_uri: TO_BE_VERIFIED
+  revision: null
+  license: null
+  installation_path: .claude/skills/report-orchestrator
+  invocation_method: Claude Code Skill discovery and invocation
+  required_tools: []
+  input_artifacts: []
+  output_artifacts: []
+  smoke_fixture: fixtures/valid/brief.yaml
+  status: candidate
+  smoke_result_path: null
+- id: doc-coauthoring
+  source_uri: TO_BE_VERIFIED
+  revision: null
+  license: null
+  installation_path: .claude/skills/doc-coauthoring
+  invocation_method: Claude Code Skill discovery and invocation
+  required_tools: []
+  input_artifacts: []
+  output_artifacts: []
+  smoke_fixture: fixtures/valid/brief.yaml
+  status: candidate
+  smoke_result_path: null
+- id: fact-check
+  source_uri: TO_BE_VERIFIED
+  revision: null
+  license: null
+  installation_path: .claude/skills/fact-check
+  invocation_method: Claude Code Skill discovery and invocation
+  required_tools: []
+  input_artifacts: []
+  output_artifacts: []
+  smoke_fixture: fixtures/valid/brief.yaml
+  status: candidate
+  smoke_result_path: null
+- id: frontend-design
+  source_uri: TO_BE_VERIFIED
+  revision: null
+  license: null
+  installation_path: .claude/skills/frontend-design
+  invocation_method: Claude Code Skill discovery and invocation
+  required_tools: []
+  input_artifacts: []
+  output_artifacts: []
+  smoke_fixture: fixtures/valid/brief.yaml
+  status: candidate
+  smoke_result_path: null
+- id: webapp-testing
+  source_uri: TO_BE_VERIFIED
+  revision: null
+  license: null
+  installation_path: .claude/skills/webapp-testing
+  invocation_method: Claude Code Skill discovery and invocation
+  required_tools: []
+  input_artifacts: []
+  output_artifacts: []
+  smoke_fixture: fixtures/valid/brief.yaml
+  status: candidate
+  smoke_result_path: null
+- id: research-workflow
+  source_uri: TO_BE_VERIFIED
+  revision: null
+  license: null
+  installation_path: .claude/skills/research-workflow
+  invocation_method: Claude Code Skill discovery and invocation
+  required_tools: []
+  input_artifacts: []
+  output_artifacts: []
+  smoke_fixture: fixtures/valid/brief.yaml
+  status: candidate
+  smoke_result_path: null

@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.1",
+  "report_id": "demo-report",
+  "active_stage": "S1",
+  "stages": {
+    "S1": {
+      "status": "in_progress",
+      "gate": "G1",
+      "submitted_digest": null,
+      "approved_digest": null,
+      "last_error": null
+    },
+    "S2": {
+      "status": "not_started",
+      "gate": "G2",
+      "submitted_digest": null,
+      "approved_digest": null,
+      "last_error": null
+    },
+    "S3": {
+      "status": "not_started",
+      "gate": "G3",
+      "submitted_digest": null,
+      "approved_digest": null,
+      "last_error": null
+    },
+    "S4": {
+      "status": "not_started",
+      "gate": "G4",
+      "submitted_digest": null,
+      "approved_digest": null,
+      "last_error": null
+    },
+    "S5": {
+      "status": "not_started",
+      "gate": "G5",
+      "submitted_digest": null,
+      "approved_digest": null,
+      "last_error": null
+    }
+  },
+  "approvals": [],
+  "release_status": "not_released",
+  "state_revision": 0
+}

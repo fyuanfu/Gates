@@ -1,0 +1,369 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/report-engineering/v1.1/state.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.1"
+    },
+    "report_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "active_stage": {
+      "enum": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ]
+    },
+    "stages": {
+      "type": "object",
+      "properties": {
+        "S1": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "not_started",
+                "in_progress",
+                "awaiting_approval",
+                "approved",
+                "rejected",
+                "stale",
+                "failed"
+              ]
+            },
+            "gate": {
+              "enum": [
+                "G1",
+                "G2",
+                "G3",
+                "G4",
+                "G5"
+              ]
+            },
+            "submitted_digest": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "approved_digest": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "last_error": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "gate",
+            "submitted_digest",
+            "approved_digest",
+            "last_error"
+          ],
+          "additionalProperties": false
+        },
+        "S2": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "not_started",
+                "in_progress",
+                "awaiting_approval",
+                "approved",
+                "rejected",
+                "stale",
+                "failed"
+              ]
+            },
+            "gate": {
+              "enum": [
+                "G1",
+                "G2",
+                "G3",
+                "G4",
+                "G5"
+              ]
+            },
+            "submitted_digest": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "approved_digest": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "last_error": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "gate",
+            "submitted_digest",
+            "approved_digest",
+            "last_error"
+          ],
+          "additionalProperties": false
+        },
+        "S3": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "not_started",
+                "in_progress",
+                "awaiting_approval",
+                "approved",
+                "rejected",
+                "stale",
+                "failed"
+              ]
+            },
+            "gate": {
+              "enum": [
+                "G1",
+                "G2",
+                "G3",
+                "G4",
+                "G5"
+              ]
+            },
+            "submitted_digest": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "approved_digest": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "last_error": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "gate",
+            "submitted_digest",
+            "approved_digest",
+            "last_error"
+          ],
+          "additionalProperties": false
+        },
+        "S4": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "not_started",
+                "in_progress",
+                "awaiting_approval",
+                "approved",
+                "rejected",
+                "stale",
+                "failed"
+              ]
+            },
+            "gate": {
+              "enum": [
+                "G1",
+                "G2",
+                "G3",
+                "G4",
+                "G5"
+              ]
+            },
+            "submitted_digest": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "approved_digest": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "last_error": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "gate",
+            "submitted_digest",
+            "approved_digest",
+            "last_error"
+          ],
+          "additionalProperties": false
+        },
+        "S5": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "not_started",
+                "in_progress",
+                "awaiting_approval",
+                "approved",
+                "rejected",
+                "stale",
+                "failed"
+              ]
+            },
+            "gate": {
+              "enum": [
+                "G1",
+                "G2",
+                "G3",
+                "G4",
+                "G5"
+              ]
+            },
+            "submitted_digest": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "approved_digest": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "last_error": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "gate",
+            "submitted_digest",
+            "approved_digest",
+            "last_error"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "additionalProperties": false
+    },
+    "approvals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "gate": {
+            "enum": [
+              "G1",
+              "G2",
+              "G3",
+              "G4",
+              "G5"
+            ]
+          },
+          "actor": {
+            "const": "owner"
+          },
+          "decision": {
+            "enum": [
+              "approved",
+              "rejected"
+            ]
+          },
+          "submitted_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "confirmation_excerpt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "gate",
+          "actor",
+          "decision",
+          "submitted_digest",
+          "confirmation_excerpt",
+          "timestamp"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "release_status": {
+      "enum": [
+        "not_released",
+        "released",
+        "stale"
+      ]
+    },
+    "state_revision": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "required": [
+    "schema_version",
+    "report_id",
+    "active_stage",
+    "stages",
+    "approvals",
+    "release_status",
+    "state_revision"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,14 @@
+schema_version: '1.1'
+sections:
+- id: S-01
+  title: 问题与决策
+  role: conclusion
+  key_message: 建议批准试点
+  claim_refs:
+  - C-001
+  content_path: content/S-01.md
+  visual_intent: text
+  covers:
+  - desired_outcome
+  - desired_action
+  - core_thesis

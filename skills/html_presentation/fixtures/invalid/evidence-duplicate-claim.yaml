@@ -1,0 +1,45 @@
+schema_version: '1.1'
+sources:
+- id: SRC-001
+  title: 仅供测试的源材料
+  manifest_ref: SRC-001
+evidence:
+- id: E-001
+  source_ref: SRC-001
+  location: line:1
+  excerpt: 本样例数据仅供合同测试，不可直接用于正式业务汇报。
+claims:
+- id: C-001
+  text: 本段是用于展示引用机制的测试内容
+  kind: factual
+  critical: true
+  verification: verified
+  evidence_refs:
+  - E-001
+  reason: 引用映射演示，不构成真实项目事实
+  verification_result:
+    verdict: verified
+    evidence_refs:
+    - E-001
+    source_locations:
+    - SRC-001 line:1
+    reviewer: fixture-validator
+    checked_at: '2026-10-14T10:05:00+08:00'
+    reason: 仅验证跨文件结构并与样例文本匹配
+- id: C-001
+  text: 本段是用于展示引用机制的测试内容
+  kind: factual
+  critical: true
+  verification: verified
+  evidence_refs:
+  - E-001
+  reason: 引用映射演示，不构成真实项目事实
+  verification_result:
+    verdict: verified
+    evidence_refs:
+    - E-001
+    source_locations:
+    - SRC-001 line:1
+    reviewer: fixture-validator
+    checked_at: '2026-10-14T10:05:00+08:00'
+    reason: 仅验证跨文件结构并与样例文本匹配

@@ -1,0 +1,12 @@
+schema_version: '1.1'
+sources:
+- id: SRC-001
+  origin: inputs/raw/quality-stats.md
+  kind: local
+  raw_path: inputs/raw/quality-stats.md
+  snapshot_path: inputs/snapshots/SRC-001.txt
+  original_sha256: 1421a218e53d3edf8ef3216871aecb7729af9f017306ebc541e9a627f05ed9c8
+  snapshot_sha256: a796ba06829028f69f1687e7ed0e193610ce19710ba78982f58514826f13d983
+  extraction_status: ok
+  retrieved_at: '2026-10-14T10:00:00+08:00'
+  classification: internal

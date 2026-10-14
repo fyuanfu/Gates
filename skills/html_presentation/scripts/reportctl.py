@@ -6,6 +6,7 @@ import argparse, contextlib, datetime as dt, hashlib, json, os, pathlib, re, shu
 from urllib.parse import urlparse
 import yaml
 from jsonschema import Draft202012Validator, FormatChecker
+from filelock import FileLock, Timeout as LockTimeout
 
 HERE=pathlib.Path(__file__).resolve().parent
 SCHEMAS=HERE.parent/'schemas'
@@ -61,6 +62,9 @@ def project(args):
 def read_state(root):
  s,errs=schema_check(root/'state.json','state')
  if errs:raise ReportError('E_CONTRACT','State invalid',errs)
+ if s['report_id']!=root.name:raise ReportError('E_CONTRACT','State report_id mismatch')
+ for stage in STAGES:
+  if s['stages'][stage]['gate']!=gate_for(stage):raise ReportError('E_CONTRACT','Stage/Gate mapping mismatch')
  return s
 
 def stage_for(g):return 'S'+g[1:]
@@ -90,6 +94,7 @@ def validate_gate(root,gate):
     obj,problems=schema_check(p,SCHEMA_MAP[rel]);data[rel]=obj;errs.extend(problems)
   except (ReportError,KeyError,TypeError) as e:errs.append({'path':rel,'reason':str(e)})
  if errs:return errs
+ if data['brief.yaml']['report_id']!=root.name:errs.append({'path':'brief.yaml:report_id','reason':'Must match workspace report_id'})
  if num>=2:
   manifest=data['inputs/manifest.yaml'];evidence=data['evidence.yaml']
   source_ids=[x['id'] for x in manifest['sources']];ev_source_ids=[x['id'] for x in evidence['sources']]
@@ -139,6 +144,10 @@ def validate_gate(root,gate):
   if re.search(r'<(?:script|img|iframe|link|source)\b[^>]*(?:src|href)\s*=\s*["\']https?://',html,re.I) or re.search(r'@import|\bfetch\s*\(|<iframe\b|\bXMLHttpRequest\b',html,re.I):errs.append({'path':'output/index.html','reason':'potential automatic network resource or request'})
   if MARKER.search(html):errs.append({'path':'output/index.html','reason':'unrendered claim marker'})
   qa=data['qa/results.json']
+  if qa['report_id']!=root.name:errs.append({'path':'qa/results.json','reason':'QA report_id mismatch'})
+  for section in data['report-plan.yaml']['sections']:
+   for ref in section['claim_refs']:
+    if not re.search(r'id=[\"\']ref-'+re.escape(ref)+r'[\"\']',html):errs.append({'path':'output/index.html','reason':f'missing rendered source anchor ref-{ref}'})
   if qa['qa_status']!='passed' or qa['html_sha256']!=digest(safe(root,'output/index.html')):errs.append({'path':'qa/results.json','reason':'QA not passed or HTML SHA mismatch'})
   actual_viewports={(v['width'],v['height']) for v in qa['viewports'] if v['status']=='pass'}
   if not {(1440,900),(1280,800),(390,844)}.issubset(actual_viewports):errs.append({'path':'qa/results.json','reason':'required viewports not verified'})
@@ -186,7 +195,9 @@ def dispatch(args):
   if sync(root,state):state['state_revision']+=1;atomic(root/'state.json',state)
   return {'state':state}
  # sync before mutation; persistent staleness must not be lost on rejected actions
- if sync(root,state):state['state_revision']+=1;atomic(root/'state.json',state)
+ if sync(root,state):
+  state['state_revision']+=1;atomic(root/'state.json',state)
+  if cmd=='approve':raise ReportError('E_HASH','Submitted artifact changed; resubmission required')
  if cmd=='resume':
   for s in STAGES:
    entry=state['stages'][s]
@@ -294,10 +305,14 @@ def main():
  args=p.parse_args()
  try:
   if args.command=='intake' and bool(args.url)!=bool(args.snapshot_file):raise ReportError('E_INPUT','--url requires --snapshot-file and vice versa')
-  result=dispatch(args);print(json.dumps({'ok':True,'code':'OK','message':'success','details':[],**result},ensure_ascii=False));return 0
+  lockroot=pathlib.Path(args.root).expanduser().resolve()
+  lockroot.mkdir(parents=True,exist_ok=True)
+  with FileLock(str(lockroot/('.'+args.report_id+'.lock')),timeout=15):
+   result=dispatch(args)
+  print(json.dumps({'ok':True,'code':'OK','message':'success','details':[],**result},ensure_ascii=False));return 0
  except ReportError as e:
   print(json.dumps({'ok':False,'code':e.code,'message':e.message,'details':e.details},ensure_ascii=False))
   return 2 if e.code in ('E_INPUT','E_CONTRACT','E_EXISTS') else 3 if e.code in ('E_STATE','E_GATE','E_CONFIRM','E_HASH','E_STALE') else 4 if e.code in ('E_QA','E_BLOCKED') else 5
- except (OSError,KeyError,TypeError) as e:
+ except (OSError,KeyError,TypeError,LockTimeout) as e:
   print(json.dumps({'ok':False,'code':'E_IO','message':str(e),'details':[]},ensure_ascii=False));return 5
 if __name__=='__main__':sys.exit(main())

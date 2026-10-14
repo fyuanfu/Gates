@@ -23,7 +23,7 @@ class WorkflowTests(unittest.TestCase):
  def test_init_and_no_gate_skip(self):
   self.initialize();self.assertEqual(self.call('start-stage',self.report,'--stage','S2',expected=3)['code'],'E_GATE')
  def test_requires_g1_brief(self):
-  self.initialize();self.assertEqual(self.call('submit',self.report,'--gate','G1',expected=4)['code'],'E_CONTRACT')
+  self.initialize();self.assertEqual(self.call('submit',self.report,'--gate','G1',expected=2)['code'],'E_CONTRACT')
  def test_approve_requires_matching_digest_and_explicit_confirmation(self):
   self.populate_g1();s=self.call('submit',self.report,'--gate','G1')
   p=self.proj/'approval.txt';p.write_text('好的')
@@ -41,6 +41,18 @@ class WorkflowTests(unittest.TestCase):
   self.call('reject',self.report,'--gate','G1','--feedback-file',str(f),'--confirmation-file',str(c))
   self.call('revise',self.report,'--stage','S1')
   state=self.call('status',self.report)['state'];self.assertEqual(state['stages']['S1']['status'],'in_progress');self.assertEqual(len(state['approvals']),1)
+ def test_changed_submitted_brief_returns_stale_hash_error(self):
+  self.populate_g1();s=self.call('submit',self.report,'--gate','G1')
+  p=self.proj/'brief.yaml';p.write_text(p.read_text()+'\n# mutated after submit\n')
+  confirmation=self.proj/'approval.txt';confirmation.write_text('我批准 G1 摘要 '+s['digest'],encoding='utf-8')
+  err=self.call('approve',self.report,'--gate','G1','--digest',s['digest'],'--confirmation-file',str(confirmation),expected=3)
+  self.assertEqual(err['code'],'E_HASH')
+  self.assertEqual(self.call('status',self.report)['state']['stages']['S1']['status'],'stale')
+ def test_brief_report_id_must_match_workspace(self):
+  self.initialize();shutil.copy(ROOT/'fixtures/valid/brief.yaml',self.proj/'brief.yaml')
+  target=self.proj/'brief.yaml';target.write_text(target.read_text().replace('demo-report','wrong-report'))
+  result=self.call('submit',self.report,'--gate','G1',expected=2)
+  self.assertEqual(result['code'],'E_CONTRACT')
  def test_release_blocked_without_g5(self):
   self.initialize();self.assertEqual(self.call('release',self.report,expected=3)['code'],'E_GATE')
 if __name__=='__main__':unittest.main()

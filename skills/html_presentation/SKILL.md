@@ -18,9 +18,9 @@ Turn a decision-oriented reporting request into a single offline `index.html`. *
 
 | Stage | Primary owner / required role | Deliverable | Owner checkpoint |
 |---|---|---|---|
-| S1: objective / audience | `doc-coauthoring` if installed; otherwise follow `workflow.md` manually | `brief.yaml` | G1 |
+| S1: objective / audience | `doc-coauthoring` when installed; manual alternative requires explicit owner approval | `brief.yaml` | G1 |
 | S2: evidence / narrative | `research-workflow` for research when installed; independent `fact-check` for claims | `inputs/manifest.yaml`, `research-plan.md`, `evidence.yaml`, `narrative.md` | G2 |
-| S3: structured writing | `doc-coauthoring` or equivalent clearly disclosed manual composition | `report-plan.yaml`, `content/S-*.md`, `reviews/content-review.yaml` | G3 |
+| S3: structured writing | `doc-coauthoring` or owner-approved manual composition | `report-plan.yaml`, `content/S-*.md`, `reviews/content-review.yaml` | G3 |
 | S4: visual prototype | `frontend-design` where available | `design-spec.yaml`, 2+ different `previews/*.html`, `reviews/visual-review.md` | G4 |
 | S5: full build / QA | `frontend-design`; `webapp-testing` or explicit `browser_qa.py` for technical checks | `output/index.html`, `qa/results.json`, `qa/qa-report.md`, `reviews/reader-review.yaml` | G5 then release |
 

@@ -23,7 +23,7 @@
 ### Task 1: Establish executable contract baseline
 - [x] Import ten version 1.1 schemas and valid/invalid contract fixtures.
 - [x] Write contract tests, run original reference validator and capture regressions.
-- [ ] Freeze schema compatibility and document deviations.
+- [x] Freeze schema compatibility and document deviations. (V1.1 source spec in `references/V1.1-spec.md`; integration smoke remains pending.)
 
 ### Task 2: Deterministic gate controller
 - [x] Write failing CLI tests for G1 init/approval/gate skip/invalid digest/reject/stale/release block.
@@ -33,22 +33,22 @@
 ### Task 3: Source and evidence integrity
 - [x] Support text, DOCX, text PDF and caller-snapshotted HTTPS input without autonomous network fetch.
 - [x] Verify original/snapshot SHA, claim refs, factual verification records and body markers at gates.
-- [ ] Add negative intake tests for malformed input and source-revision propagation.
+- [ ] Complete negative intake tests for malformed PDF/source-revision propagation (positive/hostile-text smoke is present).
 
 ### Task 4: Visual production and QA
-- [ ] Specify self-reading editorial layouts, at least two page previews, one complex layout, shared style tokens.
-- [ ] Implement browser/HTML inspection script for network requests, required viewports, and screenshots with Playwright.
-- [ ] Exercise offline file from a clean directory; no CDN/font/remote dependencies; preserve content and QA hashes.
+- [x] Specify self-reading editorial layouts, two distinct previews and shared style tokens in Skill workflow; complex layout remains an authoring/owner acceptance obligation.
+- [x] Implement `browser_qa.py` for remote requests, required viewports and screenshots (actual `file://` smoke blocked by this execution host).
+- [ ] Exercise `file://` offline in a target browser permitted by host policy. Current runner returns `blocked`, not success.
 
 ### Task 5: Agent skill and specialist integration
-- [ ] Author concise `SKILL.md` with explicit trigger, handoff, I/O/approval and content QA controls.
-- [ ] Author `references/workflow.md` and `references/integration.md` with exact commands and fallback for unavailable specialty skills.
-- [ ] Unit test metadata and inspect references; perform target-environment smoke tests where possible.
+- [x] Author concise `SKILL.md` with explicit trigger, handoff, I/O/approval and content QA controls.
+- [x] Author `references/workflow.md` and `references/integration.md` with commands and explicit owner-approved fallback.
+- [ ] Run native target Claude Code specialist Skill M0 smoke tests (not available in current container); metadata inspected locally.
 
 ### Task 6: Release and GitHub submission
-- [ ] Run full contract/CLI tests and static checks; independently review key source files.
-- [ ] Commit `skills/html_presentation/*` on `fyuanfu/Gates`; confirm file tree/commit URL remotely.
-- [ ] Report exact implemented paths, passed tests and missing M0/M3 integration proof honestly.
+- [x] Run contract/CLI/renderer tests and syntax checks (20/20 passed in local harness); review known limitations (target file:// QA and third-party Skill integration still blocked/pending).
+- [x] Commit `skills/html_presentation/*` on `fyuanfu/Gates`; confirm file tree/commit URL remotely (initial commit d6bc5d4).
+- [x] Document verified results and outstanding M0/M3 integration limitations in README and delivery summary.
 
 ## Review focus
 

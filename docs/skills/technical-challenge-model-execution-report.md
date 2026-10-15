@@ -100,3 +100,37 @@ fresh-context semantic evaluation
 ```
 
 The branch has not been merged into `main`.
+
+
+## Semantic acceptance preparation — 2026-09-21
+
+The next-phase semantic acceptance harness is now implemented.
+
+Completed:
+
+- frozen baseline branch `technical-challenge-model-semantic-baseline-v1`;
+- baseline SHA `fda6916c0121823b8fe012f11b4ad619b8f98878`;
+- isolated case × repetition batch builder;
+- evaluator-side semantic run recorder;
+- external-oracle support for truly sealed holdout;
+- semantic metrics for Recall, expert-adjudicated Precision, clean-case FP, inter-run stability, scope expansion, and A–G failure classes;
+- independent curator guide and runner contract;
+- public case/oracle templates.
+
+This does **not** change release status. Actual fresh-context model runs and an independently curated unseen holdout are still required before promotion from `PILOT`.
+
+
+## Semantic harness verification update
+
+Fresh verification after adding semantic acceptance tooling:
+
+```text
+44/44 unittest cases PASS
+dataset contract PASS
+semantic scripts py_compile PASS
+20 Dev cases × 5 repetitions = 100 isolated sandboxes built
+run manifest baseline SHA = fda6916c0121823b8fe012f11b4ad619b8f98878
+run manifest contains no expected/oracle data
+```
+
+The 100 sandboxes prove the batch/isolation harness works at the intended Dev scale. They do not constitute semantic model runs; no Recall/Precision/Stability metric is claimed until a fresh-context runner executes them.

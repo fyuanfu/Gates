@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="color-scheme" content="light"/>
+<title>GitHub Spec Kit：软件研发全流程与交付件 | 技术总结</title>
+<style>
+:root{--ink:#17231f;--muted:#35413b;--bg:#f7f9f6;--surface:#fff;--line:#d8e6dc;--green:#147d56;--green-2:#1cb579;--green-wash:#eaf7ef;--orange:#c66e27;--orange-wash:#fff3e5;--blue:#267c9e;--blue-wash:#eaf7fc;--violet:#7359a0;--violet-wash:#f2eff8;--shadow:0 12px 38px rgba(20,56,38,.055)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.82;-webkit-font-smoothing:antialiased}a{color:var(--green);text-decoration:none;border-bottom:1px solid rgba(20,125,86,.25)}a:hover{border-color:currentColor}button,input{font:inherit}button{cursor:pointer}::selection{background:#c4f1d7}h1,h2,h3,h4,p{margin-top:0}h1,h2,h3,h4{line-height:1.35;letter-spacing:-.025em}h2{font-size:27px;margin-bottom:14px}h3{font-size:19px;margin-bottom:10px}h4{font-size:15px;margin-bottom:8px}p{margin-bottom:14px}ul,ol{padding-left:23px;margin:8px 0 16px}li{margin:6px 0}strong{font-weight:750}code,kbd{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace}code{background:#ecf3ee;border:1px solid #dce9df;padding:2px 5px;border-radius:5px;font-size:.91em;overflow-wrap:anywhere}pre{margin:0;padding:18px 20px;white-space:pre-wrap;overflow:auto;word-break:break-word;font:13px/1.8 ui-monospace,SFMono-Regular,Consolas,"Noto Sans Mono CJK SC",monospace}pre code{border:none;background:transparent;padding:0;font-size:inherit}table{border-collapse:separate;border-spacing:0;width:100%;font-size:13.5px}thead th{text-align:left;background:#eff5f0;padding:11px 13px;color:var(--ink);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}thead th:first-child{border-left:1px solid var(--line);border-radius:10px 0 0 0}thead th:last-child{border-right:1px solid var(--line);border-radius:0 10px 0 0}tbody td{border-bottom:1px solid var(--line);padding:12px 13px;vertical-align:top;background:white}tbody td:first-child{border-left:1px solid var(--line)}tbody td:last-child{border-right:1px solid var(--line)}tbody tr:last-child td:first-child{border-radius:0 0 0 10px}tbody tr:last-child td:last-child{border-radius:0 0 10px 0}.table-wrap{overflow-x:auto;margin:20px 0}.table-wrap table{min-width:660px}.tiny{font-size:12px}.small{font-size:13px}.kicker{font-size:11px;letter-spacing:.17em;font-weight:800;color:var(--green);text-transform:uppercase;margin-bottom:10px}.subtle{color:var(--muted)}.badge{display:inline-flex;align-items:center;border:1px solid #acdabc;border-radius:6px;padding:2px 8px;background:var(--green-wash);font-size:11px;font-weight:800;white-space:nowrap}.badge.optional{background:var(--orange-wash);border-color:#ecc79f;color:#89511f}.badge.recommend{background:var(--violet-wash);border-color:#d5c7e6;color:#5b487a}.badge.core{background:var(--green-wash);color:#126a48}.layout{display:grid;grid-template-columns:249px minmax(0,1fr);gap:0;max-width:1600px;margin:auto;min-height:100vh}.sidebar{border-right:1px solid var(--line);background:#ffffff;position:relative}.side-inner{position:sticky;top:0;height:100vh;overflow-y:auto;padding:29px 20px 24px}.brand{display:flex;align-items:center;gap:11px;padding-bottom:25px;border-bottom:1px solid var(--line);margin-bottom:24px}.brand-mark{width:40px;height:40px;background:var(--green);border-radius:12px;color:#fff;display:grid;place-items:center;font-size:17px;font-weight:900}.brand-name{font-size:14px;font-weight:850;letter-spacing:.02em}.brand-desc{font-size:11px;color:var(--muted)}.toc-label{font-size:11px;color:var(--muted);letter-spacing:.15em;font-weight:850;margin:20px 9px 9px}.toc a{display:block;padding:9px 12px;margin:3px 0;border:0;border-radius:8px;color:var(--ink);font-size:12.5px;font-weight:630;transition:background .18s,color .18s}.toc a:hover,.toc a.active{background:var(--green-wash);color:var(--green)}.toc a .num{display:inline-block;min-width:23px;font:700 10px ui-monospace,monospace;color:var(--green)}.side-bottom{font-size:11px;margin:28px 10px;color:var(--muted);border-top:1px solid var(--line);padding-top:19px}.content{min-width:0}.hero{background:#f0f8f1;position:relative;overflow:hidden;border-bottom:1px solid var(--line);padding:65px min(5.3vw,75px) 56px}.hero:before{content:"";width:390px;height:390px;border:70px solid rgba(28,181,121,.085);border-radius:50%;position:absolute;right:-110px;top:-205px}.hero:after{content:"";width:170px;height:170px;border:45px solid rgba(243,159,82,.12);border-radius:50%;position:absolute;right:85px;bottom:-160px}.hero-inner{position:relative;z-index:1;max-width:1160px}.eyebrow{font-weight:800;font-size:12px;letter-spacing:.18em;color:var(--green);margin-bottom:26px}.hero h1{font-size:clamp(32px,4vw,56px);line-height:1.18;max-width:1000px;margin-bottom:20px;letter-spacing:-.045em}.hero h1 em{font-style:normal;color:var(--green)}.lead{font-size:17px;max-width:850px;line-height:1.9;margin-bottom:25px}.hero-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:12px}.hero-meta span{background:rgba(255,255,255,.8);border:1px solid #cbe4d3;padding:7px 11px;border-radius:7px;font-weight:700}.body-inner{max-width:1270px;padding:0 min(5.3vw,75px) 95px;margin:0 auto}.section{padding-top:62px;margin-top:8px;border-bottom:1px solid var(--line);padding-bottom:54px}.section:last-child{border:0}.section-intro{font-size:15.5px;max-width:940px}.section-head{display:flex;gap:14px;align-items:flex-start}.section-index{display:grid;place-items:center;color:var(--green);border:1px solid #bee0ca;background:var(--green-wash);width:42px;height:42px;border-radius:11px;flex:none;font-size:13px;font-weight:900}.note{border:1px solid var(--line);border-left:4px solid var(--green);padding:16px 18px;border-radius:8px;background:white;margin:20px 0}.note.warn{border-left-color:var(--orange);background:#fffaf3}.note.idea{border-left-color:var(--violet);background:#fbf9ff}.note p:last-child{margin-bottom:0}.cols-3,.cols-2{display:grid;gap:14px;margin:24px 0}.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.tile{background:#fff;border:1px solid var(--line);border-radius:13px;padding:21px;box-shadow:var(--shadow)}.tile h3{margin-bottom:10px}.tile .figure{font-size:34px;line-height:1;font-weight:850;color:var(--green);margin-bottom:12px;letter-spacing:-.04em}.tile p:last-child{margin-bottom:0}.seq{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:22px 0}.seq-item{border:1px solid var(--line);background:white;padding:15px 12px;border-radius:10px;min-height:110px;position:relative}.seq-item .step-no{font-size:10px;font-weight:900;color:var(--green)}.seq-item .step-name{font-size:16px;font-weight:850;margin:6px 0 5px;letter-spacing:-.03em}.seq-item .step-desc{font-size:11.5px;line-height:1.55}.seq-item.gate{background:var(--orange-wash);border-color:#f0d6b9}.seq-item.gate .step-no{color:var(--orange)}.seq-item.code{background:var(--green-wash);border-color:#bddfc9}.flow-back{border:1px solid #a9d9bd;border-radius:9px;background:#ecf8ee;padding:14px 18px;margin-top:8px;font-size:13px}.phase-group{display:grid;grid-template-columns:180px minmax(0,1fr);border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden;margin:20px 0;box-shadow:var(--shadow)}.phase-side{background:#f0f7f0;border-right:1px solid var(--line);padding:22px}.phase-side .phase-index{font-size:43px;line-height:1;font-weight:900;color:var(--green);letter-spacing:-.04em;margin:0 0 14px}.phase-side .phase-title{font-size:15px;font-weight:850;line-height:1.3;margin-bottom:8px}.phase-side .phase-kind{font-size:11px}.phase-main{padding:22px 25px}.phase-main h3{font-size:19px}.phase-main .details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:20px;row-gap:8px;margin:14px 0}.phase-main .details .field{font-size:13px;line-height:1.8}.field-name{display:inline-block;font-weight:850;margin-right:6px}.command{background:#18261f;color:#f4fff7;border-radius:9px;overflow:hidden;margin:15px 0}.command-head{background:#27392f;display:flex;justify-content:space-between;align-items:center;padding:7px 12px;font-size:11px;color:#e0f0e6;font-weight:800;letter-spacing:.03em}.command pre{font-size:12px;padding:12px 15px}.copy{background:#deefe3;color:#11583b;border:1px solid #b7d8c2;border-radius:6px;padding:3px 9px;font-size:11px;font-weight:750}.copy:hover{background:white}.code-block{background:#18261f;color:#f4fff7;border-radius:10px;overflow:hidden;margin:16px 0}.code-block .code-head{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;background:#27392f;font-size:11px;font-weight:800}.code-block pre{font-size:12.5px}.inline-label{display:inline-block;background:#edf5f0;border:1px solid #dae9de;padding:1px 7px;border-radius:5px;font-size:11px;font-weight:750;margin:2px}.artifact-table th:nth-child(1){width:24%}.artifact-table th:nth-child(2){width:17%}.artifact-table th:nth-child(4){width:21%}.searchbox{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:white;padding:8px 13px;border-radius:10px;margin:18px 0}.searchbox span{font-size:16px}.searchbox input{border:0;outline:none;flex:1;min-width:0;color:var(--ink);background:transparent}.mono-tree{white-space:pre;overflow:auto;border:1px solid #d6e6d9;background:#fff;padding:24px 26px;border-radius:12px;color:#162d22;font-size:12.6px;line-height:1.8;margin:20px 0}.split{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:20px;align-items:start}.big-label{font-size:11px;font-weight:900;color:var(--green);letter-spacing:.1em;margin-bottom:8px}.trace{display:grid;gap:9px;margin:18px 0}.trace-line{display:grid;grid-template-columns:130px minmax(0,1fr);gap:12px;align-items:stretch}.trace-key{display:flex;align-items:center;justify-content:center;border-radius:8px;background:var(--green-wash);border:1px solid #bae2c7;font-size:13px;font-weight:850;text-align:center;padding:11px}.trace-val{padding:12px 15px;border:1px solid var(--line);background:white;border-radius:8px;font-size:13px}.trace-line.extra .trace-key{background:var(--violet-wash);border-color:#d6c8e5}.trace-line.extra .trace-val{border-color:#d6c8e5}.quality-matrix{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:20px 0}.quality-matrix .tile{padding:19px}.quality-matrix .quality-id{font-size:12px;font-weight:900;color:var(--green);margin-bottom:11px}.quality-matrix h3{font-size:17px}.diagram-layers{display:grid;gap:10px;padding:8px 0}.diagram-layer{border:1px solid var(--line);border-radius:10px;padding:17px 19px;background:white;text-align:center}.diagram-layer strong{display:block}.diagram-layer small{display:block;margin-top:3px;font-size:12px;color:#33493b}.diagram-layer.target{background:#eaf7ee;border-color:#9bceae}.diagram-layer.needed{background:#f1edf8;border-color:#d4c2e4}.diagram-arrow{text-align:center;color:var(--green);font-size:22px;line-height:1}.ref-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:20px 0}.ref-item{border:1px solid var(--line);border-radius:10px;padding:15px 17px;background:white}.ref-item a{font-size:14px;font-weight:800}.ref-item p{font-size:12px;margin:6px 0 0}.last-updated{font-size:11px;color:var(--muted);padding-top:18px}.checklist li{list-style:none;margin:12px 0;padding-left:0}.checklist{padding-left:0}.checklist li:before{content:"□";display:inline-block;margin-right:10px;font-size:18px;color:var(--green);line-height:0;vertical-align:middle}.footer{margin-top:30px;padding:22px 0 0;border-top:2px solid var(--line);font-size:12px;color:var(--muted)}.top{display:none;position:fixed;right:25px;bottom:22px;z-index:4;padding:10px 15px;border:1px solid #addcc0;border-radius:10px;background:white;color:var(--green);font-weight:850;box-shadow:0 8px 30px #25492b26}.menu-toggle{display:none}.highlighter{background:linear-gradient(transparent 62%,#d3f2de 62%)}.stage-text{font-size:13px}.disclaimer{margin-top:28px;border:1px solid #e8d6ba;background:#fff8ed;border-radius:11px;padding:15px 17px;font-size:12px}
+@media(max-width:1150px){.seq{grid-template-columns:repeat(3,minmax(0,1fr))}.cols-3{grid-template-columns:repeat(2,minmax(0,1fr))}.phase-group{grid-template-columns:145px minmax(0,1fr)}.ref-list{grid-template-columns:1fr}}
+@media(max-width:900px){.layout{display:block}.sidebar{position:sticky;top:0;z-index:8;border-right:none;border-bottom:1px solid var(--line)}.side-inner{height:auto;max-height:54px;overflow:hidden;padding:5px 16px;display:flex;align-items:center;gap:12px}.brand{margin:0;padding:0;border:0;white-space:nowrap}.brand-mark{width:32px;height:32px;border-radius:8px}.brand-desc{display:none}.toc-label,.side-bottom{display:none}.toc{display:flex;overflow-x:auto;gap:3px;scrollbar-width:none}.toc a{white-space:nowrap;font-size:11px;padding:7px 9px}.toc a .num{display:none}.hero{padding:48px 27px 42px}.body-inner{padding:0 27px 65px}.section{padding-top:47px}.top{display:none}.top.shown{display:block}}
+@media(max-width:620px){body{font-size:14px}.hero h1{font-size:32px}.lead{font-size:15px}.hero-meta{gap:5px}.hero-meta span{font-size:10px;padding:5px 8px}.cols-3,.cols-2,.quality-matrix,.split{grid-template-columns:1fr}.seq{grid-template-columns:repeat(2,minmax(0,1fr))}.phase-group{display:block}.phase-side{border-right:0;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:15px;padding:15px 19px}.phase-side .phase-index{font-size:27px;margin:0}.phase-side .phase-title{margin:0}.phase-main{padding:19px}.phase-main .details{grid-template-columns:1fr}.trace-line{grid-template-columns:94px minmax(0,1fr);gap:7px}.trace-key,.trace-val{font-size:12px}.mono-tree{font-size:10.7px;padding:15px}.hero{padding:34px 18px}.body-inner{padding:0 18px 55px}h2{font-size:23px}.side-inner{padding-left:9px;padding-right:8px}.brand-name{font-size:12px}.toc a{font-size:10px;padding:7px 6px}}
+@media print{body{background:white;font-size:11px;line-height:1.6}.layout{display:block}.sidebar,.top,.copy,.searchbox{display:none!important}.hero{padding:25px 0 20px;background:white}.hero h1{font-size:27px}.body-inner{padding:0}.section{padding-top:22px;padding-bottom:18px;break-inside:auto}.section h2,.phase-side{break-after:avoid}.phase-group,.tile,.code-block,.note{break-inside:avoid;box-shadow:none}.cols-3,.cols-2,.seq,.quality-matrix{break-inside:avoid}a{color:var(--ink)}.table-wrap{overflow:visible}.table-wrap table{min-width:0}table{font-size:10px}td,th{padding:6px!important}.phase-group{grid-template-columns:120px 1fr}.phase-main{padding:14px}.phase-side{padding:14px}pre{font-size:10px!important}.badge{border-color:#bbb}.footer{margin:0}.hero:before,.hero:after{display:none}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar" aria-label="文档目录"><div class="side-inner">
+  <div class="brand"><div class="brand-mark">S/</div><div><div class="brand-name">SPEC KIT / FIELD NOTES</div><div class="brand-desc">个人技术总结 · 可离线查阅</div></div></div>
+  <nav class="toc" id="toc">
+    <div class="toc-label">阅读导航 / CONTENTS</div>
+    <a href="#overview"><span class="num">01</span>核心认识与边界</a>
+    <a href="#workflow"><span class="num">02</span>全流程地图</a>
+    <a href="#stages"><span class="num">03</span>逐阶段详解</a>
+    <a href="#artifacts"><span class="num">04</span>交付件总账</a>
+    <a href="#relations"><span class="num">05</span>知识与文件关系</a>
+    <a href="#case"><span class="num">06</span>Gallery 贯穿案例</a>
+    <a href="#quality"><span class="num">07</span>质量机制与边界</a>
+    <a href="#extensions"><span class="num">08</span>扩展工作流</a>
+    <a href="#recommend"><span class="num">09</span>架构评价与建议</a>
+    <a href="#action"><span class="num">10</span>落地检查清单</a>
+    <a href="#refs"><span class="num">11</span>官方资料与源码</a>
+  </nav>
+  <div class="side-bottom">版本：2026.10.15<br/>资料：GitHub Spec Kit 官方文档、主仓命令模板<br/>说明：报告示例及增强建议已标注。</div>
+</div></aside>
+<main class="content">
+<header class="hero"><div class="hero-inner">
+ <div class="eyebrow">ENGINEERING REFERENCE / SOFTWARE DEVELOPMENT</div>
+ <h1>GitHub Spec Kit<br/><em>软件研发全流程与交付件</em></h1>
+ <p class="lead">从 Constitution 到 Converge：一份面向个人长期查阅的规格驱动开发（SDD）技术总结，覆盖命令、阶段输入输出、文件结构、质量检查、贯穿案例与工程适用边界。</p>
+ <div class="hero-meta"><span>文档类型：技术总结 / Reference</span><span>覆盖范围：核心 SDD + 可选扩展</span><span>核验日期：2026-10-15</span><span>交付方式：独立单文件 HTML</span></div>
+</div></header>
+<div class="body-inner">
+<section class="section" id="overview">
+ <div class="section-head"><div class="section-index">01</div><div><div class="kicker">Executive summary</div><h2>核心认识与适用边界</h2></div></div>
+ <p class="section-intro">Spec Kit 是一套让编码 Agent 围绕<strong>规格、设计、任务和证据</strong>开展工作的工具与流程集合。它将“直接生成代码”的开发方式变为“先固化意图，再组织实施，再对照意图收敛”。</p>
+ <div class="cols-3">
+  <div class="tile"><div class="figure">01</div><h3>以规格为研发源头</h3><p>用 <code>spec.md</code> 定义业务行为、用户故事、验收场景和可测量成功标准。需求先于技术方案；实现细节留给 Plan。</p></div>
+  <div class="tile"><div class="figure">02</div><h3>以文件承载研发上下文</h3><p>项目原则、技术决策、数据模型、契约、任务等以可版本化的文件组织，让 Agent 在多个研发步骤中重复使用。</p></div>
+  <div class="tile"><div class="figure">03</div><h3>以收敛检查遗漏</h3><p><code>analyze</code> 检查交付件之间的一致性；<code>converge</code> 检查代码相对规格是否完整。两者不等同于运行时测试全部通过。</p></div>
+ </div>
+ <div class="note"><strong>一句话定位：</strong>Spec Kit 是<strong class="highlighter">规格驱动开发骨架 + AI Agent 执行约束 + 文件化研发知识</strong>；并非现成的完整企业 SDLC、测试管理平台、知识图谱或 CI/CD 发布系统。</div>
+ <p><span class="badge core">官方能力</span> 核心提供 Feature SDD 流程；<span class="badge optional">可选扩展</span> 提供 Bug Fix、Idea Assessment、Git / GitHub 集成以及 Workflow 等组合机制。三个业务过程彼此独立，评估想法和修复 Bug 不要求先执行完整 SDD。<a href="#ref-s1">[S1]</a> <a href="#ref-s2">[S2]</a></p>
+ <h3>先区分两类命令</h3>
+ <div class="cols-2">
+   <div class="tile"><h4>终端命令：<code>specify</code></h4><p>负责 CLI 安装、项目初始化、扩展安装及其他工具级管理，例如 <code>specify init</code>、<code>specify extension add bug</code>。</p></div>
+   <div class="tile"><h4>Agent 命令：<code>/speckit.*</code></h4><p>在 AI 编码助手会话中调用，让 Agent 读取相关文件、产生交付件、执行任务。不同集成可显示为 <code>/speckit-*</code> 或其他格式。</p></div>
+ </div>
+ <p class="small subtle">文中统一以 <code>/speckit.xxx</code> 表示概念命令名；具体使用时依安装的 Agent Integration 选择正确语法，例如 Copilot 的 Skills 模式通常是 <code>/speckit-xxx</code>。<a href="#ref-s2">[S2]</a></p>
+</section>
+
+<section class="section" id="workflow">
+ <div class="section-head"><div class="section-index">02</div><div><div class="kicker">Process map</div><h2>从项目初始化到实现收敛的完整流程</h2></div></div>
+ <p>下面采用官方参考流程顺序：先建立项目原则，再定义需求；在存在真实歧义时加入澄清、质量检查与跨文档分析，最后完成开发和收敛。<a href="#ref-s2">[S2]</a></p>
+ <div class="seq">
+  <div class="seq-item"><div class="step-no">SETUP · CLI</div><div class="step-name">Init</div><div class="step-desc">初始化模板、脚本与 Agent 集成</div></div>
+  <div class="seq-item"><div class="step-no">01 · PROJECT</div><div class="step-name">Constitution</div><div class="step-desc">项目级原则与强制约束</div></div>
+  <div class="seq-item"><div class="step-no">02 · FEATURE</div><div class="step-name">Specify</div><div class="step-desc">需求、Story、AC、成功标准</div></div>
+  <div class="seq-item gate"><div class="step-no">03 · OPTIONAL GATE</div><div class="step-name">Clarify</div><div class="step-desc">消除关键歧义并回写 Spec</div></div>
+  <div class="seq-item"><div class="step-no">04 · DESIGN</div><div class="step-name">Plan</div><div class="step-desc">研究、技术方案、模型与契约</div></div>
+  <div class="seq-item gate"><div class="step-no">05 · OPTIONAL GATE</div><div class="step-name">Checklist</div><div class="step-desc">审查规格本身的质量</div></div>
+  <div class="seq-item"><div class="step-no">06 · TASKS</div><div class="step-name">Tasks</div><div class="step-desc">按 Story、依赖分解实施任务</div></div>
+  <div class="seq-item gate"><div class="step-no">07 · OPTIONAL GATE</div><div class="step-name">Analyze</div><div class="step-desc">检查 Spec / Plan / Tasks 一致性</div></div>
+  <div class="seq-item code"><div class="step-no">08 · EXECUTION</div><div class="step-name">Implement</div><div class="step-desc">编码、执行规定的测试、更新任务</div></div>
+  <div class="seq-item code"><div class="step-no">09 · FEEDBACK</div><div class="step-name">Converge</div><div class="step-desc">发现遗漏，追加任务并再次实施</div></div>
+ </div>
+ <div class="flow-back"><strong>迭代闭环：</strong><code>Analyze</code> 发现问题 → 回到对应的 Specify / Clarify / Plan / Tasks 修订；<code>Converge</code> 发现实现缺口 → 在 <code>tasks.md</code> 追加任务 → <code>Implement</code> → 再次 <code>Converge</code>。</div>
+ <div class="cols-2">
+   <div class="tile"><span class="badge core">精简流程</span><h3 style="margin-top:12px">小范围、低歧义 Feature</h3><p><code>Specify → Plan → Tasks → Implement → Converge</code>，项目原则提前准备一次即可。</p></div>
+   <div class="tile"><span class="badge optional">增强流程</span><h3 style="margin-top:12px">生产功能与高风险变更</h3><p>在标准流程中引入 <code>Clarify</code>、<code>Checklist</code>、<code>Analyze</code>，提高进入编码之前的质量。</p></div>
+ </div>
+ <div class="note warn"><strong>不要混淆顺序与强制性：</strong>这些命令在官方参考中按顺序展示，但不是每一步都具有不可跳过的硬阻断器；例如质量检查命令属于可选质量增强，是否真正阻断由命令行为和团队治理方式共同决定。</div>
+</section>
+
+<section class="section" id="stages">
+ <div class="section-head"><div class="section-index">03</div><div><div class="kicker">Stage-by-stage</div><h2>逐阶段：目标、输入、活动、输出与准出</h2></div></div>
+ <p class="section-intro">“准出”栏包含<strong>建议的工程评审标准</strong>，用于落地时判断交付件是否可用；它不是官方已提供的统一自动化 Gate。</p>
+
+ <article class="phase-group" id="stage-init"><div class="phase-side"><div class="phase-index">00</div><div><div class="phase-title">Init</div><span class="badge core">环境建立</span></div></div><div class="phase-main">
+  <h3>建立项目工作区和 Agent 集成</h3><p>CLI 初始化负责安装文件模板、操作脚本与 Agent 集成入口；对于已有项目，使用 <code>--here</code>。Git 分支不是核心流程的前置条件，Git Extension 是独立可选项。<a href="#ref-s3">[S3]</a></p>
+  <div class="details"><div class="field"><span class="field-name">输入：</span>新项目名称或既有代码仓库、目标 Agent 集成。</div><div class="field"><span class="field-name">关键工作：</span>生成 <code>.specify/</code> 与 Agent 命令/Skills 配置。</div><div class="field"><span class="field-name">核心交付：</span>初始化的规范目录、模板、脚本与集成文件。</div><div class="field"><span class="field-name">准出建议：</span>模板可被命令识别、现有文件未意外覆盖。</div></div>
+  <div class="command"><div class="command-head">TERMINAL / CLI <button class="copy" data-copy="uv tool install specify-cli\nspecify init --here --force --integration claude">复制</button></div><pre>uv tool install specify-cli
+specify init --here --force --integration claude</pre></div>
+  <p class="tiny subtle">注：<code>--force</code> 是在非空目录合并/覆盖时确认风险，建议先提交或备份已有文件；Windows 可明确选择 <code>--script ps</code>。<a href="#ref-s3">[S3]</a></p>
+ </div></article>
+
+ <article class="phase-group" id="stage-constitution"><div class="phase-side"><div class="phase-index">01</div><div><div class="phase-title">Constitution</div><span class="badge core">项目级规则</span></div></div><div class="phase-main">
+  <h3>定义工程原则与不可违反的约束</h3><p>将架构边界、代码质量、测试纪律、体验与性能要求固化为项目 Constitution。它不是某个功能的需求，而是后续设计、检查、编码时的上层约束。</p>
+  <div class="details"><div class="field"><span class="field-name">输入：</span>团队技术规范、架构原则、质量标准。</div><div class="field"><span class="field-name">关键工作：</span>明确 MUST / SHOULD 规则和治理原则。</div><div class="field"><span class="field-name">主要交付：</span><code>.specify/memory/constitution.md</code></div><div class="field"><span class="field-name">准出建议：</span>条款可执行、无冲突，可在方案与代码中检查。</div></div>
+  <div class="command"><div class="command-head">AGENT COMMAND <button class="copy" data-copy="/speckit.constitution 定义项目的架构约束、测试策略、性能与安全底线">复制</button></div><pre>/speckit.constitution 定义项目的架构约束、测试策略、性能与安全底线</pre></div>
+  <p class="small">示例规则：上传任务可恢复；相同照片重试不得重复创建逻辑资产；关键业务路径必须具有对应验证。<strong>需要区别：</strong>写入 Constitution 才构成项目约束，模板并不会自动替团队选择这些标准。</p>
+ </div></article>
+
+ <article class="phase-group" id="stage-specify"><div class="phase-side"><div class="phase-index">02</div><div><div class="phase-title">Specify</div><span class="badge core">需求建模</span></div></div><div class="phase-main">
+  <h3>将想法转成可验收的 Feature Spec</h3><p>明确 What / Why，包括用户故事、验收场景、功能性需求（FR）、边界情况、关键实体、成功标准（SC）与假设；不要在这一阶段过早落入框架与代码实现细节。<a href="#ref-s4">[S4]</a></p>
+  <div class="details"><div class="field"><span class="field-name">输入：</span>自然语言的需求目标、约束与用户场景。</div><div class="field"><span class="field-name">关键工作：</span>抽取 Actor / Action / Data / Constraint，形成可验证行为。</div><div class="field"><span class="field-name">主要交付：</span><code>spec.md</code>；内置 <code>checklists/requirements.md</code>。</div><div class="field"><span class="field-name">准出建议：</span>Story、AC 与 FR 可辨识，重大待澄清项被明确标记。</div></div>
+  <div class="command"><div class="command-head">AGENT COMMAND <button class="copy" data-copy="/speckit.specify 网络断开后暂停照片上传，网络恢复且符合策略后自动继续，重复重试不产生重复云端资产">复制</button></div><pre>/speckit.specify 网络断开后暂停照片上传，网络恢复且符合策略后自动继续，重复重试不产生重复云端资产</pre></div>
+  <p class="small">官方命令允许对关键未定问题标记 <code>NEEDS CLARIFICATION</code>，并倾向于在可合理假设的情况下先写清假设，而不是让 Spec 因大量问题停滞。<a href="#ref-s4">[S4]</a></p>
+ </div></article>
+
+ <article class="phase-group" id="stage-clarify"><div class="phase-side"><div class="phase-index">03</div><div><div class="phase-title">Clarify</div><span class="badge optional">可选质量检查</span></div></div><div class="phase-main">
+  <h3>消除足以影响实现方向的需求歧义</h3><p>Agent 针对 Spec 的不明确点提出问题，将用户选择的结果回写到 <code>spec.md</code>。单轮最多 5 个针对性问题；可按范围多次执行。<a href="#ref-s2">[S2]</a></p>
+  <div class="details"><div class="field"><span class="field-name">输入：</span>已存在的 <code>spec.md</code>、未决规则与边界。</div><div class="field"><span class="field-name">关键工作：</span>找出多解释点并收敛选择、记录澄清。</div><div class="field"><span class="field-name">主要交付：</span>更新 <code>spec.md</code>（并可复评内置需求清单）。</div><div class="field"><span class="field-name">准出建议：</span>影响范围、安全、用户行为及 Oracle 的关键歧义已解决。</div></div>
+  <div class="command"><div class="command-head">AGENT COMMAND <button class="copy" data-copy="/speckit.clarify 重点检查网络恢复触发条件、手动暂停优先级、进程重启和去重语义">复制</button></div><pre>/speckit.clarify 重点检查网络恢复触发条件、手动暂停优先级、进程重启和去重语义</pre></div>
+  <div class="note warn"><strong>风险：</strong>如果某个问题被 Agent 直接默认推断而没有征询业务方，虽然文档看起来完整，仍可能固化错误前提。因此关键规则应明确由责任人确认。</div>
+ </div></article>
+
+ <article class="phase-group" id="stage-plan"><div class="phase-side"><div class="phase-index">04</div><div><div class="phase-title">Plan</div><span class="badge core">技术设计</span></div></div><div class="phase-main">
+  <h3>把需求转成可实施的架构和技术决策</h3><p>该阶段不仅生成 <code>plan.md</code>，还包括 Phase 0 的研究决策和 Phase 1 的详细设计。Plan 模板含技术背景、Constitution Check、项目目录结构；技术选择应能解释理由及替代方案。<a href="#ref-s5">[S5]</a></p>
+  <div class="details"><div class="field"><span class="field-name">输入：</span><code>spec.md</code>、Constitution、现有代码约束。</div><div class="field"><span class="field-name">关键工作：</span>技术研究、方案决策、实体与状态建模、接口定义、端到端验证指南。</div><div class="field"><span class="field-name">主要交付：</span><code>plan.md</code>、<code>research.md</code>、<code>data-model.md</code>、<code>contracts/</code>、<code>quickstart.md</code>（按适用性）。</div><div class="field"><span class="field-name">准出建议：</span>关键决策已确认，未知项有结论，接口/状态/验证路径明确。</div></div>
+  <div class="command"><div class="command-head">AGENT COMMAND <button class="copy" data-copy="/speckit.plan 基于现有 Android 项目，使用 WorkManager 管理持久任务，明确上传幂等边界和进程重启恢复策略">复制</button></div><pre>/speckit.plan 基于现有 Android 项目，使用 WorkManager 管理持久任务，明确上传幂等边界和进程重启恢复策略</pre></div>
+  <div class="table-wrap"><table><thead><tr><th>技术设计子阶段</th><th>主要问题</th><th>典型交付</th></tr></thead><tbody><tr><td><strong>Phase 0 · Research</strong></td><td>未知技术点是什么？为何选方案 A 而非 B？</td><td><code>research.md</code></td></tr><tr><td><strong>Phase 1 · Design</strong></td><td>数据结构、状态转移、接口契约是什么？</td><td><code>data-model.md</code>、<code>contracts/</code></td></tr><tr><td><strong>Phase 1 · Guide</strong></td><td>怎样运行和验证关键用户流程？</td><td><code>quickstart.md</code></td></tr></tbody></table></div>
+  <p class="small"><strong>技术判断：</strong><code>quickstart.md</code> 是验证与上手指南，不应被误当成覆盖全部需求的自动化测试套件。</p>
+ </div></article>
+
+ <article class="phase-group" id="stage-checklist"><div class="phase-side"><div class="phase-index">05</div><div><div class="phase-title">Checklist</div><span class="badge optional">可选质量检查</span></div></div><div class="phase-main">
+  <h3>评估“需求本身是否足够好”</h3><p>按照完整性、明确性、一致性和边界覆盖生成领域化检查表，例如上传权限、异常恢复、错误提示、安全等。<strong>检查的是规格质量，而不是代码执行通过率。</strong><a href="#ref-s2">[S2]</a></p>
+  <div class="details"><div class="field"><span class="field-name">输入：</span><code>spec.md</code> 与评审关注点。</div><div class="field"><span class="field-name">关键工作：</span>产生挑战问题、评审缺口并回写源规格。</div><div class="field"><span class="field-name">主要交付：</span><code>checklists/*.md</code>（自定义评审清单）。</div><div class="field"><span class="field-name">准出建议：</span>关键条目经评审人确认，通过项有证据链接。</div></div>
+  <div class="command"><div class="command-head">AGENT COMMAND <button class="copy" data-copy="/speckit.checklist 检查上传网络状态、异常恢复、幂等与安全边界的需求质量">复制</button></div><pre>/speckit.checklist 检查上传网络状态、异常恢复、幂等与安全边界的需求质量</pre></div>
+  <div class="note"><strong>官方语义：</strong>内置 <code>requirements.md</code> 是 Specify 创建、Clarify 可复评的清单；<code>checklist</code> 生成的自定义清单由<strong>评审者</strong>负责决定是否打勾，不应让实现 Agent 自行生成后自动全部批准。</div>
+ </div></article>
+
+ <article class="phase-group" id="stage-tasks"><div class="phase-side"><div class="phase-index">06</div><div><div class="phase-title">Tasks</div><span class="badge core">可执行计划</span></div></div><div class="phase-main">
+  <h3>按 User Story 与依赖拆分实施工作</h3><p>读取 Spec、Plan 和相关设计文件，生成可直接执行的文件级任务。任务一般包含 Setup、Foundational、各 User Story 和 Polish 阶段，标记任务 ID、并行条件与 Story 归属。<a href="#ref-s6">[S6]</a></p>
+  <div class="details"><div class="field"><span class="field-name">输入：</span><code>spec.md</code>、<code>plan.md</code> 及适用的研究、模型、契约。</div><div class="field"><span class="field-name">关键工作：</span>建立依赖顺序、独立验收条件、建议 MVP 范围。</div><div class="field"><span class="field-name">主要交付：</span><code>tasks.md</code></div><div class="field"><span class="field-name">准出建议：</span>每项可执行、可定位文件、可判断完成与否。</div></div>
+  <div class="command"><div class="command-head">AGENT COMMAND <button class="copy" data-copy="/speckit.tasks">复制</button></div><pre>/speckit.tasks</pre></div>
+  <div class="note warn"><strong>重要边界：</strong>官方 Tasks 模板写明，测试任务通常仅在规格明确要求或用户要求时加入。不能因为生成了 <code>tasks.md</code> 就推断所有 AC 都配置了自动化验证。<a href="#ref-s6">[S6]</a></div>
+ </div></article>
+
+ <article class="phase-group" id="stage-analyze"><div class="phase-side"><div class="phase-index">07</div><div><div class="phase-title">Analyze</div><span class="badge optional">可选质量检查</span></div></div><div class="phase-main">
+  <h3>编码前检查 Spec × Plan × Tasks 一致性</h3><p>在 <code>tasks.md</code> 生成后进行只读交叉分析，识别冲突、重复、歧义、遗漏以及 Constitution 违规。报告按严重级别汇总并建议修复，但本命令不自动改写文件。<a href="#ref-s7">[S7]</a></p>
+  <div class="details"><div class="field"><span class="field-name">输入：</span><code>spec.md</code>、<code>plan.md</code>、<code>tasks.md</code> 和 Constitution。</div><div class="field"><span class="field-name">关键工作：</span>审查需求覆盖、术语统一、范围一致、任务可追踪。</div><div class="field"><span class="field-name">主要交付：</span>对话中的结构化分析报告；不默认新增文件。</div><div class="field"><span class="field-name">准出建议：</span>阻断性缺口清零，修复落实到原始责任文件。</div></div>
+  <div class="command"><div class="command-head">AGENT COMMAND <button class="copy" data-copy="/speckit.analyze">复制</button></div><pre>/speckit.analyze</pre></div>
+  <p class="small">若发现“FR-003 没有对应任务”，应回到 <code>tasks</code>；若发现需求定义互相矛盾，则回到 <code>specify/clarify</code>；若发现设计与需求不符，则回到 <code>plan</code>。<strong>发现问题不代表问题已经修复。</strong></p>
+ </div></article>
+
+ <article class="phase-group" id="stage-implement"><div class="phase-side"><div class="phase-index">08</div><div><div class="phase-title">Implement</div><span class="badge core">编码与执行</span></div></div><div class="phase-main">
+  <h3>依照任务、技术设计和工程原则生成代码</h3><p>Agent 按任务阶段与依赖完成代码修改，执行任务中要求的测试并更新 <code>tasks.md</code> 状态。开始前检查 Checklist 的勾选情况；存在未完成项时，会请求用户决定是否继续，而不是擅自改变检查表。<a href="#ref-s2">[S2]</a></p>
+  <div class="details"><div class="field"><span class="field-name">输入：</span><code>tasks.md</code>、<code>plan.md</code>、相关技术文件。</div><div class="field"><span class="field-name">关键工作：</span>编码、依赖处理、测试执行、记录任务完成状态。</div><div class="field"><span class="field-name">主要交付：</span>应用代码、测试代码、执行输出、更新后的 <code>tasks.md</code>。</div><div class="field"><span class="field-name">准出建议：</span>任务执行结束、必要测试通过、运行失败有可复现证据。</div></div>
+  <div class="command"><div class="command-head">AGENT COMMAND <button class="copy" data-copy="/speckit.implement 先只实施 Setup、Foundational 和 User Story 1">复制</button></div><pre>/speckit.implement 先只实施 Setup、Foundational 和 User Story 1</pre></div>
+  <p class="small">对于较大 Feature，建议分 Story 实施和验证，避免把多阶段编码一次性塞入单个 Agent 上下文造成遗漏。</p>
+ </div></article>
+
+ <article class="phase-group" id="stage-converge"><div class="phase-side"><div class="phase-index">09</div><div><div class="phase-title">Converge</div><span class="badge core">实现收敛</span></div></div><div class="phase-main">
+  <h3>根据当前代码状态识别未履行的研发义务</h3><p>以 Spec、Plan、Tasks 为实现意图来源，考虑 Constitution 的约束，对照代码检查漏实现、部分实现、冲突实现和额外行为。若有可执行缺口，只允许向 <code>tasks.md</code> 追加新的 Convergence 任务；本命令不直接修代码。<a href="#ref-s8">[S8]</a></p>
+  <div class="details"><div class="field"><span class="field-name">输入：</span>完整 Spec/Plan/Tasks、当前代码、Constitution。</div><div class="field"><span class="field-name">关键工作：</span>用 FR / SC / US-AC / Plan 决策对照实现证据。</div><div class="field"><span class="field-name">主要交付：</span>收敛报告；有缺口时追加 <code>tasks.md</code>。</div><div class="field"><span class="field-name">准出建议：</span>报告 Converged，且独立测试与审查证据另行满足。</div></div>
+  <div class="command"><div class="command-head">AGENT COMMAND <button class="copy" data-copy="/speckit.converge">复制</button></div><pre>/speckit.converge</pre></div>
+  <div class="note warn"><strong>必须保留的理解：</strong>Converge 不是 Git Diff 分析器，不根据代码历史推断差异；它检查的是当前代码对规格的满足情况。<strong>Converged 不是 Release Ready</strong>，不代表真机、复杂故障注入、容量、性能或线上灰度验证已经充分。<a href="#ref-s8">[S8]</a></div>
+ </div></article>
+</section>
+
+<section class="section" id="artifacts">
+ <div class="section-head"><div class="section-index">04</div><div><div class="kicker">Artifact inventory</div><h2>交付件总账：谁创建、保存什么、被谁消费</h2></div></div>
+ <p>建议把交付件分成四层：<strong>项目规则、需求规格、设计决策、任务与实现</strong>。下表同时区分默认/可选、持久化文件/对话结果，避免错把“命令输出”当成“已经保存的证据”。</p>
+ <label class="searchbox" for="artifactSearch"><span>⌕</span><input id="artifactSearch" placeholder="筛选文件名、命令、用途（例如：research / 测试 / analyze）" aria-label="筛选交付件"/><span id="artifactCount" class="tiny subtle">13 项</span></label>
+ <div class="table-wrap"><table class="artifact-table" id="artifactTable"><thead><tr><th>交付件</th><th>产生阶段</th><th>主要内容与职责</th><th>后续消费者</th></tr></thead><tbody>
+  <tr><td><code>.specify/feature.json</code></td><td>Feature 选择/创建流程</td><td>记录当前活动 Feature 目录；不依赖当前 Git Branch 推断</td><td>各 Agent 命令的 Feature 定位</td></tr>
+  <tr><td><code>constitution.md</code></td><td>Constitution</td><td>项目 MUST / SHOULD 约束与研发工程原则</td><td>Plan、Analyze、Implement、Converge</td></tr>
+  <tr><td><code>spec.md</code></td><td>Specify、Clarify</td><td>User Story、AC、FR、SC、边界场景、假设与关键实体</td><td>Plan、Checklist、Tasks、Analyze、Converge</td></tr>
+  <tr><td><code>checklists/requirements.md</code></td><td>Specify；Clarify 可复评</td><td>内置的需求质量检查状态</td><td>需求复核与实施前检查</td></tr>
+  <tr><td><code>plan.md</code></td><td>Plan</td><td>技术上下文、实施结构、Constitution Check 与方案概要</td><td>Tasks、Analyze、Implement、Converge</td></tr>
+  <tr><td><code>research.md</code></td><td>Plan / Research</td><td>技术决策、选择理由、候选替代方案与风险</td><td>Tasks、Implement；设计复盘</td></tr>
+  <tr><td><code>data-model.md</code></td><td>Plan / Design</td><td>实体属性、关系、状态和业务数据建模</td><td>Tasks、Implement</td></tr>
+  <tr><td><code>contracts/</code></td><td>Plan / Design（按需）</td><td>API 或组件间交互契约</td><td>Tasks、Implement、契约验证</td></tr>
+  <tr><td><code>quickstart.md</code></td><td>Plan / Design</td><td>功能上手、运行与关键场景验证指南</td><td>Tasks、开发人员与验证人员</td></tr>
+  <tr><td><code>checklists/*.md</code></td><td>Checklist（按需）</td><td>评审者拥有的规格质量检查项</td><td>评审、Implement 前置检查</td></tr>
+  <tr><td><code>tasks.md</code></td><td>Tasks；Converge 追加</td><td>任务 ID、Story 归属、依赖、路径、状态、收敛任务</td><td>Analyze、Implement、Converge</td></tr>
+  <tr><td><strong>Analyze 报告</strong></td><td>Analyze</td><td>跨文档冲突/遗漏/覆盖分析；默认对话输出</td><td>文档责任人（需主动保存归档）</td></tr>
+  <tr><td><strong>Source / Tests</strong></td><td>Implement</td><td>实际实现、测试实现以及可获取的运行结果</td><td>Converge、CI、代码审查</td></tr>
+ </tbody></table></div>
+ <div class="note idea"><strong>工程增强建议：</strong>如果要形成可审计的质量证据链，额外引入 <code>verification-obligations.yaml</code>、<code>verification-results.json</code>、<code>gate-report.html</code> 等规范化对象。这些是建议扩展，<strong>不是 Spec Kit 官方默认交付件</strong>。</div>
+</section>
+
+<section class="section" id="relations">
+ <div class="section-head"><div class="section-index">05</div><div><div class="kicker">Structure & knowledge</div><h2>知识如何随着文件在研发链路中流动</h2></div></div>
+ <div class="split"><div>
+ <h3>典型目录结构</h3>
+ <div class="mono-tree"><strong>gallery-project/</strong>
+├── .specify/
+│   ├── feature.json                # 活跃 Feature 定位
+│   ├── memory/
+│   │   └── constitution.md         # 项目级工程原则
+│   ├── templates/                  # 研发文档模板
+│   └── scripts/                    # 命令辅助脚本
+├── specs/
+│   └── photo-sync-retry/
+│       ├── spec.md                 # 需求 / Story / AC
+│       ├── plan.md                 # 技术设计入口
+│       ├── research.md             # 选型与决策理由
+│       ├── data-model.md           # 实体与状态
+│       ├── contracts/              # 接口契约（按需）
+│       ├── quickstart.md           # 验证与运行指南
+│       ├── checklists/
+│       │   ├── requirements.md     # 内置规格质量检查
+│       │   └── security.md         # 自定义检查（按需）
+│       └── tasks.md                # 开发与收敛任务
+└── app/ / src/ / tests/            # 实际代码与测试</div>
+ </div><div>
+ <h3>文件之间的语义关系</h3>
+ <div class="diagram-layers">
+  <div class="diagram-layer"><strong>Constitution：项目级规则</strong><small>对 Spec、Plan、Tasks、实现提供约束</small></div><div class="diagram-arrow">↓</div>
+  <div class="diagram-layer target"><strong>Spec：业务意图 / Story / AC / FR</strong><small>描述应当发生什么以及成功标准</small></div><div class="diagram-arrow">↓</div>
+  <div class="diagram-layer"><strong>Plan + Research + Model + Contracts</strong><small>将业务要求映射成技术设计与决策</small></div><div class="diagram-arrow">↓</div>
+  <div class="diagram-layer"><strong>Tasks：可执行的原子工作单元</strong><small>将需求与设计落实到任务及路径</small></div><div class="diagram-arrow">↓</div>
+  <div class="diagram-layer target"><strong>Source + Tests：实际实现和证据</strong><small>由 Implement 交付，Converge 对照检查</small></div>
+ </div>
+ </div></div>
+ <div class="note"><strong>知识管理结论：</strong>Spec Kit 的强项是<strong>文件化、可版本化、与研发过程绑定的显式知识</strong>，例如项目原则、技术决策和领域模型。其核心并未内置完整的跨项目 RAG、关系图数据库、自动知识生命周期治理或组织级经验检索引擎。</div>
+</section>
+
+<section class="section" id="case">
+ <div class="section-head"><div class="section-index">06</div><div><div class="kicker">Worked example</div><h2>贯穿案例：Gallery 网络恢复后自动续传</h2></div></div>
+ <p>以下是<strong>教学示例</strong>，用于说明从需求到代码如何逐层映射；不是直接来源于官方 Spec Kit 仓库的实际业务需求。</p>
+ <div class="trace">
+  <div class="trace-line"><div class="trace-key">User Story</div><div class="trace-val"><strong>US-01：</strong>用户希望断网中断的照片上传在网络恢复后继续，避免重复手动发起。</div></div>
+  <div class="trace-line"><div class="trace-key">Acceptance</div><div class="trace-val"><strong>US1/AC2：</strong>Given 已成功上传的同一逻辑照片，When 网络恢复引发重试，Then 不得生成重复云端资产。</div></div>
+  <div class="trace-line"><div class="trace-key">Requirement</div><div class="trace-val"><strong>FR-003：</strong>同一账号及逻辑照片的重试过程需要满足去重/幂等约束。</div></div>
+  <div class="trace-line"><div class="trace-key">Plan / ADR</div><div class="trace-val"><strong>设计：</strong>WorkManager 负责恢复调度；本地 UploadTask 持久化；服务端幂等键防止重复提交导致双资产。</div></div>
+  <div class="trace-line"><div class="trace-key">Tasks</div><div class="trace-val"><strong>T005：</strong>网络恢复任务调度；<strong>T006：</strong>实现幂等键与状态回写；<strong>T007：</strong>覆盖重试集成测试。</div></div>
+  <div class="trace-line"><div class="trace-key">Source / Tests</div><div class="trace-val"><strong>代码：</strong>UploadWorker / UploadRepository 等；<strong>证据：</strong>测试记录、重复资产检查、失败重试日志。</div></div>
+  <div class="trace-line extra"><div class="trace-key">增强：Obligation</div><div class="trace-val">进一步结构化前置条件、刺激动作、Oracle 与验证层次，提升从 AC 到自动化测试的可执行性。<span class="badge recommend">建议扩展 · 非官方默认</span></div></div>
+ </div>
+ <div class="split"><div>
+ <div class="big-label">SPEC.MD · ACCEPTANCE SCENARIO</div>
+ <div class="code-block"><div class="code-head">验收场景示例 <button class="copy" data-copy="Given 同一逻辑照片在网络中断前已经成功上传\nWhen 网络恢复触发上传任务再次执行\nThen 云端资产数量保持为 1\nAnd 客户端任务最终处于 COMPLETED">复制</button></div><pre>Given 同一逻辑照片在网络中断前已经成功上传
+When 网络恢复触发上传任务再次执行
+Then 云端资产数量保持为 1
+And 客户端任务最终处于 COMPLETED</pre></div>
+ </div><div>
+ <div class="big-label">RESEARCH.MD · DESIGN DECISION</div>
+ <div class="code-block"><div class="code-head">技术决策示例</div><pre>Decision:
+  使用 WorkManager 进行持久化调度
+Rationale:
+  任务与系统运行条件解耦，可在进程重启后恢复
+Alternative:
+  ConnectivityManager + 应用内调度
+Risk:
+  客户端重试不能替代服务端幂等性</pre></div>
+ </div></div>
+ <div class="code-block"><div class="code-head">TASKS.MD · TASK DECOMPOSITION <button class="copy" data-copy="- [ ] T005 [US1] 实现 UploadWorker 恢复调度\n- [ ] T006 [US1] 实现服务端幂等键和客户端状态更新\n- [ ] T007 [US1] 添加重复上传集成测试">复制</button></div><pre>- [ ] T005 [US1] 实现 UploadWorker 恢复调度
+- [ ] T006 [US1] 实现服务端幂等键和客户端状态更新
+- [ ] T007 [US1] 添加重复上传集成测试</pre></div>
+ <div class="note idea"><strong>为什么还建议补 Test Obligation？</strong><br/>AC 定义了业务可接受行为，但通常没有完整指定测试设施、准备数据、故障注入点、可观测信号和 Oracle 判定方式。若要求机器可执行、可审计验证，可进一步映射 <strong>AC → Test Obligation → Test Case → Evidence</strong>。这是对 Spec Kit 的工程增强，而不是它当前默认内置的验证资产模型。</div>
+</section>
+
+<section class="section" id="quality">
+ <div class="section-head"><div class="section-index">07</div><div><div class="kicker">Quality architecture</div><h2>Spec Kit 的质量控制点与未覆盖的验证</h2></div></div>
+ <div class="quality-matrix">
+  <div class="tile"><div class="quality-id">CHECKPOINT / A</div><h3>规格质量</h3><p><strong>Specify + Clarify + Checklist</strong></p><p class="stage-text">关注需求是否完整、清晰、一致、可验证；关键边界和规则是否已确认。</p><span class="badge core">官方主线 + 可选检查</span></div>
+  <div class="tile"><div class="quality-id">CHECKPOINT / B</div><h3>设计与任务一致性</h3><p><strong>Plan + Tasks + Analyze</strong></p><p class="stage-text">关注 FR 到任务是否可追踪，设计是否违背需求/Constitution，任务是否有范围遗漏。</p><span class="badge core">官方机制</span></div>
+  <div class="tile"><div class="quality-id">CHECKPOINT / C</div><h3>实现完整性</h3><p><strong>Implement + Converge</strong></p><p class="stage-text">关注代码是否实现 Spec 和 Plan，以及未实现工作是否被追加回任务列表。</p><span class="badge core">官方机制</span></div>
+ </div>
+ <h3>为什么 Converged ≠ 测试完成 ≠ 可以发布？</h3>
+ <div class="table-wrap"><table><thead><tr><th>验证目标</th><th>Spec Kit 覆盖情况</th><th>额外需要的工程能力</th></tr></thead><tbody>
+  <tr><td>需求、设计、任务跨文件一致</td><td>Analyze 可以执行只读检查</td><td>业务评审人批准、严重问题阻断规则</td></tr>
+  <tr><td>实现满足已记录的意图</td><td>Converge 可以识别当前代码的缺口</td><td>独立验证主体、确定性检查和证据</td></tr>
+  <tr><td>单元、集成与端到端测试</td><td>可作为任务生成并在 Implement 执行；默认深度不保证</td><td>测试义务、测试资产、覆盖策略、结果汇总</td></tr>
+  <tr><td>Android 真机与复杂状态场景</td><td>不作为完整内置测试平台</td><td>设备矩阵、环境控制、弱网和进程故障注入</td></tr>
+  <tr><td>性能、可靠性、安全与发布守护</td><td>可在 Constitution / Plan 中声明要求，但执行另需实现</td><td>CI/CD、质量门禁、运行监测、灰度与回滚</td></tr>
+ </tbody></table></div>
+ <div class="note warn"><strong>常见误判：</strong><code>tasks.md</code> 中一个 FR 被任务引用，只说明“已安排实现”，不意味着“已有足够测试”；<code>converge</code> 报告已收敛，也不意味着外部行为 Oracle 已被真实环境观测并证明。</div>
+</section>
+
+<section class="section" id="extensions">
+ <div class="section-head"><div class="section-index">08</div><div><div class="kicker">Optional flows & composition</div><h2>独立扩展：Idea Assessment、Bug Fix、Workflows</h2></div></div>
+ <div class="cols-2">
+  <div class="tile"><span class="badge optional">可选 · Idea Assessment</span><h3 style="margin-top:13px">先决定一个想法值不值得做</h3><p><strong>Intake → Research → Define → Shape → Decide</strong>。沉淀 <code>intake.md</code>、<code>research.md</code>、<code>problem.md</code>、<code>concept.md</code>、<code>decision.md</code>；结论可为 <code>go</code>、<code>needs-clarification</code> 或 <code>kill</code>。独立于 Feature SDD。</p><div class="command"><div class="command-head">TERMINAL</div><pre>specify extension add assess</pre></div></div>
+  <div class="tile"><span class="badge optional">可选 · Bug Fix</span><h3 style="margin-top:13px">故障诊断到证据验证</h3><p><strong>Assess → Fix → Test</strong>。每个缺陷在 <code>.specify/bugs/&lt;slug&gt;/</code> 下记录 <code>assessment.md</code>、<code>fix.md</code>、<code>test.md</code>。验证结论区分 <code>verified</code>、<code>partial</code> 和 <code>failed</code>。</p><div class="command"><div class="command-head">TERMINAL</div><pre>specify extension add bug</pre></div></div>
+ </div>
+ <div class="tile"><h3>Workflow / Preset / Bundle：如何封装团队流程</h3><p>Spec Kit 当前还提供工作流与组件组合机制：可以串联 Agent 命令、Shell 步骤和人工审查节点，组合成重复可运行的流程；Preset / Bundle 用于组织模板、扩展和工作流，适合团队标准化。具体可用性、命令位置和集成能力应以安装版本的官方参考为准。<a href="#ref-s9">[S9]</a></p>
+ <p class="small"><strong>建议用法：</strong>先用原生命令完成一个真实 Feature，再决定哪些步骤自动串联、哪些必须保留人工决策，不建议在 PoC 初期一次性把所有命令包成黑盒流水线。</p></div>
+</section>
+
+<section class="section" id="recommend">
+ <div class="section-head"><div class="section-index">09</div><div><div class="kicker">Architecture assessment</div><h2>面向企业研发质量体系的架构评价</h2></div></div>
+ <p>如果要将 Spec Kit 作为 AI Native 研发体系的基础，可以直接复用其上游规格与工作流机制，而把<strong>知识检索、测试义务、独立验证和发布证据</strong>作为增强层。</p>
+ <div class="diagram-layers">
+  <div class="diagram-layer"><strong>研发需求 / 问题输入</strong><small>新功能、技术改进、缺陷与业务反馈</small></div><div class="diagram-arrow">↓</div>
+  <div class="diagram-layer target"><strong>Spec Kit：规格与工程知识层</strong><small>Constitution · Spec · Clarify · Research · Plan · Tasks</small></div><div class="diagram-arrow">↓</div>
+  <div class="diagram-layer target"><strong>Spec Kit：Agent 执行与收敛层</strong><small>Analyze · Implement · Converge</small></div><div class="diagram-arrow">↓</div>
+  <div class="diagram-layer needed"><strong>增强层 A：测试义务与验证契约</strong><small>AC → Obligation → Oracle → UT / Integration / Device</small></div><div class="diagram-arrow">↓</div>
+  <div class="diagram-layer needed"><strong>增强层 B：独立验证执行与质量证据</strong><small>确定性测试、执行记录、制品身份、环境与源码版本绑定</small></div><div class="diagram-arrow">↓</div>
+  <div class="diagram-layer needed"><strong>增强层 C：CI/CD 发布护栏</strong><small>发布审批、灰度监测、回滚与线上反馈闭环</small></div>
+ </div>
+ <h3>适合直接复用的设计</h3><ul><li><strong>Constitution：</strong>把项目“必须遵守什么”从 Prompt 中提取为稳定规则文件。</li><li><strong>Spec / AC：</strong>让实现意图具有需求标识与验收行为，支持后续关联。</li><li><strong>Research：</strong>记录 Decision / Rationale / Alternatives，避免只有结论没有选型依据。</li><li><strong>Analyze：</strong>在编码前建立跨文档质量检查点。</li><li><strong>Converge：</strong>将“有没有做完”从任务打勾转为“对当前代码与规格做一致性检查”。</li></ul>
+ <h3>需要补齐的设计</h3><ul><li><strong>知识库：</strong>结构化元数据、稳定知识 ID、全文/向量/关系检索、过期判断和跨项目复用。</li><li><strong>验证模型：</strong>将需求与可执行 Test Obligation、Oracle、测试层级、测试证据显式关联。</li><li><strong>证据可信度：</strong>报告与 Commit、运行环境、工具版本、测试输入及执行日志绑定，避免只依据 Agent 自我陈述。</li><li><strong>运行阶段：</strong>补充真机、系统环境、性能、容量、灰度和回滚验证。</li></ul>
+ <div class="note idea"><strong>技术判断：</strong>Spec Kit 更适合承担“规格与设计知识的生产、组织和消费”角色，而不是组织长期经验知识库的唯一引擎。若要建设企业研发知识系统，可以把其产出的 Spec、Decision、Model、Bug Report 当作结构化知识源。</div>
+</section>
+
+<section class="section" id="action">
+ <div class="section-head"><div class="section-index">10</div><div><div class="kicker">Adoption checklist</div><h2>用一个 Feature 做落地验证：最小实施清单</h2></div></div>
+ <p>建议选择一个范围有限但包含状态转换与失败重试的真实功能，做一轮完整跑通和证据审查。以下是可以复制到试点记录里的清单：</p>
+ <div class="cols-2">
+ <div class="tile"><h3>流程与文件完整性</h3><ul class="checklist"><li>CLI 初始化完成；Agent 命令可正确定位当前 Feature。</li><li>Constitution 有可执行且被团队批准的强制规则。</li><li>Spec 包含 Story、AC、FR、边界场景和成功标准。</li><li>研究、设计决策、数据模型和接口方案可追踪。</li><li>Tasks 对关键 Story 有实现任务和必要的验证任务。</li></ul></div>
+ <div class="tile"><h3>质量与证据完整性</h3><ul class="checklist"><li>关键 Clarify 问题已被业务责任人确认。</li><li>自定义 Checklist 有评审结果，而非 Agent 自行全勾。</li><li>Analyze 的严重问题经修复后重新验证。</li><li>Implement 产生的测试结果能够实际复现。</li><li>Converge 无遗漏；独立测试/发布门禁另行通过。</li></ul></div>
+ </div>
+ <h3>建议保留的试点度量</h3>
+ <div class="table-wrap"><table><thead><tr><th>度量项</th><th>定义建议</th><th>要回答的问题</th></tr></thead><tbody><tr><td>需求澄清密度</td><td>每 Feature 关键澄清决策数量及对实现的影响</td><td>是否真的发现了模糊与遗漏？</td></tr><tr><td>需求任务映射覆盖</td><td>可验证 FR/AC 中具有对应实施与验证任务的比例</td><td>是否存在需求没落到执行层？</td></tr><tr><td>Analyze 阻断问题</td><td>CRITICAL/HIGH 问题数和修复闭环率</td><td>是否降低编码前返工风险？</td></tr><tr><td>Converge 轮次与缺口</td><td>首次与末次检查缺口数、类型、修复轮次</td><td>首次代码生成是否足够完整？</td></tr><tr><td>独立验证通过率</td><td>关键验证义务具有有效证据的比例</td><td>是否真的交付正确的软件？</td></tr></tbody></table></div>
+ <div class="note"><strong>最终评估标准：</strong>不是“生成了多少个 Markdown 文件”，而是需求歧义是否减少、技术决策是否可追溯、重要验证是否前移、修改后是否更容易判断真实风险，以及输出能否被后续 Feature 复用。</div>
+</section>
+
+<section class="section" id="refs">
+ <div class="section-head"><div class="section-index">11</div><div><div class="kicker">Sources & further reading</div><h2>官方资料和源码索引</h2></div></div>
+ <p>文中“官方能力”以这些资料为依据；“准出建议”“增强架构”“Gallery 示例”属于本报告的分析和设计建议。官方仓库可能持续演进，实施时建议以本地安装版本和对应提交的源码为准。</p>
+ <div class="ref-list">
+  <div class="ref-item" id="ref-s1"><a href="https://github.github.com/spec-kit/" target="_blank" rel="noopener">[S1] GitHub Spec Kit 官网 ↗</a><p>产品定位；独立的 SDD、Bug Fix 与 Idea Assessment 过程。</p></div>
+  <div class="ref-item" id="ref-s2"><a href="https://github.github.com/spec-kit/reference/agentic-sdd.html" target="_blank" rel="noopener">[S2] Agentic SDD Reference ↗</a><p>9 个核心命令的顺序、职责、输出与调用规则。</p></div>
+  <div class="ref-item" id="ref-s3"><a href="https://github.github.com/spec-kit/reference/core.html" target="_blank" rel="noopener">[S3] Core CLI Commands ↗</a><p><code>specify init</code> 参数、Agent Integration 与 Git 可选机制。</p></div>
+  <div class="ref-item" id="ref-s4"><a href="https://github.com/github/spec-kit/blob/main/templates/commands/specify.md" target="_blank" rel="noopener">[S4] Specify 源码模板 ↗</a><p>需求提取、可验证 FR、SC、假设与澄清标记的生成规则。</p></div>
+  <div class="ref-item" id="ref-s5"><a href="https://github.com/github/spec-kit/blob/main/templates/plan-template.md" target="_blank" rel="noopener">[S5] Plan 模板源码 ↗</a><p>技术上下文、Constitution Check、研究与设计文件约定。</p></div>
+  <div class="ref-item" id="ref-s6"><a href="https://github.com/github/spec-kit/blob/main/templates/tasks-template.md" target="_blank" rel="noopener">[S6] Tasks 模板源码 ↗</a><p>任务格式、Story 分组、并行标记与测试可选性。</p></div>
+  <div class="ref-item" id="ref-s7"><a href="https://github.com/github/spec-kit/blob/main/templates/commands/analyze.md" target="_blank" rel="noopener">[S7] Analyze 命令源码 ↗</a><p>只读跨文档审查、Constitution 权威和问题等级。</p></div>
+  <div class="ref-item" id="ref-s8"><a href="https://github.com/github/spec-kit/blob/main/templates/commands/converge.md" target="_blank" rel="noopener">[S8] Converge 命令源码 ↗</a><p>与代码实现的对应检查、只追加任务、非 Git Diff。</p></div>
+  <div class="ref-item" id="ref-s9"><a href="https://github.github.com/spec-kit/reference/overview.html" target="_blank" rel="noopener">[S9] Reference Overview ↗</a><p>Extensions、Presets、Workflows、Bundles 的用途和边界。</p></div>
+  <div class="ref-item"><a href="https://github.github.com/spec-kit/quickstart.html" target="_blank" rel="noopener">Quickstart ↗</a><p>官方推荐精简流程与质量增强流程，以及端到端示例。</p></div>
+  <div class="ref-item"><a href="https://github.github.com/spec-kit/guides/bugfix.html" target="_blank" rel="noopener">Bug Fix Quickstart ↗</a><p>Assess / Fix / Test 三段式流程及 Bug 目录交付件。</p></div>
+  <div class="ref-item"><a href="https://github.com/github/spec-kit" target="_blank" rel="noopener">GitHub 官方仓库 ↗</a><p>Issue、Release、主仓源码与后续变化追踪入口。</p></div>
+ </div>
+ <div class="disclaimer"><strong>准确性与适用性说明：</strong>本报告于 2026-10-15 参考官方在线资料编制。命令显示形式会随 Agent 集成变化；交付件具体名称及可选项受模板版本与扩展配置影响。文中示例文件、示意用例和工程门禁建议属于分析内容，不能直接视作 Spec Kit 自动保障。引用的 <code>main</code> 分支链接会随上游更新，不构成锁定版本的证据。</div>
+ <div class="footer">GitHub Spec Kit · 软件研发全流程与交付件 · 个人技术总结<br/>本报告为单文件 HTML，不依赖 CDN 或外部 JS/CSS；页面右下角可返回顶部，浏览器可直接打印为 PDF。</div>
+</section>
+</div>
+</main></div>
+<button class="top" id="toTop" title="返回顶部" aria-label="返回顶部">↑ 顶部</button>
+<script>
+(function(){
+ const tocLinks=[...document.querySelectorAll('#toc a[href^="#"]')];
+ const sections=tocLinks.map(a=>document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
+ const obs=('IntersectionObserver' in window)?new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top);if(visible.length){tocLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+visible[0].target.id));}},{rootMargin:'-12% 0px -65% 0px',threshold:0}):null;
+ if(obs)sections.forEach(s=>obs.observe(s));
+ const input=document.getElementById('artifactSearch'); const rows=[...document.querySelectorAll('#artifactTable tbody tr')];const count=document.getElementById('artifactCount');
+ input.addEventListener('input',()=>{const q=input.value.trim().toLowerCase();let n=0;rows.forEach(r=>{const show=r.textContent.toLowerCase().includes(q);r.style.display=show?'':'none';if(show)n++;});count.textContent=n+' 项';});count.textContent=rows.length+' 项';
+ document.querySelectorAll('[data-copy]').forEach(btn=>btn.addEventListener('click',async()=>{const str=btn.getAttribute('data-copy').replace(/\\n/g,'\n');let ok=false;try{await navigator.clipboard.writeText(str);ok=true;}catch(e){const el=document.createElement('textarea');el.value=str;document.body.appendChild(el);el.select();try{ok=document.execCommand('copy');}catch(e){}el.remove();}const old=btn.textContent;btn.textContent=ok?'已复制':'请手动选择';setTimeout(()=>btn.textContent=old,1700);}));
+ const topButton=document.getElementById('toTop');
+ const updateTop=()=>topButton.classList.toggle('shown',window.scrollY>500);
+ window.addEventListener('scroll',updateTop,{passive:true}); updateTop();
+ topButton.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+})();
+</script>
+</body>
+</html>

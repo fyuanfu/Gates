@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="AI Native 高质量软件交付体系：高管总览与四阶段落地机制，单页纵向滚动 HTML 报告。" name="description"/>
+<title>AI Native 高质量软件交付体系｜单页长图</title>
+<style> 
+:root{
+  color-scheme:light;
+  --ink:#15233a;--navy:#142d52;--muted:#64758c;--border:#dce5f0;
+  --blue:#2173d4;--teal:#118a7b;--violet:#7758c8;--amber:#bd781c;
+  --bg:#f7faff;--panel:#fff;--shadow:0 10px 29px rgba(40,67,110,.055);
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC","Noto Sans CJK SC","Source Han Sans SC",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;min-height:100%;font-family:var(--font);color:var(--ink)}
+body{background:linear-gradient(#eaf0f9,#f4f7fd 35%,#edf3fb);overflow-x:hidden}
+h1,h2,h3,p{margin:0}
+.report{width:min(1480px,calc(100% - 72px));margin:32px auto 64px;background:var(--bg);border-radius:24px;box-shadow:0 18px 65px rgba(25,49,87,.10);overflow:hidden;border:1px solid #e1e8f1}
+.section{position:relative;padding:46px 62px 38px;background:var(--bg)}
+.section:before{content:"";position:absolute;width:560px;height:460px;border-radius:50%;right:-365px;top:-300px;background:radial-gradient(circle,rgba(75,132,224,.075),rgba(75,132,224,0) 74%);pointer-events:none}
+.topline{position:relative;display:flex;justify-content:space-between;align-items:center;gap:15px;color:#6b84a2;font-size:12px;letter-spacing:2px;font-weight:800}
+.topline .right{display:flex;align-items:center;gap:12px;color:#8698ad;letter-spacing:1.1px;font-size:12px}
+.topline .tinybar{display:block;width:33px;height:3px;border-radius:3px;background:#397ecb}
+.header{position:relative;margin-top:19px}
+h1{font-size:clamp(29px,3.1vw,42px);letter-spacing:-1.25px;font-weight:820;line-height:1.25;color:#12294c}
+.subtitle{margin-top:11px;font-size:19px;color:#586c84;line-height:1.65}
+.em{color:#235fc1;font-weight:760}
+.pivot{margin-top:25px;min-height:102px;border:1px solid #d3dbfa;background:linear-gradient(105deg,#eef2ff 0%,#f9f7ff 48%,#effafa 100%);border-radius:17px;display:flex;align-items:center;justify-content:space-between;padding:19px 26px;gap:24px}
+.pivot-main{display:flex;align-items:center;gap:22px}
+.pivot-tag{color:#6f6ebf;font-size:13px;letter-spacing:1px;font-weight:800;white-space:nowrap}
+.pivot-change{display:flex;align-items:center;gap:15px;font-size:clamp(17px,2vw,24px);letter-spacing:-.5px;font-weight:720;color:#8c94a6;white-space:nowrap}
+.pivot-change strong{color:#283e81;font-weight:820}
+.pivot-change svg{flex:none}
+.pivot-note{max-width:380px;color:#526382;font-size:15px;line-height:1.75;text-align:right}
+.section-label{display:flex;align-items:center;gap:12px;margin-top:29px;margin-bottom:15px;font-size:17px;font-weight:780;color:#1d3e67}
+.section-label:before{content:"";width:4px;height:22px;border-radius:2px;background:#5b89df}
+.flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+.phase{position:relative;min-height:270px;padding:22px 20px 17px;background:#fff;border:1.5px solid var(--phase-border);border-radius:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;isolation:isolate}
+.phase:not(:last-child):after{content:"";position:absolute;top:130px;right:-17px;width:12px;height:12px;transform:rotate(45deg);border-top:2px solid #8798ab;border-right:2px solid #8798ab;z-index:2}
+.phase:not(:last-child):before{content:"";position:absolute;top:136px;right:-22px;width:22px;height:2px;background:#a2acbc;z-index:2}
+.phase.blue{--phase-color:#1e67b9;--phase-tint:#eaf3ff;--phase-border:#a7c9f3}
+.phase.teal{--phase-color:#087d70;--phase-tint:#e6f7f3;--phase-border:#9fdaca}
+.phase.violet{--phase-color:#6a4bbc;--phase-tint:#f2edff;--phase-border:#c5b4f0}
+.phase.amber{--phase-color:#ab690f;--phase-tint:#fff4e4;--phase-border:#edd1a2}
+.phase-top{display:flex;align-items:center;gap:10px;color:var(--phase-color)}
+.phase-number{width:40px;height:40px;flex:none;border-radius:11px;background:var(--phase-tint);display:grid;place-items:center;font-weight:850;font-size:17px}
+.phase h3{font-size:clamp(18px,1.75vw,24px);line-height:1.25;letter-spacing:-.5px;color:var(--phase-color)}
+.phase-goal{margin-top:20px;font-size:17px;font-weight:760;line-height:1.45;color:#233c58}
+.phase-actions{display:grid;gap:14px;margin:17px 0 20px}
+.phase-action{display:flex;align-items:flex-start;gap:9px;color:#56667b;font-size:14px;font-weight:590;line-height:1.5}
+.check{display:grid;place-items:center;flex:none;background:var(--phase-tint);border-radius:50%;width:19px;height:19px;color:var(--phase-color);font-size:12px;font-weight:900;margin-top:1px}
+.gate{margin-top:auto;display:flex;align-items:center;justify-content:space-between;border-top:1px solid #e4eaf1;padding-top:14px;color:var(--phase-color);font-size:14px;font-weight:780}
+.gate small{font-weight:850;letter-spacing:1px;font-size:11px;color:#77879a}
+.loop{height:65px;position:relative;margin-top:6px}
+.loop svg{display:block;width:100%;height:63px;overflow:visible}
+.loop-label{position:absolute;top:24px;left:50%;transform:translateX(-50%);background:var(--bg);padding:0 16px;color:#675cba;font-size:14px;font-weight:710;white-space:nowrap}
+.support{margin-top:6px;border:1px solid #dce5f0;background:#fff;border-radius:16px;padding:19px 22px;display:flex;align-items:center;gap:19px;box-shadow:0 6px 18px rgba(22,52,94,.025)}
+.support-title{font-size:16px;font-weight:800;color:#1e3c61;white-space:nowrap;min-width:118px}
+.support-col{flex:1;display:flex;align-items:center;gap:12px;border-left:1px solid #e5eaf1;padding-left:18px;min-width:0}
+.support-icon{width:37px;height:37px;display:grid;place-items:center;border-radius:10px;background:#eef4fe;color:#376fc2;flex:none}
+.support-col:nth-of-type(3) .support-icon{background:#eaf8f4;color:#0f9485}
+.support-col:nth-of-type(4) .support-icon{background:#f2effc;color:#8163c1}
+.support-col strong{display:block;font-size:15px;color:#27415e;white-space:nowrap}
+.support-col small{display:block;font-size:12px;color:#7c8da1;margin-top:3px;line-height:1.5}
+.valuebar{margin:24px 0 0;padding:17px;border:1px solid #dce5f0;border-radius:13px;background:#f0f5fc;display:flex;align-items:center;justify-content:center;gap:22px;font-size:16px;color:#365078;font-weight:760;flex-wrap:wrap}
+.valuebar .dot{width:5px;height:5px;background:#b7c3d4;border-radius:50%}
+.valuebar .label{font-size:12px;font-weight:800;color:#8593a5;letter-spacing:.8px;border:1px solid #dce4ed;border-radius:6px;padding:5px 9px;background:#fff}
+.transition{padding:2px 62px;background:var(--bg);display:flex;align-items:center;gap:23px}
+.transition-line{height:1px;background:linear-gradient(to right,transparent,#d8e2f0);flex:1}
+.transition-line:last-child{background:linear-gradient(to left,transparent,#d8e2f0)}
+.transition-mark{font-size:12px;font-weight:750;color:#7c8fa8;letter-spacing:1px;white-space:nowrap}
+.implementation{padding-top:43px;padding-bottom:42px}
+.implementation .header{margin-top:18px}
+.implementation h1{font-size:clamp(26px,2.8vw,36px)}
+.implementation .subtitle{margin-top:8px;font-size:17px}
+.detail-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:17px;margin-top:25px}
+.detail{border:1px solid #dce5ef;border-radius:16px;background:#fff;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.detail.blue{--color:#1e67b9;--tint:#eaf3ff;--bb:#b5d4f7}
+.detail.teal{--color:#087d70;--tint:#e9f7f2;--bb:#afe0d0}
+.detail.violet{--color:#6a4bbc;--tint:#f3efff;--bb:#cebbf5}
+.detail.amber{--color:#ab690f;--tint:#fff4e7;--bb:#eed6af}
+.detail-head{background:var(--tint);padding:18px 17px 16px;border-bottom:1px solid var(--bb);min-height:117px}
+.detail-num{display:block;color:var(--color);font-size:12px;font-weight:850;letter-spacing:.8px}
+.detail-title{font-size:23px;font-weight:800;color:var(--color);line-height:1.3;margin-top:4px}
+.detail-goal{color:#576d85;font-size:13px;margin-top:6px;line-height:1.5}
+.measures{padding:12px 14px 8px;flex:1;display:grid;grid-template-rows:repeat(5,minmax(0,1fr))}
+.measure{display:flex;align-items:flex-start;gap:9px;padding:12px 2px 11px 0;border-bottom:1px solid #edf1f5;min-height:78px}
+.measure:last-child{border-bottom:0}
+.measure-id{flex:none;width:24px;height:24px;border-radius:7px;color:var(--color);background:var(--tint);display:grid;place-items:center;font-size:12px;font-weight:850;margin-top:2px}
+.measure h3{font-size:15px;color:#254261;font-weight:820;line-height:1.4}
+.measure p{font-size:12.5px;color:#718196;line-height:1.5;margin-top:5px}
+.detail-gate{min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fbfcfe;border-top:1px solid #e9edf3;padding:9px 16px;color:var(--color);font-size:13px;font-weight:820}
+.detail-gate b{font-size:11px;font-weight:900;letter-spacing:1px;white-space:nowrap}
+.mechanism{margin-top:19px;background:#eef3fa;border:1px solid #dfe8f2;border-radius:12px;padding:15px 17px;display:flex;justify-content:space-between;align-items:center;gap:18px;color:#455d79;font-size:14px;line-height:1.65}
+.mechanism strong{color:#1b3964}
+.mechanism .flowtag{font-size:12px;padding:7px 11px;color:#5d559e;border:1px solid #cfc7f0;border-radius:8px;background:#f9f8ff;white-space:nowrap;font-weight:750}
+.footer{margin-top:30px;padding-top:18px;display:flex;justify-content:space-between;align-items:start;gap:24px;border-top:1px solid #e0e8f3;color:#8091a8;font-size:11.5px;line-height:1.6}
+.footer .brand{display:flex;align-items:center;gap:9px;white-space:nowrap;color:#617998;font-weight:700}
+.footer .brand:before{content:"";width:18px;height:3px;border-radius:3px;background:#527cbe}
+.footer .source{max-width:940px;text-align:right}
+@media(max-width:1230px){
+  .report{width:calc(100% - 40px)}.section{padding-left:42px;padding-right:42px}.transition{padding-left:42px;padding-right:42px}
+  .pivot{align-items:flex-start}.pivot-main{flex-wrap:wrap;gap:10px}.pivot-note{min-width:250px}
+  .flow{gap:16px}.phase{padding:19px 15px 15px}.phase:not(:last-child):before{right:-17px;width:17px}.phase:not(:last-child):after{right:-13px}
+  .phase-action{font-size:13px}.support{flex-wrap:wrap}.support-title{width:100%}.support-col:first-of-type{border-left:0;padding-left:0}
+  .detail-grid{gap:12px}.detail-head{padding:17px 13px}.detail-title{font-size:22px}.measures{padding:9px 10px}.measure{gap:7px}.measure h3{font-size:14px}.measure p{font-size:12px}
+}
+@media(max-width:900px){
+  .report{width:calc(100% - 24px);margin:12px auto 30px;border-radius:16px}
+  .section{padding:32px 25px}.transition{padding:0 25px}
+  .topline{font-size:10px;letter-spacing:1.1px}.topline .right{font-size:10px}
+  .pivot{flex-direction:column;gap:10px}.pivot-note{min-width:0;text-align:left;max-width:none}.pivot-note br{display:none}
+  .flow{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  .phase{min-height:232px;padding:18px}
+  .phase:not(:last-child):before,.phase:not(:last-child):after{display:none}
+  .phase-goal{margin-top:14px}.phase-actions{margin-top:13px;gap:8px}.loop svg{display:none}.loop{height:auto;padding:15px 0}.loop-label{position:static;transform:none;white-space:normal;text-align:center;background:transparent;padding:11px 15px;border:1px dashed #b6a8ec;border-radius:10px}
+  .support{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  .support-title{grid-column:1/-1}.support-col{border:0;padding-left:0}.support-col:nth-of-type(4){grid-column:1/-1}
+  .detail-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  .measures{grid-template-rows:none}.measure{min-height:70px}.mechanism{flex-direction:column;align-items:flex-start}.footer{flex-direction:column;gap:8px}.footer .source{text-align:left}
+}
+@media(max-width:540px){
+  .section{padding:27px 16px}.transition{padding:0 16px}
+  .topline .right{display:none}h1{font-size:27px}.subtitle{font-size:15px}
+  .pivot{margin-top:20px;padding:16px}.pivot-main{gap:10px}.pivot-tag{width:100%}.pivot-change{gap:8px;flex-wrap:wrap;font-size:19px}.pivot-change svg{width:35px}.pivot-note{font-size:13px}
+  .flow{grid-template-columns:1fr}.phase{min-height:0;padding:19px}.phase h3{font-size:21px}.phase-actions{gap:8px}.phase-goal{font-size:16px}
+  .support{grid-template-columns:1fr}.support-title{grid-column:auto}.support-col:nth-of-type(4){grid-column:auto}.support-col strong{white-space:normal}.support-col small{white-space:normal}
+  .valuebar{gap:10px;font-size:14px;justify-content:flex-start}.valuebar .dot{display:none}.valuebar .label{width:100%;text-align:center}
+  .detail-grid{grid-template-columns:1fr}.detail-head{min-height:auto}.measure{min-height:0}.detail-title{font-size:22px}
+  .transition-mark{font-size:11px}.mechanism{font-size:13px}.mechanism .flowtag{white-space:normal}
+}
+@media print{
+  @page{size:A4 landscape;margin:11mm}
+  html,body{background:white!important;overflow:visible!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .report{margin:0;width:100%;border:0;border-radius:0;box-shadow:none;overflow:visible}
+  .section{padding:8mm 2mm}.implementation{padding-top:8mm}
+  .transition{padding:2mm 2mm}
+  .phase,.detail,.support{box-shadow:none;break-inside:avoid;page-break-inside:avoid}
+  .flow{grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}.phase{min-height:224px;padding:12px}.phase h3{font-size:17px}.phase-goal{font-size:14px}.phase-action{font-size:11px}.phase-actions{gap:7px}.phase:not(:last-child):before,.phase:not(:last-child):after{display:none}
+  .detail-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.detail-head{min-height:106px}.detail-title{font-size:17px}.detail-goal{font-size:11px}.measure{min-height:66px;padding:9px 0}.measure h3{font-size:12px}.measure p{font-size:10px}
+  .support{display:flex;gap:8px}.support-title{width:auto;min-width:94px;font-size:13px}.support-col{padding-left:8px;border-left:1px solid #ddd;gap:6px}.support-col strong{font-size:11px}.support-col small{font-size:9px}.support-icon{width:28px;height:28px}
+  .footer{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<main aria-label="AI Native 高质量软件交付体系单页报告" class="report" id="report">
+<section aria-label="体系总览" class="section overview">
+<div class="topline"><span>AI-NATIVE SOFTWARE DELIVERY · EXECUTIVE OVERVIEW</span><span class="right"><span>QUALITY BY DESIGN</span></span></div>
+<header class="header"><h1>AI Native 高质量软件交付体系</h1><p class="subtitle">从<span class="em">末端测试兜底</span>，转向<span class="em">研发全流程质量内建与持续验证</span></p></header>
+<div class="pivot">
+<div class="pivot-main"><div class="pivot-tag">核心转变</div><div class="pivot-change"><span>验证集中在后端</span>
+<svg aria-hidden="true" fill="none" height="20" viewbox="0 0 53 20" width="53"><path d="M2 10H49M41 2L49 10L41 18" stroke="#7771c5" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path></svg>
+<strong>全流程持续验证</strong></div></div>
+<div class="pivot-note">Agent 提升构建速度，质量活动必须同步前移；<br/><b>人负责关键判断，机制负责持续执行。</b></div>
+</div>
+<div class="section-label">端到端质量保障主链路</div>
+<div aria-label="四阶段质量保障流程" class="flow">
+<article class="phase blue"><div class="phase-top"><span class="phase-number">01</span><h3>需求与设计</h3></div><p class="phase-goal">把事情定义正确</p><div class="phase-actions"><div class="phase-action"><span class="check">✓</span><span>需求挑战与规格澄清</span></div><div class="phase-action"><span class="check">✓</span><span>验收标准与验证前置</span></div></div><div class="gate"><span>规格准入</span><small>GATE 1</small></div></article>
+<article class="phase teal"><div class="phase-top"><span class="phase-number">02</span><h3>开发与测试</h3></div><p class="phase-goal">把质量内建到代码</p><div class="phase-actions"><div class="phase-action"><span class="check">✓</span><span>测试先行与规范实现</span></div><div class="phase-action"><span class="check">✓</span><span>自动反馈与影响审查</span></div></div><div class="gate"><span>编码准出</span><small>GATE 2</small></div></article>
+<article class="phase violet"><div class="phase-top"><span class="phase-number">03</span><h3>独立验证</h3></div><p class="phase-goal">用证据确认交付质量</p><div class="phase-actions"><div class="phase-action"><span class="check">✓</span><span>业务场景与风险验证</span></div><div class="phase-action"><span class="check">✓</span><span>独立 Oracle 与验证证据</span></div></div><div class="gate"><span>验收准出</span><small>GATE 3</small></div></article>
+<article class="phase amber"><div class="phase-top"><span class="phase-number">04</span><h3>发布与运行</h3></div><p class="phase-goal">控制线上质量风险</p><div class="phase-actions"><div class="phase-action"><span class="check">✓</span><span>灰度监控与安全回滚</span></div><div class="phase-action"><span class="check">✓</span><span>问题回流与持续改进</span></div></div><div class="gate"><span>发布准入</span><small>GATE 4</small></div></article>
+</div>
+<div aria-label="线上反馈回流需求与研发" class="loop">
+<svg aria-hidden="true" preserveaspectratio="none" viewbox="0 0 1448 59"><path d="M1350 2V15Q1350 38 1326 38H119Q96 38 96 15V2" fill="none" stroke="#9f8be0" stroke-dasharray="7 6" stroke-linecap="round" stroke-width="2.3"></path><path d="M87 12L96 2L105 12" fill="none" stroke="#8c76d8" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3"></path></svg>
+<div class="loop-label">反馈闭环：验证失败回流修复 · 线上问题回流需求、风险模式与测试资产</div>
+</div>
+<div aria-label="横向支撑能力" class="support">
+<div class="support-title">横向支撑能力</div>
+<div class="support-col"><div class="support-icon"><svg fill="none" height="23" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" width="23"><path d="M4 5h16v14H4zM8 9h8M8 13h8M8 17h5"></path></svg></div><div><strong>知识与规范</strong><small>业务知识 · CLAUDE.md · Skills</small></div></div>
+<div class="support-col"><div class="support-icon"><svg fill="none" height="23" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" width="23"><path d="M5 4h14v16H5zM8 12l2.6 2.6L16 9"></path></svg></div><div><strong>自动执行与门禁</strong><small>CI · Hooks · 验证证据</small></div></div>
+<div class="support-col"><div class="support-icon"><svg fill="none" height="23" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24" width="23"><path d="M4 19V7M10 19V11M16 19V4M22 19V9M2 20h20"></path></svg></div><div><strong>持续评估与改进</strong><small>Evals · 质量度量 · 风险模式</small></div></div>
+</div>
+<div class="valuebar"><span class="label">预期价值</span><span>缺陷更早发现</span><span class="dot"></span><span>减轻末端验收瓶颈</span><span class="dot"></span><span>降低发布风险</span></div>
+
+</section>
+<div aria-hidden="true" class="transition"><span class="transition-line"></span><span class="transition-mark">从体系总览到实施机制</span><span class="transition-line"></span></div><section aria-label="四阶段落地机制" class="section implementation">
+<div class="topline"><span>AI-NATIVE SOFTWARE DELIVERY · IMPLEMENTATION MECHANISMS</span><span class="right"><span>QUALITY OPERATING MODEL</span></span></div>
+<header class="header"><h1>四阶段落地机制：关键活动与质量门禁</h1><p class="subtitle">每阶段聚焦 5 项关键措施，形成从<span class="em">规格准入</span>到<span class="em">发布准入</span>的可执行质量闭环</p></header>
+<div class="detail-grid">
+<article class="detail blue"><div class="detail-head"><span class="detail-num">01　PLAN + DESIGN</span><h2 class="detail-title">需求与设计</h2><p class="detail-goal">明确业务需求与技术方案，确保可实现、可验证</p></div><div class="measures">
+<div class="measure"><div class="measure-id">1</div><div><h3>意图澄清</h3><p>明确业务目标、范围及约束，形成 intent.md</p></div></div>
+<div class="measure"><div class="measure-id">2</div><div><h3>规格定义</h3><p>细化业务规则、状态、场景与验收标准 AC</p></div></div>
+<div class="measure"><div class="measure-id">3</div><div><h3>需求挑战</h3><p>识别遗漏、歧义、冲突及不可验证项</p></div></div>
+<div class="measure"><div class="measure-id">4</div><div><h3>方案评审</h3><p>评估架构、依赖影响和关键技术风险</p></div></div>
+<div class="measure"><div class="measure-id">5</div><div><h3>验证前置</h3><p>依据 AC 与不变量建立测试义务</p></div></div>
+</div><div class="detail-gate"><span>规格准入 · Spec Ready</span><b>GATE 1</b></div></article>
+<article class="detail teal"><div class="detail-head"><span class="detail-num">02　BUILD + TEST LOOP</span><h2 class="detail-title">开发与测试</h2><p class="detail-goal">正确实现需求，持续发现并修复开发缺陷</p></div><div class="measures">
+<div class="measure"><div class="measure-id">1</div><div><h3>先规划后编码</h3><p>plan.md 定义变更范围、步骤与验证方法</p></div></div>
+<div class="measure"><div class="measure-id">2</div><div><h3>规范化实现</h3><p>用 CLAUDE.md / Skills 约束工程实现</p></div></div>
+<div class="measure"><div class="measure-id">3</div><div><h3>测试先行</h3><p>基于测试义务构建单元、集成和失败用例</p></div></div>
+<div class="measure"><div class="measure-id">4</div><div><h3>自动反馈循环</h3><p>构建、静态检查和测试自动执行与重跑</p></div></div>
+<div class="measure"><div class="measure-id">5</div><div><h3>影响与代码审查</h3><p>变更回归分析、Agent Review 与 CI 门禁</p></div></div>
+</div><div class="detail-gate"><span>编码准出 · Code Ready</span><b>GATE 2</b></div></article>
+<article class="detail violet"><div class="detail-head"><span class="detail-num">03　INDEPENDENT VERIFICATION</span><h2 class="detail-title">独立验证</h2><p class="detail-goal">独立确认业务正确性、场景覆盖和变更风险</p></div><div class="measures">
+<div class="measure"><div class="measure-id">1</div><div><h3>独立验证</h3><p>按批准需求与测试义务判定，不从代码反推</p></div></div>
+<div class="measure"><div class="measure-id">2</div><div><h3>关键场景覆盖</h3><p>覆盖正常、异常、边界、并发及状态转换</p></div></div>
+<div class="measure"><div class="measure-id">3</div><div><h3>风险驱动回归</h3><p>结合变更影响与历史缺陷，识别测试缺口</p></div></div>
+<div class="measure"><div class="measure-id">4</div><div><h3>分层与真机验证</h3><p>组合单元、集成、端到端与真机测试</p></div></div>
+<div class="measure"><div class="measure-id">5</div><div><h3>证据与验收门禁</h3><p>汇总测试证据、需求覆盖与剩余风险</p></div></div>
+</div><div class="detail-gate"><span>验收准出 · Validation Ready</span><b>GATE 3</b></div></article>
+<article class="detail amber"><div class="detail-head"><span class="detail-num">04　DEPLOY + MAINTAIN</span><h2 class="detail-title">发布与运行</h2><p class="detail-goal">安全发布、持续监控，并将线上问题闭环</p></div><div class="measures">
+<div class="measure"><div class="measure-id">1</div><div><h3>发布门禁</h3><p>基于质量证据、安全结果与审批执行部署</p></div></div>
+<div class="measure"><div class="measure-id">2</div><div><h3>权限与操作控制</h3><p>最小权限、环境隔离、Hooks 阻断风险操作</p></div></div>
+<div class="measure"><div class="measure-id">3</div><div><h3>灰度与回滚</h3><p>观察崩溃、ANR、业务指标并按阈值止损</p></div></div>
+<div class="measure"><div class="measure-id">4</div><div><h3>监控与智能诊断</h3><p>规则发现异常，Agent 分析日志与变更</p></div></div>
+<div class="measure"><div class="measure-id">5</div><div><h3>知识与能力闭环</h3><p>沉淀事故、测试和风险模式，以 Evals 评估</p></div></div>
+</div><div class="detail-gate"><span>发布准入 · Release Ready</span><b>GATE 4</b></div></article>
+</div>
+<div class="mechanism"><span><strong>运行逻辑：</strong>规格与验证依据先行 → 开发边构建边验证 → 独立验收确认 → 风险可控后发布；不合格回到责任环节。</span><span class="flowtag">责任明确 · 门禁可执行 · 证据可追溯</span></div>
+<div class="footer"><span class="brand">内容说明 · 参考资料</span><span class="source">说明：测试义务、变更影响分析、四级质量门禁、独立业务验证及灰度指标等为质量工程增强建议，并非全部来自 Anthropic 官方原文。参考：claude.com/resources/articles/the-ai-native-sdlc-playbook</span></div>
+</section>
+</main>
+
+
+
+</body>
+</html>

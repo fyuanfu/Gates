@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Anthropic AI-Native SDLC 深度研究报告 · 2026</title>
+<meta name="description" content="基于 Anthropic The AI-native SDLC playbook 的中文独立研究报告：六阶段、12 Plays、质量红军评审、Android 质量门禁与实施路径。">
+<style>
+:root{--ink:#182431;--muted:#5a6670;--quiet:#7a858d;--paper:#faf9f6;--surface:#ffffff;--panel:#f2f4f3;--line:#e3e5e4;--accent:#bc6b37;--accent-dark:#955025;--accent-bg:#fff0e5;--blue:#2b566d;--blue-bg:#eff5f7;--green:#326a56;--green-bg:#eaf3ee;--warn:#9b652b;--warn-bg:#fff7e8;--shadow:0 8px 30px rgba(29,40,51,.045)}
+html[data-theme="dark"]{--ink:#edf1f3;--muted:#afb8c0;--quiet:#8b9aa5;--paper:#151b21;--surface:#1d252c;--panel:#242e36;--line:#35404a;--accent:#e9a26d;--accent-dark:#f0bb91;--accent-bg:#3c2c25;--blue:#92c4db;--blue-bg:#223541;--green:#9fd7bc;--green-bg:#20372f;--warn:#e6bb76;--warn-bg:#423527;--shadow:0 8px 30px rgba(0,0,0,.15)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:52px}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-size:15.5px;line-height:1.92;letter-spacing:.012em}a{color:var(--blue);text-decoration:none}a:hover{color:var(--accent-dark)}button,input{font:inherit}button{cursor:pointer}::selection{background:#e6c8b4;color:#17212a}
+.reading-progress{position:fixed;top:0;left:0;width:0;height:3px;background:var(--accent);z-index:40;transition:width .09s linear}.shell{display:grid;grid-template-columns:282px minmax(0,1fr);min-height:100vh}.sidebar{position:sticky;top:0;height:100vh;background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:32px 20px 16px;z-index:10}.brand{padding:0 13px 20px;border-bottom:1px solid var(--line)}.brand-mark{width:34px;height:34px;background:var(--accent);color:#fff;display:grid;place-items:center;border-radius:10px;font:800 17px Georgia,serif;letter-spacing:-2px;transform:rotate(-4deg)}.brand h2{font-size:13px;line-height:1.4;text-transform:uppercase;letter-spacing:.17em;margin:15px 0 7px}.brand small{font-size:11px;color:var(--quiet);letter-spacing:.04em}.sidebar-search{margin:20px 6px 18px;display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:9px;padding:5px 11px;color:var(--quiet);background:var(--paper)}.sidebar-search input{min-width:0;border:0;outline:0;background:transparent;color:var(--ink);width:100%;font-size:12px;padding:6px 0}.sidebar-search kbd{font-size:10px;background:var(--surface);padding:2px 5px;border:1px solid var(--line);border-radius:4px;white-space:nowrap}.toc-heading{font-size:10px;letter-spacing:.15em;font-weight:800;color:var(--quiet);padding:0 13px 12px}.toc-list{overflow-y:auto;padding:0 4px 16px;flex:1}.toc-link{min-height:43px;display:flex;align-items:center;gap:10px;padding:7px 8px;border-left:3px solid transparent;color:var(--muted);font-size:12px;border-radius:0 7px 7px 0;transition:background .15s,color .15s}.toc-link:hover{background:var(--panel);color:var(--ink)}.toc-link.active{background:var(--accent-bg);color:var(--accent-dark);font-weight:700;border-color:var(--accent)}.nav-index{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--quiet);font-size:11px}.nav-dot{margin-left:auto;width:5px;height:5px;border-radius:50%;background:var(--accent);display:none}.toc-link.active .nav-dot{display:block}.no-results{display:none;font-size:11px;color:var(--quiet);padding:8px 13px}.sidebar-bottom{border-top:1px solid var(--line);padding:13px 7px 0;display:flex;justify-content:space-between;align-items:center;gap:8px}.icon-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:8px;color:var(--muted);padding:6px 9px;font-size:11px}.icon-btn:hover{background:var(--panel);color:var(--ink)}.last-updated{font-size:10px;color:var(--quiet);line-height:1.5}.main{min-width:0}.topbar{height:49px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 max(5.4vw,32px);background:var(--paper)}.breadcrumb{color:var(--quiet);font-size:11px;letter-spacing:.02em}.breadcrumb strong{color:var(--muted);font-weight:600}.top-actions{display:flex;gap:8px}.menu-toggle{display:none}.doc-container{max-width:1140px;margin:0 auto;padding:0 58px 100px}.hero{padding:75px 0 62px;border-bottom:1px solid var(--line);position:relative;overflow:hidden}.hero::after{content:"";position:absolute;right:-40px;top:30px;width:250px;height:250px;border:1px solid color-mix(in srgb,var(--accent) 16%,transparent);border-radius:50%;box-shadow:0 0 0 30px color-mix(in srgb,var(--accent) 5%,transparent),0 0 0 70px color-mix(in srgb,var(--accent) 3%,transparent);pointer-events:none}.eyebrow{font-size:11px;color:var(--accent);font-weight:800;letter-spacing:.14em;text-transform:uppercase}.hero h1{font-size:clamp(35px,4.1vw,62px);line-height:1.14;letter-spacing:-.034em;margin:20px 0 12px;max-width:780px;font-weight:850}.hero h1 em{font-weight:500;font-family:Georgia,serif;color:var(--accent);font-style:italic;letter-spacing:-.06em}.hero h1 .cn{display:block;font-size:clamp(21px,2.3vw,33px);letter-spacing:.005em;line-height:1.8;font-weight:700;color:var(--muted)}.hero-description{max-width:760px;color:var(--muted);line-height:1.95;font-size:16px;margin:16px 0 26px}.hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin:25px 0}.meta-chip{display:inline-flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);padding:6px 10px;border:1px solid var(--line);background:var(--surface);border-radius:40px}.meta-chip i{width:6px;height:6px;background:var(--accent);border-radius:50%}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:21px}.action-button{border:1px solid var(--line);background:var(--surface);padding:9px 15px;border-radius:8px;color:var(--ink);font-size:12px;font-weight:700}.action-button.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}.action-button:hover{transform:translateY(-1px)}.intro-grid{margin-top:35px;display:grid;grid-template-columns:1.3fr 1fr;gap:15px}.intro-box{border:1px solid var(--line);background:var(--surface);padding:22px;border-radius:12px}.intro-box h3{margin:0 0 10px;font-size:14px}.intro-box p{font-size:12px;line-height:1.9;margin:0;color:var(--muted)}.intro-box strong{color:var(--ink)}
+.report-section{padding:77px 0 22px;border-bottom:1px solid var(--line);scroll-margin-top:50px}.section-kicker{display:flex;align-items:center;gap:10px;color:var(--accent-dark);font-size:12px;letter-spacing:.06em;font-weight:800;margin-bottom:15px}.chapter-num{width:32px;height:32px;display:inline-grid;place-items:center;border-radius:8px;background:var(--accent-bg);font-size:12px;font-family:ui-monospace,monospace}.report-section h2{font-size:clamp(27px,2.6vw,39px);line-height:1.38;letter-spacing:-.02em;margin:0 0 21px;max-width:900px}.report-section .lead{font-size:17px;color:var(--muted);line-height:2;margin-top:0;margin-bottom:35px;max-width:900px}.report-section h3{font-size:20px;line-height:1.5;margin:43px 0 13px;letter-spacing:-.01em}.report-section h4{font-size:15px;margin:21px 0 9px}.report-section p{margin:12px 0 18px}.report-section code,.report-section pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}.report-section code:not(pre code){padding:2px 5px;background:var(--panel);border-radius:4px;font-size:.9em}.src{font-size:10px;white-space:nowrap;letter-spacing:0;background:var(--panel);padding:2px 5px;border-radius:4px;color:var(--accent-dark)}.quote-feature{display:flex;gap:18px;align-items:start;border-left:3px solid var(--accent);background:var(--accent-bg);padding:21px 24px;margin:28px 0 36px;border-radius:0 10px 10px 0}.quote-mark{font:italic 58px Georgia,serif;line-height:1;color:var(--accent);opacity:.7}.quote-feature strong{font-size:22px;line-height:1.4;letter-spacing:-.02em}.quote-feature p{font-size:12px;color:var(--muted);margin:8px 0 0}.cards{display:grid;gap:14px;margin:25px 0 30px}.cards.three{grid-template-columns:repeat(3,1fr)}.cards.two{grid-template-columns:repeat(2,1fr)}.mini-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:19px;min-width:0;box-shadow:var(--shadow)}.mini-card h4{font-size:14px;margin:7px 0 9px;line-height:1.45}.mini-card p{font-size:12px;color:var(--muted);line-height:1.85;margin:0}.mini-card .eyebrow{font-size:10px}.table-wrap{border:1px solid var(--line);border-radius:10px;overflow-x:auto;margin:22px 0 30px;background:var(--surface)}table{border-collapse:collapse;text-align:left;width:100%;font-size:12.5px;line-height:1.7}th{background:var(--panel);color:var(--ink);font-size:11px;font-weight:750;white-space:nowrap}th,td{padding:11px 13px;vertical-align:top;border-bottom:1px solid var(--line)}tbody tr:last-child td{border-bottom:0}td:first-child{font-weight:650;color:var(--ink)}td{color:var(--muted)}tbody tr:hover{background:color-mix(in srgb,var(--panel) 28%,transparent)}.insight{border-top:1px solid var(--accent);padding:17px 20px 16px;background:linear-gradient(180deg,var(--accent-bg),transparent);margin:29px 0;border-radius:0 0 9px 9px}.insight-title{font-size:11px;font-weight:850;letter-spacing:.12em;color:var(--accent-dark);margin-bottom:4px}.insight p{font-size:13px;line-height:1.95;margin:5px 0}.diagram-surface{border:1px solid var(--line);background:var(--surface);padding:24px 20px;border-radius:12px;margin:24px 0 30px;overflow:hidden}.stage-flow{display:flex;align-items:center;justify-content:center;gap:7px}.stage{border:1px solid var(--line);border-radius:8px;min-width:0;flex:1;min-height:134px;display:flex;flex-direction:column;align-items:start;justify-content:center;padding:13px 9px;gap:3px;background:var(--panel)}.stage-count{font-size:10px;color:var(--accent)}.stage strong{font-size:13px;line-height:1.2}.stage small{font:10px ui-monospace,monospace;color:var(--accent-dark);white-space:nowrap}.stage span{font-size:10px;color:var(--muted)}.flow-arrow{font-style:normal;color:var(--accent);font-size:16px}.loop-line{color:var(--accent-dark);border:1px dashed var(--accent);border-radius:8px;padding:8px 12px;text-align:center;font-size:11px;font-weight:700;margin-top:16px}.figure-note{font-size:11px!important;color:var(--quiet)!important;line-height:1.7!important;margin:9px 0 0!important}.artifact-chain{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:24px 0;padding:17px;background:var(--surface);border:1px solid var(--line);border-radius:10px}.artifact-chain>div{display:flex;flex-direction:column;gap:5px;align-items:center}.artifact-tag{background:var(--blue-bg);color:var(--blue);font-size:11px;padding:6px 9px;border-radius:6px;font-weight:700;white-space:nowrap}.artifact-chain small{font-size:10px;color:var(--quiet)}.chain-arrow{color:var(--quiet)}.stage-detail{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:24px;margin:22px 0}.stage-head{display:flex;align-items:center;gap:16px;margin-bottom:14px}.stage-head>span{background:var(--accent-bg);color:var(--accent);border-radius:12px;display:grid;place-items:center;flex-shrink:0;width:45px;height:45px;font-size:15px;font-weight:850}.stage-head small{color:var(--accent);font-size:10px;letter-spacing:.12em;font-weight:800}.stage-head h3{margin:0;font-size:18px}.stage-detail h4{margin-top:24px}.stage-detail p{font-size:13.5px;color:var(--muted)}.stage-detail strong,.stage-detail b{color:var(--ink)}.meta-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:20px 0}.meta-grid>div{background:var(--panel);padding:11px 14px;display:flex;gap:7px;flex-direction:column}.meta-grid b{font-size:11px;color:var(--accent-dark)}.meta-grid span{font-size:12px;color:var(--muted);line-height:1.6}.analysis-note{border-left:2px solid var(--blue);background:var(--blue-bg);padding:12px 16px;border-radius:0 8px 8px 0;font-size:12.5px!important}.analysis-note b{color:var(--blue)!important}.report-section pre{border:1px solid #283644;background:#17212b;color:#d9e8ed;border-radius:10px;white-space:pre;overflow-x:auto;padding:20px 18px;font-size:11.5px;line-height:1.85;margin:20px 0 13px;position:relative}.report-section pre code{white-space:pre}.verify-loop{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}.verify-loop>div{font-size:12px;padding:12px 15px;border-radius:8px;background:var(--panel);border:1px solid var(--line);font-weight:700}.verify-loop>div.highlight{background:var(--green-bg);color:var(--green)}.verify-loop span{color:var(--accent);font-weight:900}.callout{border-left:3px solid var(--blue);padding:16px 20px;border-radius:0 8px 8px 0;background:var(--blue-bg);margin:25px 0}.callout.caution{background:var(--warn-bg);border-color:var(--warn)}.callout.neutral{background:var(--panel);border-color:var(--quiet)}.callout strong{font-size:13px}.callout p{font-size:12.5px;margin:6px 0;color:var(--muted)}.oracle-pipeline{display:flex;flex-direction:column;align-items:center;gap:3px}.oracle-pipeline>div{padding:12px 15px;background:var(--panel);border:1px solid var(--line);border-radius:9px;width:min(450px,100%);display:grid;grid-template-columns:110px 1fr;column-gap:8px;align-items:center}.oracle-pipeline>div.em{border:1.5px solid var(--accent);background:var(--accent-bg)}.oracle-pipeline b{font-size:10px;color:var(--accent-dark);grid-row:span 2}.oracle-pipeline strong{font-size:12px}.oracle-pipeline small{font-size:10px;color:var(--muted)}.oracle-pipeline>span{line-height:1.2;color:var(--accent);font-weight:bold}.impact-steps{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}.impact-steps div{font-size:11px;border:1px solid var(--line);background:var(--panel);padding:9px 10px;border-radius:8px;font-weight:700}.impact-steps b{color:var(--accent)}.number-list{padding-left:23px;margin:18px 0 30px}.number-list li{padding-left:4px;margin-bottom:10px;color:var(--muted);font-size:13.5px}.number-list strong{color:var(--ink)}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin:26px 0}.stat{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:21px}.stat span{font-size:30px;font-weight:850;letter-spacing:-.05em;color:var(--accent-dark);line-height:1.2;display:block;margin-bottom:14px}.stat strong{display:block;font-size:12px;line-height:1.6}.stat small{display:block;color:var(--quiet);font-size:10px;line-height:1.7;margin-top:9px}.gate-stack{display:grid;gap:12px;margin:25px 0 30px}.gate{display:flex;gap:15px;align-items:start;padding:18px 17px;background:var(--surface);border:1px solid var(--line);border-radius:10px}.gate-no{width:40px;height:40px;flex-shrink:0;display:grid;place-items:center;background:var(--blue-bg);color:var(--blue);font-weight:850;border-radius:9px;font-size:13px}.gate>div{flex:1;min-width:0}.gate h3{font-size:15px;margin:0 0 7px}.gate p{font-size:12.5px;color:var(--muted);margin:0 0 6px}.gate small{color:var(--quiet);font-size:10.5px;line-height:1.65}.tag{font-size:10px;color:var(--green);border:1px solid var(--line);padding:3px 7px;border-radius:15px;white-space:nowrap}.tag.risk{color:var(--accent-dark)}.roadmap{margin:30px 0;position:relative}.roadmap:before{content:"";position:absolute;left:109px;top:9px;bottom:18px;width:1px;background:var(--line)}.roadmap-step{display:grid;grid-template-columns:120px 1fr;gap:23px;padding:0 0 35px;position:relative}.rm-time{text-align:right;padding-top:7px;font-size:12px;color:var(--accent-dark);font-weight:800;line-height:1.4}.rm-time small{display:block;font-size:10px;color:var(--quiet);font-weight:500;margin-top:4px}.roadmap-step:before{content:"";position:absolute;left:104px;top:11px;width:10px;height:10px;background:var(--surface);border:2px solid var(--accent);border-radius:50%;z-index:1}.roadmap-step h3{margin:0 0 8px;font-size:16px}.roadmap-step p{margin:0 0 10px;color:var(--muted);font-size:13px}.chips{display:flex;flex-wrap:wrap;gap:6px}.chips span{background:var(--panel);color:var(--muted);padding:3px 7px;border-radius:5px;font-size:10px}.pill{display:inline-flex;padding:2px 6px;border-radius:5px;font-size:10px;font-weight:800}.pill.p0{background:var(--accent-bg);color:var(--accent-dark)}.pill.p1{background:var(--blue-bg);color:var(--blue)}.pill.p2{background:var(--green-bg);color:var(--green)}.scorecard{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin:24px 0}.scorecard>div{border:1px solid var(--line);border-radius:9px;padding:15px;background:var(--surface)}.scorecard span{display:block;font-size:12px;color:var(--muted)}.scorecard strong{display:block;font-size:15px;margin:4px 0;color:var(--accent-dark)}.scorecard p{font-size:11.5px;color:var(--muted);line-height:1.7;margin:0}.key-conclusion{padding:27px 26px;background:var(--ink);border-radius:13px;margin:30px 0;color:var(--paper)}.key-conclusion .eyebrow{color:#f0b28a}.key-conclusion h3{font-size:23px;margin:8px 0 10px;color:var(--paper)}.key-conclusion p{font-size:13.5px;color:var(--paper);opacity:.88;line-height:1.9;margin:0}.references{margin:22px 0}.reference{display:grid;grid-template-columns:48px 1fr;gap:9px;border-top:1px solid var(--line);padding:17px 8px;scroll-margin-top:75px}.reference>span{font-size:12px;font-weight:800;color:var(--accent)}.reference a{font-size:13px;font-weight:700;overflow-wrap:anywhere}.reference p{font-size:11px;margin:4px 0;color:var(--muted)}.reference small{color:var(--quiet);font-size:11px}.footer-note{border-top:1px solid var(--line);margin-top:38px;padding:23px 0 35px;font-size:11px;line-height:1.85;color:var(--quiet)}.floating-top{position:fixed;right:22px;bottom:22px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:11px 14px;border-radius:10px;box-shadow:var(--shadow);font-size:12px;opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s;z-index:20}.floating-top.show{opacity:1;transform:none;pointer-events:auto}.copy-btn{position:absolute;right:7px;top:7px;color:#bdcbd3;border:1px solid #43505c;background:#243441;border-radius:5px;padding:2px 7px;font-size:10px;display:none}.report-section pre:hover .copy-btn,.copy-btn:focus{display:block}
+@media(min-width:1450px){.doc-container{padding-left:86px;padding-right:86px}.topbar{padding-left:86px;padding-right:86px}}
+@media(max-width:1100px){.shell{grid-template-columns:235px minmax(0,1fr)}.sidebar{padding-left:12px;padding-right:12px}.doc-container{padding:0 37px 85px}.cards.three{grid-template-columns:1fr 1fr}.stage-flow{flex-wrap:wrap}.stage{min-width:125px;flex:0 1 27%}.flow-arrow:nth-of-type(3){display:none}.hero::after{opacity:.6}}
+@media(max-width:740px){.shell{display:block}.sidebar{position:fixed;left:0;top:0;width:min(85vw,300px);transform:translateX(-101%);transition:transform .2s ease;height:100dvh;box-shadow:0 0 50px rgba(0,0,0,.11)}.sidebar.open{transform:translateX(0)}.menu-toggle{display:inline-flex}.topbar{position:sticky;top:0;z-index:6;background:var(--surface);padding:0 18px}.breadcrumb{font-size:10px}.doc-container{padding:0 20px 75px}.hero{padding:48px 0}.hero::after{right:-150px;opacity:.3}.hero h1{font-size:37px}.hero h1 .cn{font-size:23px}.hero-description{font-size:14px}.intro-grid,.cards.three,.cards.two,.scorecard,.stats{grid-template-columns:1fr}.report-section{padding-top:54px}.report-section h2{font-size:26px}.report-section .lead{font-size:14.5px}.stage-detail{padding:18px 14px}.stage-head h3{font-size:15px}.meta-grid{grid-template-columns:1fr}.stage{flex:1 0 39%;min-width:130px}.flow-arrow{display:none}.artifact-chain{justify-content:center}.artifact-chain .chain-arrow{display:none}.roadmap:before{left:10px}.roadmap-step{grid-template-columns:1fr;gap:9px;padding-left:27px}.roadmap-step:before{left:5px}.rm-time{text-align:left}.gate{flex-wrap:wrap}.tag{margin-left:55px}.reference{grid-template-columns:38px 1fr}.oracle-pipeline>div{grid-template-columns:88px 1fr}.key-conclusion h3{font-size:20px}.floating-top{bottom:14px;right:14px}}
+@media print{html,body{background:white!important;color:#1b2530!important;font-size:11pt;print-color-adjust:exact;-webkit-print-color-adjust:exact}.shell{display:block}.sidebar,.topbar,.floating-top,.reading-progress,.hero-actions,.copy-btn{display:none!important}.doc-container{max-width:none;padding:0 5mm}.hero{padding:8mm 0}.hero::after{display:none}.report-section{padding:12mm 0 4mm;break-before:page}.report-section:first-of-type{break-before:auto}.report-section h2{font-size:22pt}.stage-detail,.mini-card,.diagram-surface,.callout,.insight,.gate,.reference{break-inside:avoid}.table-wrap{overflow:visible}table{font-size:9pt}th,td{padding:6px 7px}.hero h1{font-size:37pt}.eyebrow,.src{color:#935428!important}a{color:inherit!important;text-decoration:underline}.report-section pre{white-space:pre-wrap;overflow:visible;font-size:8pt}.stage-flow{flex-wrap:nowrap}.stage{min-width:0}.roadmap:before{left:109px}.footer-note{margin-top:20px}}
+</style>
+</head>
+<body>
+<div class="reading-progress" id="readingProgress"></div>
+<div class="shell">
+<aside class="sidebar" id="sidebar" aria-label="章节导航">
+ <div class="brand"><div class="brand-mark">A</div><h2>Research Notes / 2026</h2><small>AI ENGINEERING · QUALITY SYSTEMS</small></div>
+ <label class="sidebar-search"><span>⌕</span><input id="navSearch" placeholder="查找章节、概念…" aria-label="查找章节"><kbd>/</kbd></label>
+ <div class="toc-heading">CONTENTS · 目录</div>
+ <nav class="toc-list" id="tocList">
+ <a class="toc-link" href="#s1" data-target="s1"><span class="nav-index">01</span><span>核心理念与背景</span><span class="nav-dot"></span></a>
+<a class="toc-link" href="#s2" data-target="s2"><span class="nav-index">02</span><span>整体架构与交付链</span><span class="nav-dot"></span></a>
+<a class="toc-link" href="#s3" data-target="s3"><span class="nav-index">03</span><span>六阶段深度解读</span><span class="nav-dot"></span></a>
+<a class="toc-link" href="#s4" data-target="s4"><span class="nav-index">04</span><span>核心技术机制</span><span class="nav-dot"></span></a>
+<a class="toc-link" href="#s5" data-target="s5"><span class="nav-index">05</span><span>质量工程红军评审</span><span class="nav-dot"></span></a>
+<a class="toc-link" href="#s6" data-target="s6"><span class="nav-index">06</span><span>Anthropic 内部实践</span><span class="nav-dot"></span></a>
+<a class="toc-link" href="#s7" data-target="s7"><span class="nav-index">07</span><span>Android 质量体系适配</span><span class="nav-dot"></span></a>
+<a class="toc-link" href="#s8" data-target="s8"><span class="nav-index">08</span><span>实施路线与度量</span><span class="nav-dot"></span></a>
+<a class="toc-link" href="#s9" data-target="s9"><span class="nav-index">09</span><span>综合结论与参考文献</span><span class="nav-dot"></span></a>
+ <div class="no-results" id="noResults">未找到匹配的章节，请尝试其他关键词。</div>
+ </nav>
+ <div class="sidebar-bottom"><span class="last-updated">VERIFIED · 2026.10.14<br>Single-file / Offline</span><button id="themeSwitch" type="button" class="icon-btn" aria-label="切换深浅色主题">◐ 主题</button></div>
+</aside>
+<div class="main">
+ <div class="topbar"><div style="display:flex;align-items:center;gap:10px"><button type="button" class="icon-btn menu-toggle" id="menuButton" aria-label="打开目录">☰</button><span class="breadcrumb">RESEARCH <span style="opacity:.4">/</span> <strong>Anthropic · AI-Native SDLC</strong></span></div><div class="top-actions"><button type="button" class="icon-btn" id="printButton">⎙ 打印 / PDF</button></div></div>
+ <main class="doc-container" id="mainContent">
+  <header class="hero" id="top">
+   <div class="eyebrow">OFFICIAL PLAYBOOK · CRITICAL ANALYSIS · IMPLEMENTATION</div>
+   <h1>AI-Native <em>SDLC</em><span class="cn">Anthropic 指导文档深度分析报告</span></h1>
+   <p class="hero-description">从“代码不再是瓶颈”出发，系统理解 Anthropic 的六阶段、12 项 Plays、Agent 治理与验证循环；进一步从软件质量工程视角，审查需求完整性、Test Obligation、Oracle 与变更影响分析，并给出 Android 应用质量体系的落地建议。</p>
+   <div class="hero-meta"><span class="meta-chip"><i></i>官方原文：2026-08-21</span><span class="meta-chip"><i></i>研究整理：2026-10-14</span><span class="meta-chip"><i></i>9 章深度研究</span><span class="meta-chip"><i></i>单文件 · 离线可读</span></div>
+   <div class="hero-actions"><a class="action-button primary" href="#s1">开始阅读 ↓</a><a class="action-button" href="#s9">结论与参考文献 ↗</a><a class="action-button" href="https://claude.com/resources/articles/the-ai-native-sdlc-playbook" target="_blank" rel="noopener noreferrer">查看 Anthropic 原文 ↗</a></div>
+   <div class="intro-grid"><div class="intro-box"><h3>本报告的核心观点</h3><p>Anthropic 已经提出系统化的 <strong>Agent 执行与治理框架</strong>；要构建面向复杂业务的软件质量保证体系，仍需补充<strong>独立的规格质量判断、可追溯的测试义务及风险驱动验证</strong>。</p></div><div class="intro-box"><h3>阅读标识</h3><p><strong>原文事实</strong>配有 [S1]–[S6] 来源；<strong>分析判断 / 需要补充 / 建议</strong>是本报告的独立延伸，不能与官方实践混同。</p></div></div>
+  </header>
+  <section class="report-section" id="s1" data-title="01 核心理念与背景">
+  <div class="section-kicker"><span class="chapter-num">01</span> 核心理念</div>
+  <h2>从“编码加速”走向“交付系统重构”</h2>
+  <p class="lead">Anthropic 的判断不是“AI 代替写代码”这么简单，而是：当编码速度显著提升，原本依靠人工交接、等待和审批的流程会成为新的系统瓶颈。真正的转型对象是整个 SDLC。</p>
+  <div class="quote-feature"><span class="quote-mark">“</span><div><strong>Code is no longer the bottleneck.</strong><p>这是一项关于系统约束迁移的判断，而不是“代码质量已被 AI 自动解决”的证明。<a href="#ref-s1" class="src">[S1]</a></p></div></div>
+  <h3>1.1 传统流程为什么会受到冲击</h3>
+  <p>传统 SDLC 围绕高成本的人类编码活动设计：产品写 PRD，技术架构师负责设计，开发实现，QA 验收，发布团队把关。角色边界与阶段交接确保责任可追踪，但也引入等待时间。当实现周期明显缩短后，这些静态环节的吞吐量不再匹配代码产出速度。</p>
+  <div class="cards three"><div class="mini-card"><span class="eyebrow">瓶颈转移</span><h4>Plan / Test / Deploy</h4><p>需求明确、评审、验证、发布审批成为新的排队点。</p></div><div class="mini-card"><span class="eyebrow">控制失配</span><h4>Review 不可线性扩容</h4><p>逐行人工审查无法随 Agent 产出数量无限同比扩张。</p></div><div class="mini-card"><span class="eyebrow">治理滞后</span><h4>审批仍以会议为单位</h4><p>例外处置与决策时延抵消代码生成带来的收益。</p></div></div>
+  <h3>1.2 “AI-Native”的五个核心变化</h3>
+  <div class="table-wrap"><table><thead><tr><th>维度</th><th>传统 SDLC</th><th>AI-Native SDLC</th><th>必须保留的控制目标</th></tr></thead><tbody>
+  <tr><td>入口</td><td>多次沟通形成需求文档</td><td>自然语言意图沉淀为版本化 intent.md</td><td>问题与目标被真实理解</td></tr>
+  <tr><td>设计</td><td>分析、设计分阶段交接</td><td>Agent 结合组织标准生成 spec.md</td><td>规格正确、设计风险透明</td></tr>
+  <tr><td>实现</td><td>代码与测试以人工为主</td><td>Plan-first，Agent 执行并自验证</td><td>关键技术决策可审查</td></tr>
+  <tr><td>验收</td><td>阶段结束后集中验证</td><td>运行中的反馈循环与配置 Evals</td><td>结果有客观证据</td></tr>
+  <tr><td>治理</td><td>人工审查、会议式审批</td><td>策略、Hooks、分级人工批准</td><td>高风险决策仍有责任人</td></tr>
+  <tr><td>维护</td><td>人发现、诊断、提单</td><td>指标触发 Agent 诊断，重启意图闭环</td><td>线上变化可控、可回溯</td></tr>
+  </tbody></table></div>
+  <div class="insight"><div class="insight-title">分析判断</div><p>速度增加不自动提高质量。必须同步提高<strong>需求可验证性、变更风险识别能力、验证吞吐量和治理确定性</strong>；否则只是把瓶颈从编码团队搬到代码评审或测试验收团队。</p></div>
+  <h3>1.3 适用范围与边界</h3>
+  <p>原文主要面向已经采用 Claude Code、具备 Git 与 CI 基础设施、能够调整审批和发布流程的工程、平台与安全负责人，尤其考虑大型或受监管组织。文中的做法是 <strong>可按依赖逐步采纳的 Plays</strong>，并不是所有企业必须一夜之间照搬的统一强制流程。<a href="#ref-s3" class="src">[S3]</a></p>
+</section>
+<section class="report-section" id="s2" data-title="02 整体架构与交付链">
+  <div class="section-kicker"><span class="chapter-num">02</span> 总体架构</div>
+  <h2>六阶段、12 项 Plays 与 Artifact-driven Workflow</h2>
+  <p class="lead">保持 Plan、Design、Build、Test、Deploy、Maintain 六个控制目标，但把阶段间的“人传话”替换为“可读取、可审批、可触发的交付件”。</p>
+  <div class="diagram-surface"><div class="stage-flow">
+    <div class="stage"><b class="stage-count">01</b><strong>Plan</strong><small>intent.md</small><span>目标与约束</span></div><i class="flow-arrow">→</i>
+    <div class="stage"><b class="stage-count">02</b><strong>Design</strong><small>spec.md</small><span>行为与设计</span></div><i class="flow-arrow">→</i>
+    <div class="stage"><b class="stage-count">03</b><strong>Build</strong><small>plan.md / diff</small><span>方案与实现</span></div><i class="flow-arrow">→</i>
+    <div class="stage"><b class="stage-count">04</b><strong>Test</strong><small>test evidence</small><span>持续验证</span></div><i class="flow-arrow">→</i>
+    <div class="stage"><b class="stage-count">05</b><strong>Deploy</strong><small>PR / release</small><span>审批与发布</span></div><i class="flow-arrow">→</i>
+    <div class="stage"><b class="stage-count">06</b><strong>Maintain</strong><small>incident</small><span>指标与反馈</span></div>
+  </div><div class="loop-line">↩ 运行事件、事故与改进建议重新形成 intent.md，返回 Plan</div><p class="figure-note">分析报告重绘示意：简化了阶段并行与条件分支，不意味着 SDLC 必须严格线性执行。</p></div>
+  <h3>2.1 核心交付件和审计链</h3>
+  <div class="artifact-chain"><div><span class="artifact-tag">intent.md</span><small>为什么做</small></div><span class="chain-arrow">→</span><div><span class="artifact-tag">spec.md</span><small>做成什么</small></div><span class="chain-arrow">→</span><div><span class="artifact-tag">plan.md</span><small>如何实现</small></div><span class="chain-arrow">→</span><div><span class="artifact-tag">Code + Tests</span><small>实现与证据</small></div><span class="chain-arrow">→</span><div><span class="artifact-tag">PR + Findings</span><small>审查与批准</small></div><span class="chain-arrow">→</span><div><span class="artifact-tag">Incident</span><small>运行事实</small></div></div>
+  <p>交付件链既是上下文传递机制，也是责任与审计线索：谁提出需求、Agent 产生了什么、由谁批准、代码和测试是否与计划一致。原文建议每个阶段提交可追踪资产，重要审批通过 Merge 或 Review 记录完成。<a href="#ref-s1" class="src">[S1]</a></p>
+  <h3>2.2 12 项 Plays：全貌与采用先决条件</h3>
+  <div class="table-wrap"><table><thead><tr><th>阶段</th><th>Play</th><th>主要交付或能力</th><th>价值</th></tr></thead><tbody>
+  <tr><td>Plan</td><td>1. Capture as intent.md</td><td>意图、约束、开放问题</td><td>减少转述损耗</td></tr>
+  <tr><td>Design</td><td>2. Requirements and design</td><td>spec.md + 关切清单</td><td>规格生成时应用组织标准</td></tr>
+  <tr><td rowspan="4">Build</td><td>3. Plan mode first</td><td>plan.md</td><td>先审方案再写代码</td></tr>
+  <tr><td>4. The CLAUDE.md</td><td>项目级上下文</td><td>让团队知识可被持续消费</td></tr>
+  <tr><td>5. Skills as knowledge</td><td>版本化可复用能力</td><td>组织政策进入工作流</td></tr>
+  <tr><td>6. Parallel sessions & subagents</td><td>隔离工作树与子代理</td><td>提高并行度与任务聚焦</td></tr>
+  <tr><td rowspan="2">Test</td><td>7. Feedback loop</td><td>真实测试输出</td><td>缩短错误反馈延迟</td></tr>
+  <tr><td>8. Continuous evals</td><td>Agent 能力回归集</td><td>配置和模型变更有回归门禁</td></tr>
+  <tr><td rowspan="3">Deploy</td><td>9. AI in PR review loop</td><td>多维审查发现</td><td>提高评审吞吐量与一致性</td></tr>
+  <tr><td>10. Hooks as approval gates</td><td>确定性动作阻断</td><td>权限与审批可执行</td></tr>
+  <tr><td>11. CI/CD integration</td><td>受控流水线与回滚</td><td>从分析到交付可衔接</td></tr>
+  <tr><td>Maintain</td><td>12. Closing the loop</td><td>检测、诊断、再生成 intent</td><td>线上反馈反哺研发</td></tr>
+  </tbody></table></div>
+  <h3>2.3 两条基础原则</h3>
+  <div class="cards two"><div class="mini-card"><h4>权威数据源（Source of Truth）</h4><p>若需求仍以 Jira / ServiceNow 等为权威系统，Markdown 可是工作副本；如果 Git 为事实来源，传统平台保存指向提交的链接。至少应有记录 ID 与 Commit SHA 的双向关联，避免双写漂移。</p></div><div class="mini-card"><h4>依赖优先于阶段顺序</h4><p>原文有依赖图，允许按团队瓶颈从基础能力切入：例如先具备可运行测试，再构建 Evals；先有 PR 评审与审批控制，再让 Agent 介入 CI/CD 中的写操作。</p></div></div>
+  <div class="insight"><div class="insight-title">架构要点</div><p>可验证交付链不是“所有内容统一放 Markdown”，而是<strong>每种资产有权威来源、稳定标识、状态、责任人、上下游引用与批准证据</strong>。这决定了 Agent 工作流是否具有可审计性。</p></div>
+</section>
+<section class="report-section" id="s3" data-title="03 六阶段深度解读">
+  <div class="section-kicker"><span class="chapter-num">03</span> 逐阶段机制</div>
+  <h2>六阶段怎么运行：输入、动作、出口与风险</h2>
+  <p class="lead">以下按官方工作方法逐一解读，并在每一阶段单独标明质量工程视角下需要加强的地方。所有扩展建议都不代表官方已经落实。</p>
+  <div class="stage-detail"><div class="stage-head"><span>01</span><div><small>PLAN</small><h3>捕获意图，而不是一开始就写完整 PRD</h3></div></div>
+  <p>业务发起人描述真实问题，Claude 以追问方式整理影响对象、目标结果、约束、非目标与开放问题，形成 <code>intent.md</code>；发起人校正，产品负责人接受或拒绝，随后进入规格生成。人工责任不被取消。<a href="#ref-s1" class="src">[S1]</a></p>
+  <div class="meta-grid"><div><b>输入</b><span>业务痛点 / 工单 / 事故 / 访谈</span></div><div><b>主要输出</b><span>intent.md</span></div><div><b>决策人</b><span>发起人与 Product Owner</span></div><div><b>官方关注的指标</b><span>意图提交耗时、通过率、后续改写率</span></div></div>
+  <pre><code># Intent: 导入操作的异常恢复
+## Problem
+应用进程被终止后，失效的运行记录可能阻止用户再次导入。
+## Outcome
+用户可重新发起合法导入，且不会产生重复执行。
+## Constraints
+持久化数据兼容；不得删除用户导入数据。
+## Open Questions
+怎样判定“失效任务”？重启时是否尝试继续执行？</code></pre>
+  <p class="analysis-note"><b>需要补充：</b><code>intent.md</code> 解决意图保真，不自动保证需求完整。完整性判断必须在后续阶段对业务对象、状态与异常组合进行系统检查。</p></div>
+  <div class="stage-detail"><div class="stage-head"><span>02</span><div><small>DESIGN</small><h3>把需求规格生成与组织标准约束放到同一工作过程</h3></div></div>
+  <p>批准 <code>intent.md</code> 后，Agent 加载组织的安全、合规、UX、品牌规范及相关工程上下文，生成 <code>spec.md</code>，列出无法满足或彼此矛盾的政策、未决风险。Product Owner 审查“设计是否解决了原始问题”，高风险事项升级到技术负责人。<a href="#ref-s1" class="src">[S1]</a></p>
+  <div class="meta-grid"><div><b>输入</b><span>intent + 标准 Skills + 既有系统知识</span></div><div><b>输出</b><span>spec.md + flagged concerns</span></div><div><b>决策人</b><span>产品负责人；必要时技术负责人</span></div><div><b>官方关注的指标</b><span>意图到规格的耗时、开发后规格返工</span></div></div>
+  <p class="analysis-note"><b>需要补充：</b>建议把 <em>Story → AC → Scenario / State / Rule / Invariant</em> 作为需求质量约束，不允许“未确认的关键业务假设”以已批准规则的形式混入规格。</p></div>
+  <div class="stage-detail"><div class="stage-head"><span>03</span><div><small>BUILD</small><h3>Plan-first：在修改代码前暴露关键实现决策</h3></div></div>
+  <p>工程师以 Plan Mode 阅读已批准规格和现有代码，Agent 给出涉及文件、实施顺序、风险、替代方案、测试证明。反复审查直到一位未参与会话的工程师也能依照计划实现；随后批准 <code>plan.md</code>，执行代码修改。若实现偏离计划，必须同步修订。<a href="#ref-s1" class="src">[S1]</a></p>
+  <div class="meta-grid"><div><b>输入</b><span>spec、代码仓、工程知识</span></div><div><b>输出</b><span>plan.md + code diff + tests</span></div><div><b>决策人</b><span>工程师；高风险由架构负责人</span></div><div><b>官方关注的指标</b><span>首轮合并率、返工次数、Plan-Diff 一致率</span></div></div>
+  <p>原文还鼓励基于 Git worktree 的并行 Session，以及使用受限工具与独立上下文的 Subagent 执行专项工作。其收益取决于任务是否真正可分割，而非同时启动的 Agent 数量。</p>
+  <p class="analysis-note"><b>需要补充：</b>计划应该解释“为何影响这些 Feature / Scenario”，而不止罗列文件。对于 Brownfield 工程，需加入跨模块影响范围和变更风险来源。</p></div>
+  <div class="stage-detail"><div class="stage-head"><span>04</span><div><small>TEST</small><h3>开发内反馈闭环 + Agent 配置回归，两套验证体系并行</h3></div></div>
+  <p>官方要求把 Build、Unit Test、Lint、视觉截图等做成 Agent 可直接调用且有可判断退出码的能力，禁止“没有运行工具却宣布已完成”。修复缺陷时先有失败测试、确认失败原因，再修改实现，并防止 Agent 通过改弱测试造假。<a href="#ref-s1" class="src">[S1]</a></p>
+  <div class="diagram-surface"><div class="verify-loop"><div>生成 / 修改实现</div><span>→</span><div>真实执行 Test / Build</div><span>→</span><div>失败归因与修复</div><span>↺</span><div class="highlight">验证日志 + 证据</div></div><p class="figure-note">Feedback Loop 贯穿单项任务；Verifier Subagent 使用新上下文进行最终检查，两者不是同义词。</p></div>
+  <p>与此同时，Agent Evals 针对 <code>CLAUDE.md</code>、Skill、Hook、Prompt、模型变化做能力回归。原文建议先收集 <strong>20–50</strong> 个真实任务，并配置被接受的结果和检查器；可在配置变更、定时调度或事故发生后追加执行。<a href="#ref-s1" class="src">[S1]</a></p>
+  <div class="meta-grid"><div><b>软件测试</b><span>代码行为与系统需求是否符合</span></div><div><b>Agent Evals</b><span>Agent 是否仍按预期完成工作</span></div><div><b>证据要求</b><span>真实工具日志、退出码、工件、截图</span></div><div><b>官方关注的指标</b><span>首次 CI 通过率、Eval 通过率、生产回归</span></div></div>
+  <p class="analysis-note"><b>需要补充：</b>“测试通过”仍然依赖测试是否覆盖正确业务要求，须区分 AC、Test Obligation、Oracle 和真实执行结果；配置 Evals 也不能替代设备级软件验证。</p></div>
+  <div class="stage-detail"><div class="stage-head"><span>05</span><div><small>DEPLOY</small><h3>Agent 审查所有 PR，但关键审批依旧由受权人员负责</h3></div></div>
+  <p>原文将 PR 审查拆成 Bugs、Security、Compliance 等 Pass，并以 <code>REVIEW.md</code> 指定严重程度、排除规则与规范引用；审查结果可供 CI 决策，但不能直接取代 Code Owner 的审批。Agent 可以跟进修复 Reviewer Comment，但必须经过保护分支与审查路径。<a href="#ref-s1" class="src">[S1]</a></p>
+  <p>部署自动化按权限分层：先让 Agent 只读定位失败、生成变更日志；再允许其在受控流水线中提交修复 PR；更高自主级别必须满足隔离沙箱、短期权限凭证、明确的部署 MCP 工具范围和已演练的回滚路径。生产发布需要人授权。</p>
+  <div class="meta-grid"><div><b>输入</b><span>Code Diff + Plan + Spec + Policy</span></div><div><b>输出</b><span>Findings、批准记录、部署状态</span></div><div><b>审批位置</b><span>Code Owner / Release Manager</span></div><div><b>官方关注的指标</b><span>审查质量、PR 等待时长、发布失败与恢复</span></div></div>
+  <p class="analysis-note"><b>需要补充：</b>不能让模型对每个动作的自由裁量取代访问控制；Hooks 只对受控工具路径有效，还需 CI 权限、网络隔离与审计记录。</p></div>
+  <div class="stage-detail"><div class="stage-head"><span>06</span><div><small>MAINTAIN</small><h3>确定性检测异常，Agent 诊断，再生成下一轮意图</h3></div></div>
+  <p>监控脚本根据统计控制带检测异常：如 CI 失败率、发布后 5xx 比例。1σ 记录、2σ 只读诊断、3σ 提议 PR 或触发预授权回滚 Runbook。Agent 将证据与建议写成新的 <code>intent.md</code>，值班人员决定修复、延期或忽略；事故转化为回归用例。示例控制带不是通用可靠性标准。<a href="#ref-s1" class="src">[S1]</a></p>
+  <div class="meta-grid"><div><b>输入</b><span>监控指标、日志、事故信号</span></div><div><b>输出</b><span>诊断 + intent + 事故记录</span></div><div><b>决策人</b><span>Service Owner / On-call</span></div><div><b>官方关注的指标</b><span>检测至入队耗时、转修复率、同类问题复发</span></div></div>
+  <p class="analysis-note"><b>需要补充：</b>生产自动化必须区分观测、诊断、可逆处置与有破坏性的操作；不要把示例的 1σ/2σ/3σ 直接作为业务告警生产阈值。</p></div>
+</section>
+<section class="report-section" id="s4" data-title="04 核心技术机制">
+  <div class="section-kicker"><span class="chapter-num">04</span> 工程化机制</div>
+  <h2>CLAUDE.md、Skills、Hooks、Evals 到底如何分工</h2>
+  <p class="lead">这些工具都承载知识或规则，但处于不同控制层。如果将所有要求写在一个长 Prompt 中，会把组织制度误当成模型应当“记住”的自然语言建议。</p>
+  <div class="table-wrap"><table><thead><tr><th>机制</th><th>责任</th><th>执行特性</th><th>资产例子</th><th>关键边界</th></tr></thead><tbody>
+  <tr><td><strong>CLAUDE.md</strong></td><td>项目环境与惯例</td><td>会话上下文</td><td>常用命令、架构、易犯错误</td><td>不是强制安全隔离</td></tr>
+  <tr><td><strong>Skill</strong></td><td>可复用工作方法与组织知识</td><td>模型理解后应用</td><td>安全 API 检查 Skill</td><td>具有建议性质，需验证是否触发</td></tr>
+  <tr><td><strong>Hook</strong></td><td>工具调用边界控制</td><td>匹配事件时执行代码</td><td>禁止修改保护目录</td><td>依赖受控配置与运行环境</td></tr>
+  <tr><td><strong>REVIEW.md</strong></td><td>PR 多维评审准则</td><td>审查配置 / 规则</td><td>Bugs / Security / Compliance</td><td>发现本身不代表合并获批准</td></tr>
+  <tr><td><strong>Evals</strong></td><td>Agent 工作能力回归</td><td>任务 + 判分检查</td><td>模型变更后安全任务表现</td><td>不等同于软件业务验收</td></tr>
+  <tr><td><strong>CI / Sandbox</strong></td><td>确定性验证、权限与隔离</td><td>系统层强制</td><td>测试门禁、短期凭证</td><td>需独立于模型的权限边界</td></tr>
+  </tbody></table></div>
+  <h3>4.1 CLAUDE.md：紧凑、更新频繁、对整个团队一致</h3>
+  <p>原文建议由仓库初始化生成起点，再压缩到新同事第一天真正需要了解的内容：Build/Test/Lint 命令、技术约定、关键架构、反复出现的错误。典型准则是 Agent 连续两次犯同一类错误，就将改正信息沉淀至 <code>CLAUDE.md</code>。文件应足够精简，并通过 PR 管理。<a href="#ref-s1" class="src">[S1]</a></p>
+  <pre><code># Gallery module
+## Commands
+- Build: ./gradlew :gallery:assembleDebug
+- Unit test: ./gradlew :gallery:testDebugUnitTest
+- Lint: ./gradlew :gallery:lintDebug
+## Invariants / conventions
+- Do not edit generated sources.
+- Account-scoped operations must preserve account identity.
+## Common mistakes
+- A persisted RUNNING flag is not proof that work is alive.</code></pre>
+  <h3>4.2 Skills：把重复依赖个人经验的活动产品化</h3>
+  <p>Skill 有明确触发描述、操作步骤、可调用脚本、可能还有模板和检查项。适合持续复用的安全标准、代码 Review、需求挑战、变更影响分析等。<strong>Skill 的触发和有效执行要通过真实任务验证</strong>。当政策必须无例外执行，应在 Hook 或 CI 再加确定性检查。<a href="#ref-s1" class="src">[S1]</a></p>
+  <h3>4.3 Hooks：程序性强制控制，不能混淆“建议”与“强制”</h3>
+  <p>例如某个文件编辑操作发生前，在 PreToolUse Hook 检查路径是否受保护，不合规就返回阻断。对于更复杂的发布操作，应该在外部审批系统验证身份与授权，而不是仅判断命令中包含 <code>production</code> 字符串。</p>
+  <div class="callout caution"><strong>关键安全提醒</strong><p>官方展示的 Bash 字符串匹配脚本是说明控制思路的简化例子，不能单独当作生产环境安全边界。正确的保护应采用受管理的权限配置、OS/容器隔离、网络白名单、CI 权限及发布系统自身的授权。</p></div>
+  <h3>4.4 Evals：测试的是工作代理，而不仅是产品代码</h3>
+  <p>每个 Eval Case 最少包括任务输入、预期/允许行为、执行环境、判分器和失败证据。配置变更后跑回归；生产事故转化为样本；通过率下降阻止相关配置合并。建议记录模型版本、Skill 版本、运行预算、判分器版本，以免“前后对比”缺少实验可重复性。</p>
+  <pre><code>{
+  "eval_id": "API-AUTH-007",
+  "task": "为既有服务新增查询接口",
+  "expected_checks": [
+    "新增接口具有鉴权机制",
+    "集成测试包含未授权访问拒绝",
+    "修改没有扩大敏感数据暴露面"
+  ],
+  "grader": "unit-tests + policy-check + review"
+}</code></pre>
+  <p class="figure-note">上例是本报告为解释 Eval 结构编写的示意，不是 Anthropic 原文所提供的正式 Schema。</p>
+  <h3>4.5 单一大 Agent 与多 Agent 的取舍</h3>
+  <p>独立 Reviewer 或 Subagent 的意义在于限定职责、减少无关上下文干扰、增加独立判断机会。但它们仍可能共享同一份不完整需求、知识库偏差或错误的验证目标。工程设计上应优先明确工作契约、信息来源和评审界限，其次才是增加 Agent 数量。</p>
+</section>
+<section class="report-section" id="s5" data-title="05 质量工程红军评审">
+  <div class="section-kicker"><span class="chapter-num">05</span> 独立分析 / 质量视角</div>
+  <h2>Playbook 解决了什么，又没有解决什么？</h2>
+  <p class="lead">这份文档是一套成熟度较高的 Agent 研发工作流与治理指导，但并非完整的软件正确性证明方法。它系统解决了流程交接、策略嵌入和验证反馈，却没有在同等深度上形式化定义业务规格的充分性。</p>
+  <div class="callout neutral"><strong>判定边界</strong><p>以下五项是本报告基于质量工程的分析和建议；“官方未系统展开”不等于 Anthropic 内部完全没有相关能力，更不能据此断言相关能力不存在。</p></div>
+  <h3>5.1 需求完整性：存在“正确执行错误规格”的风险</h3>
+  <p><strong>官方已解决：</strong>意图生成、组织政策约束、规格问题上报、产品负责人审批。</p>
+  <p><strong>仍需补齐：</strong>针对业务对象、事件、状态、规则、数据边界、跨功能依赖和非功能约束的系统性缺失检测。仅让 Agent 生成完整 <code>spec.md</code>，没有等价于它已识别所有隐藏的业务前提。</p>
+  <div class="table-wrap"><table><thead><tr><th>待检查维度</th><th>典型缺口</th><th>建议方法</th></tr></thead><tbody>
+  <tr><td>对象</td><td>未定义 ImportTask 与 Work 实例是否为同一对象</td><td>实体/关系模型、术语表、本体</td></tr>
+  <tr><td>状态</td><td>遗漏进程死亡后 RUNNING 的合法性</td><td>状态机、转移表、反例搜索</td></tr>
+  <tr><td>规则</td><td>“有运行记录”被误当作“有活跃工作”</td><td>业务不变量与决策表</td></tr>
+  <tr><td>场景</td><td>账号切换、网络恢复、重复触发未覆盖</td><td>对象 × 事件 × 环境组合</td></tr>
+  <tr><td>一致性</td><td>不同 AC 对恢复操作给出冲突结果</td><td>规则对齐、SMT / 约束检查</td></tr>
+  <tr><td>可验证性</td><td>“自动恢复正常”缺少成功判据</td><td>AC → Obligation → Oracle</td></tr>
+  </tbody></table></div>
+  <h3>5.2 Verification Oracle：有工具反馈，不等于有可信判据</h3>
+  <p>Anthropic 强调真实执行与受保护的失败测试，这是工程上很有价值的进步。但“测试符合写下来的预期”与“预期符合真实业务约束”不是一回事。Oracle 是用于判定某一观察结果是否正确的规则、关系或机制；测试脚本的断言只是 Oracle 的一种编码载体。</p>
+  <div class="diagram-surface"><div class="oracle-pipeline">
+    <div><b>需求层</b><strong>Business Rule / Invariant</strong><small>经确认的业务事实</small></div><span>↓</span>
+    <div><b>验收层</b><strong>AC / Scenario</strong><small>可接受行为与上下文</small></div><span>↓</span>
+    <div class="em"><b>验证设计层</b><strong>Test Obligation</strong><small>必须证明的性质 + 条件 + 适用层级</small></div><span>↓</span>
+    <div><b>执行规范层</b><strong>Test Case + Oracle</strong><small>输入步骤 / 环境 / 观察点 / 判据</small></div><span>↓</span>
+    <div><b>证据层</b><strong>Execution Evidence</strong><small>日志 / 实测状态 / Trace / CI 结果</small></div>
+  </div><p class="figure-note">本报告提出的推荐验证资产关系，并非 Playbook 中的原生交付链。</p></div>
+  <h4>AC、Obligation、Oracle、Expected Result 的准确关系</h4>
+  <div class="table-wrap"><table><thead><tr><th>概念</th><th>回答什么</th><th>例子：导入任务</th></tr></thead><tbody>
+  <tr><td>Acceptance Criteria（AC）</td><td>业务在什么条件下接受系统行为？</td><td>进程重启后，不存在实际活跃导入任务时，应允许发起导入</td></tr>
+  <tr><td>Test Obligation</td><td>我们有义务验证哪些性质、边界与失败情形？</td><td>验证“失效 RUNNING 记录不能阻塞新任务”，且“有效任务不能并行重复执行”</td></tr>
+  <tr><td>Test Oracle</td><td>怎样判定观察到的系统行为正确？</td><td>检查工作任务状态、返回结果及持久化记录的一致性</td></tr>
+  <tr><td>Test Case / Procedure</td><td>怎样布置前提、执行操作、收集观察？</td><td>制造旧 RUNNING 记录→模拟进程终止→重启→点击导入→检查调度状态</td></tr>
+  <tr><td>Expected Result</td><td>在特定用例的观察点，预期出现什么？</td><td>新任务成功入队且同一逻辑导入仅一个有效执行实例</td></tr>
+  </tbody></table></div>
+  <p>这里的 Test Obligation 通常应该至少表达：<strong>验证对象、前置状态、事件或触发、必须保持的性质、反例/边界、可观察证据及适合的测试层级</strong>。Oracle 可以复用于多个用例；一个 AC 也可能拆出多个 Obligation，而一个 Obligation 可能需要多个用例或测试手段完成。</p>
+  <h3>5.3 变更影响分析：从文件级计划走向业务风险传播</h3>
+  <p>官方 <code>plan.md</code> 建议列出修改文件、步骤、风险与 Proof，属于良好的设计前评审，但不足以保证全部跨模块影响都被识别。建议补充以下可追溯路径：</p>
+  <div class="diagram-surface"><div class="impact-steps"><div>Code Diff</div><b>→</b><div>影响锚点</div><b>→</b><div>功能 / 状态 / 接口</div><b>→</b><div>Risk Pattern</div><b>→</b><div>受影响 Scenario</div><b>→</b><div>Test Obligation</div><b>→</b><div>测试选择 + 缺口</div></div><p class="figure-note">从静态依赖、调用关系、数据流和显式业务映射推导候选影响，必要时保留未知风险；不应声称代码图谱本身即可发现全部业务影响。</p></div>
+  <p>注意要区分“已有测试能否召回”和“所需测试是否存在”。如果仅选择已有回归集，可能漏掉新增风险。应将 <em>Test Gap</em> 作为独立阻断或需要人工接受的风险。</p>
+  <h3>5.4 自验证与独立验证：增加 Agent 不等于获得独立真相</h3>
+  <p>独立 Verifier Subagent 可以降低开发过程上下文带来的偏差，却不能消除共同依赖错误规格的问题。建议至少做四层独立性设计：</p>
+  <ol class="number-list"><li><strong>上下文独立：</strong>Verifier 不只读取开发者的自我总结，直接审视批准资产与代码。</li><li><strong>标准来源独立：</strong>AC、业务规则与不变量来自确认的需求，不由实现代码倒推生成。</li><li><strong>执行工具独立：</strong>结论依赖真实工具/设备的返回状态，而非自述。</li><li><strong>批准权限独立：</strong>代码产出 Agent 不拥有自我批准高风险合并和发布的权限。</li></ol>
+  <h3>5.5 质量模型覆盖：把“能运行测试”升级为“足够的证据组合”</h3>
+  <div class="table-wrap"><table><thead><tr><th>验证层</th><th>适合回答的问题</th><th>高价值证据</th></tr></thead><tbody>
+  <tr><td>静态规则 / 合同检查</td><td>是否违反结构、接口与确定性规则？</td><td>Lint、契约差异报告、Policy Check</td></tr>
+  <tr><td>Unit Test</td><td>单一模块的业务决策是否符合规则？</td><td>状态转移与边界分支测试</td></tr>
+  <tr><td>Integration Test</td><td>数据库、WorkManager、网络依赖是否协调？</td><td>组件真实联动日志</td></tr>
+  <tr><td>Scenario / Device Test</td><td>重启、网络切换、账号变化等端到端结果是否正确？</td><td>设备日志、状态快照、视频</td></tr>
+  <tr><td>Release / Production</td><td>性能、容量、灰度、回滚是否安全？</td><td>线上指标、回滚演练结果</td></tr>
+  </tbody></table></div>
+  <div class="insight"><div class="insight-title">红军审查结论</div><p>Playbook 的“反馈循环 + Evals + 治理门禁”建立了优秀的<strong>执行可靠性框架</strong>，但如果希望建立面向复杂业务的软件质量保证体系，还需要补充<strong>规格充分性检查、可追溯的测试义务、可信 Oracle、影响分析与分层证据覆盖</strong>。</p></div>
+</section>
+<section class="report-section" id="s6" data-title="06 Anthropic 内部实践与证据">
+  <div class="section-kicker"><span class="chapter-num">06</span> 实践证据</div>
+  <h2>从 Playbook 的方法论到 Anthropic 实际运行的安全控制</h2>
+  <p class="lead">同一家公司 2026 年 7 月发表的安全工程文章，为这些理念提供了真实组织实施证据。应把“官方自述的事实与指标”与“这些指标能够证明什么”分开理解。</p>
+  <div class="stats"><div class="stat"><span>≈80%</span><strong>已合并代码由 Claude 编写</strong><small>2026 年 7 月文章中的 Anthropic 自述</small></div><div class="stat"><span>8×</span><strong>人均每季度代码产出</strong><small>文中称对比 2021–2025 时期</small></div><div class="stat"><span>16% → 54%</span><strong>获得实质性审查评论的 PR 比例</strong><small>随 Agent 审查与有效性证据改进后的变化</small></div></div>
+  <p class="figure-note">以上仅为来源 [S2] 中的自述指标，不代表所有企业可以复制，也不能直接推导生产缺陷下降比例。<a href="#ref-s2" class="src">[S2]</a></p>
+  <h3>6.1 他们如何把安全左移</h3>
+  <p>Anthropic 使用项目安全评审（PSR）自动化，对项目设计结合 MITRE ATT&amp;CK 进行风险识别，并接入组织内部知识索引，获取既往政策、决策和关联系统上下文。低风险事项在信任成熟后可采用更高程度的自治，高风险依旧升级处理。<a href="#ref-s2" class="src">[S2]</a></p>
+  <p>在编码阶段，安全规范写入 <code>CLAUDE.md</code> 与组织 Skills，并把发现的重复漏洞类型沉淀回源头；在 PR 阶段运行若干小范围 Reviewer，使用检索增强获得历史事故上下文，而不是只写一个覆盖所有漏洞类型的大 Prompt。</p>
+  <h3>6.2 多重防线，而非单点“AI 审核通过”</h3>
+  <div class="table-wrap"><table><thead><tr><th>控制层</th><th>内部实践所体现的原则</th><th>价值</th></tr></thead><tbody>
+  <tr><td>知识侧</td><td>内部知识索引 + CLAUDE.md / Skills</td><td>将过去事故与既有政策带入新任务</td></tr>
+  <tr><td>生成侧</td><td>安全代码规范在开发时介入</td><td>尽可能在缺陷生成前避免其出现</td></tr>
+  <tr><td>审查侧</td><td>多 Agent 分工审查 + 确定性检查</td><td>提高覆盖面，交叉检查重要问题</td></tr>
+  <tr><td>权限侧</td><td>身份隔离、最小权限与硬边界</td><td>限制遭提示注入或越权后的损害面</td></tr>
+  <tr><td>治理侧</td><td>Shadow Mode、人工抽样、风险分级</td><td>建立可信度而不是盲目放权</td></tr>
+  <tr><td>监控侧</td><td>代理行为与审查证据写入日志 / SIEM</td><td>行为可归因、可调查</td></tr>
+  </tbody></table></div>
+  <h3>6.3 三条避免误读的结论</h3>
+  <ol class="number-list"><li><strong>代码占比 ≠ 质量水平。</strong>“80% 代码由 AI 编写”描述生产方式，不能直接证明工程结果更可靠。</li><li><strong>评论比例上升 ≠ 漏检率下降了相同比例。</strong>审查评论变多意味着系统产生更多实质性反馈，但仍需要观察误报、严重漏洞漏检和发布后事故。</li><li><strong>自动批准需要被治理。</strong>Shadow Mode、风险分层、抽样审计和日志追踪非常重要，任何单一 Reviewer 不应成为未经验证的唯一信任来源。</li></ol>
+  <div class="insight"><div class="insight-title">实证价值判断</div><p>Anthropic 内部实践最值得借鉴的，不是某个自述产出倍数，而是<strong>从“审查代码”转向“审查 Agent 执行循环、权限、指标和决策证据”</strong>的安全与治理体系。</p></div>
+</section>
+<section class="report-section" id="s7" data-title="07 Android 质量体系适配">
+  <div class="section-kicker"><span class="chapter-num">07</span> Android 研发应用</div>
+  <h2>如何把方法论适配到复杂 Android 应用研发</h2>
+  <p class="lead">不要机械复制六阶段组织划分，而要把其持续验证、机器可执行规则和审计链思想融入既有质量门禁。以下四 Gate 模型是报告提出的落地适配建议，非 Anthropic 官方结构。</p>
+  <div class="gate-stack"><div class="gate"><span class="gate-no">G1</span><div><h3>Spec / Engineering Ready</h3><p>检查目标、术语、对象、状态、规则、业务场景、AC 和未决问题；重大歧义阻断进入实现。</p><small>交付：spec-challenge report · AC/Scenario Map · Oracle/Obligation 初稿</small></div><span class="tag risk">前移</span></div>
+  <div class="gate"><span class="gate-no">G2</span><div><h3>Coding Exit</h3><p>Plan-Change 一致性、代码差异影响、安全规则、单元与集成测试、缺失验证风险。</p><small>交付：change manifest · impact map · verification evidence · CI verdict</small></div><span class="tag">自动检查</span></div>
+  <div class="gate"><span class="gate-no">G3</span><div><h3>Scenario Acceptance</h3><p>围绕 AC 与业务风险完成设备级异常、状态切换、跨场景与恢复路径验证。</p><small>交付：Scenario run · device logs · uncovered obligations</small></div><span class="tag">行为证据</span></div>
+  <div class="gate"><span class="gate-no">G4</span><div><h3>Release / Gray Release</h3><p>基于发布风险、真实设备覆盖、性能容量、观测指标、回滚演练进行准出。</p><small>交付：release decision · rollout evidence · incident feedback</small></div><span class="tag">人机分级</span></div></div>
+  <h3>7.1 完整例子：导入任务因失效 RUNNING 状态而永久阻塞</h3>
+  <p><strong>缺陷场景：</strong>在应用导入过程中杀死进程，持久化的导入记录仍显示 <code>RUNNING</code>。再次进入 App 后，发起导入逻辑仅检查该状态，于是拒绝新导入；但真实的执行任务已不存在。注意 Android 场景下“卸载后持久化状态是否保留”受具体存储/备份机制影响，案例以<strong>进程被终止并重启、记录仍存在</strong>为清晰的可复现前提。</p>
+  <div class="callout caution"><strong>关键业务不变量（示意）</strong><p>同一导入作用域内同时不得有两个实际有效执行的导入任务；同时，不存在实际有效任务时，旧的失效运行标记不得永久阻止合法导入请求。</p></div>
+  <h4>从需求到可执行证据</h4>
+  <div class="table-wrap"><table><thead><tr><th>资产</th><th>示例内容</th><th>谁批准 / 检查</th></tr></thead><tbody>
+  <tr><td>Intent</td><td>恢复用户在进程重启后的导入可用性，不产生重复执行</td><td>产品负责人</td></tr>
+  <tr><td>AC-01</td><td>无有效运行任务且仅有旧 RUNNING 记录时，允许新导入</td><td>产品负责人</td></tr>
+  <tr><td>AC-02</td><td>存在有效运行任务时，重复导入不得创建第二个有效实例</td><td>产品负责人</td></tr>
+  <tr><td>Design Decision</td><td>用可靠任务实例与持久化状态一致性作为判定基础，明确清理/恢复规则</td><td>技术负责人</td></tr>
+  <tr><td>OB-01</td><td>验证“失效记录不能阻塞合法重新发起”，包括进程终止场景</td><td>质量策略 / Test Agent</td></tr>
+  <tr><td>OB-02</td><td>验证“有效任务必须防重复”，包括高频连点及并发事件</td><td>质量策略 / Test Agent</td></tr>
+  <tr><td>Evidence</td><td>Work 实例实际状态 + DB 快照 + API 结果 + 设备执行日志</td><td>CI / Verifier / 责任人</td></tr>
+  </tbody></table></div>
+  <h4>可落地的结构化 Test Obligation（示意，不是官方 Schema）</h4>
+  <pre><code>obligation_id: OB-IMPORT-RESTART-001
+source_ac: [AC-IMPORT-01]
+risk: stale-persisted-running-state
+scope: same-account-same-import-source
+preconditions:
+  process_restarted: true
+  persisted_import_status: RUNNING
+  active_worker_instance: false
+stimulus: StartImport
+must_hold:
+  - a_new_import_is_accepted
+  - at_most_one_active_import_exists
+oracle:
+  observe:
+    - import_api_result
+    - active_worker_count
+    - persisted_task_transition
+recommended_layers:
+  - integration
+  - device_scenario
+status: reviewed</code></pre>
+  <p>这个对象将“应当验证什么”和“使用何种方法验证”分开：前者来自 AC 与规则，后者由测试工程化手段实现。若确实需要在生产中恢复旧任务而非启动新任务，设计决策必须在 AC 中提前确认，不能由测试 Agent 自行推定。</p>
+  <h3>7.2 Android 各类能力应放在什么层</h3>
+  <div class="table-wrap"><table><thead><tr><th>能力</th><th>建议落点</th><th>最有价值的检查</th></tr></thead><tbody>
+  <tr><td>WorkManager 调度状态</td><td>集成测试 / 设备测试</td><td>调度器实际运行状态与持久化记录是否一致</td></tr>
+  <tr><td>账号切换 + 数据作用域</td><td>集成 + 场景</td><td>旧账号任务不能污染新账号导入行为</td></tr>
+  <tr><td>网络中断与恢复</td><td>集成 + 场景</td><td>重试幂等、任务恢复、重复数据约束</td></tr>
+  <tr><td>任务去重规则</td><td>单元 + 属性测试</td><td>任何合法事件序列下同时有效实例数量不超过上限</td></tr>
+  <tr><td>真实设备进程恢复</td><td>Device Scenario</td><td>进程死亡/恢复后 UI、数据和后台任务一致性</td></tr>
+  <tr><td>发布后异常</td><td>灰度观测</td><td>异常导入失败率、恢复成功率及回滚条件</td></tr>
+  </tbody></table></div>
+  <h3>7.3 与 Anthropic 的结合方式</h3>
+  <p>Gate1 前置需求挑战；Gate2 借鉴 <code>plan.md</code>、Skill、Hook 与自验证循环；Gate3 用独立 Verifier 和设备工具获取真实证据；Gate4 用分级权限与确定性异常检测实现灰度护栏。所有 Gate 使用同一组 AC、Obligation 和证据索引，避免每一层重新定义成功标准。</p>
+</section>
+<section class="report-section" id="s8" data-title="08 实施路线与度量体系">
+  <div class="section-kicker"><span class="chapter-num">08</span> 实施建议</div>
+  <h2>以约束驱动的渐进式建设，而不是一口气上线所有 Agent</h2>
+  <p class="lead">组织采用顺序应以当前最大瓶颈、现有自动化成熟度和安全风险决定。以下是面向质量团队的建议路线，而非 Anthropic 官方指定计划。</p>
+  <div class="roadmap"><div class="roadmap-step"><div class="rm-time">第 1 阶段 <small>基础设施</small></div><div><h3>先统一可运行验证和可追溯交付件</h3><p>制定 intent/spec/plan 模板与权威来源；统一 Build/Test/Lint 入口；补齐变更 ID、AC ID 与执行证据链接；定义 CI 的硬阻断与人工审批边界。</p><div class="chips"><span>Spec 质量准入</span><span>One-command checks</span><span>Approval owner</span></div></div></div>
+  <div class="roadmap-step"><div class="rm-time">第 2 阶段 <small>质量前移</small></div><div><h3>建立需求挑战、技术挑战与风险驱动验证</h3><p>让 Skills 执行领域分析，形成 AC → Obligation 追踪；对关键变更运行影响分析；针对新增风险报告用例缺口，不仅选择现有测试。</p><div class="chips"><span>Spec Challenge</span><span>Design Challenge</span><span>Impact Analysis</span></div></div></div>
+  <div class="roadmap-step"><div class="rm-time">第 3 阶段 <small>扩大自动化</small></div><div><h3>独立 Verifier、PR Reviewer 与 Agent Evals</h3><p>按 Bugs/Security/Compliance 多维评审；通过真实工作任务构建 Evals；敏感变更采用 Shadow Mode 与人工抽样；让 Agent 的权限提升以通过率和误报数据为依据。</p><div class="chips"><span>Verifier</span><span>Review Policy</span><span>Agent Regression</span></div></div></div>
+  <div class="roadmap-step"><div class="rm-time">第 4 阶段 <small>生产闭环</small></div><div><h3>打通发布、线上异常与知识回流</h3><p>建立版本化异常检测规则、预演回滚、告警转 intent 和事故转测试；建立可审查的例外记录与真实环境质量仪表盘。</p><div class="chips"><span>Managed Hooks</span><span>Rollback</span><span>Incident → Eval</span></div></div></div></div>
+  <h3>8.1 优先级矩阵</h3>
+  <div class="table-wrap"><table><thead><tr><th>级别</th><th>能力</th><th>不能缺少的前置条件</th><th>验收方式</th></tr></thead><tbody>
+  <tr><td><span class="pill p0">P0</span></td><td>Spec / Plan / AC 基线</td><td>责任人、审批状态、统一标识</td><td>抽查 10 个变更可追溯</td></tr>
+  <tr><td><span class="pill p0">P0</span></td><td>可执行 Build / Test / Lint</td><td>固定环境、可靠工具退出码</td><td>CI 证据可复现</td></tr>
+  <tr><td><span class="pill p0">P0</span></td><td>最低权限和受保护合并</td><td>身份、凭证、分支保护</td><td>越权操作不能成功</td></tr>
+  <tr><td><span class="pill p1">P1</span></td><td>Spec / Design Challenge</td><td>领域规则和风险模式资产</td><td>被确认的有效缺口发现率</td></tr>
+  <tr><td><span class="pill p1">P1</span></td><td>影响分析 + Obligation</td><td>代码/功能/场景关联</td><td>召回质量与漏测缺口追踪</td></tr>
+  <tr><td><span class="pill p1">P1</span></td><td>多 Agent Review</td><td>Review Policy 和真值反馈</td><td>重要发现有效率 / 漏检审计</td></tr>
+  <tr><td><span class="pill p2">P2</span></td><td>持续 Evals</td><td>代表性工作任务与判分器</td><td>配置变化前后回归稳定</td></tr>
+  <tr><td><span class="pill p2">P2</span></td><td>告警到意图的运维闭环</td><td>监控质量、可靠回滚路径</td><td>同类生产事故复发趋势</td></tr>
+  </tbody></table></div>
+  <h3>8.2 不要只看“Agent 产出多少行代码”</h3>
+  <div class="table-wrap"><table><thead><tr><th>指标类别</th><th>推荐指标</th><th>判断含义</th></tr></thead><tbody>
+  <tr><td>需求质量</td><td>Spec 阻断有效率、需求后期返工率、未决问题残留数</td><td>错误是否在编码前被发现</td></tr>
+  <tr><td>实施质量</td><td>首轮 CI 通过率、Plan-Diff 一致率、代码变更失败率</td><td>自动生成是否稳定</td></tr>
+  <tr><td>验证充分性</td><td>关键 Obligation 完成率、Test Gap 未关闭数、设备场景覆盖</td><td>是否只验证“容易验证的部分”</td></tr>
+  <tr><td>评审质量</td><td>有效重要发现率、误报率、事后漏检率、Review Wait Time</td><td>速度和发现质量是否平衡</td></tr>
+  <tr><td>Agent 能力</td><td>Eval Pass Rate、波动、重复错误率、配置回归拦截率</td><td>工作代理是否持续可信</td></tr>
+  <tr><td>生产质量</td><td>变更失败率、恢复时间、线上漏检问题、同类事故复发率</td><td>最终用户体验是否改善</td></tr>
+  </tbody></table></div>
+  <div class="callout caution"><strong>度量注意</strong><p>不要将“拦截数增加”直接理解为质量提升，也不要把“CI 通过率提高”直接理解为需求质量提高。应将前移发现、误报成本、漏检与线上缺陷联合分析。</p></div>
+  <h3>8.3 推荐的最小交付资产结构</h3>
+  <pre><code>project/
+├── intent/FEATURE-123.intent.md
+├── specs/FEATURE-123.spec.md
+├── plans/FEATURE-123.plan.md
+├── quality/
+│   ├── ac-map.yaml
+│   ├── test-obligations.yaml
+│   ├── impact-report.json
+│   └── verification-evidence.json
+├── CLAUDE.md
+├── REVIEW.md
+├── .claude/skills/
+│   ├── spec-challenge/SKILL.md
+│   └── risk-review/SKILL.md
+└── .github/workflows/
+    ├── quality-gates.yml
+    └── agent-evals.yml</code></pre>
+  <p class="figure-note">以上是本报告建议的参考组织方式，名称与文件布局应根据现有仓库实际情况调整，不是官方强制规定。</p>
+</section>
+<section class="report-section" id="s9" data-title="09 综合结论与参考文献">
+  <div class="section-kicker"><span class="chapter-num">09</span> 总结与研究索引</div>
+  <h2>综合评价：一套强执行框架，仍需要更完整的正确性证明</h2>
+  <p class="lead">这份 Playbook 最值得学习的是把 Agent 纳入一个可审查、可中止、可追踪的交付系统，而不只是使用 AI 加速编码。</p>
+  <div class="scorecard"><div><span>端到端流程与可追溯性</span><strong>优势明显</strong><p>六阶段、版本化交付件、触发与决策责任清晰。</p></div><div><span>工程执行自动化</span><strong>优势明显</strong><p>Plan-first、单命令反馈、技能化与并行执行。</p></div><div><span>权限与治理</span><strong>优势明显</strong><p>Hooks、分级权限、隔离、审批和审计。</p></div><div><span>需求完整性</span><strong>需加强</strong><p>缺少完整的业务状态/规则/场景缺失判定机制。</p></div><div><span>独立 Oracle / Obligation</span><strong>需加强</strong><p>自验证与 Eval 不等同于充分的业务正确性证明。</p></div><div><span>跨模块变更影响</span><strong>需加强</strong><p>已有 Plan 和 Review 思想，但未系统定义传播图与验证选择。</p></div></div>
+  <div class="key-conclusion"><span class="eyebrow">最终核心主张</span><h3>把“AI 生成链”升级为“可证明、可审计的交付链”</h3><p>Intent → Spec → Plan → Code 的自动生成链，只有接入经确认的业务规则、可追溯的测试义务、独立验证证据、变更风险分析和分级批准机制，才可能演化为持续交付高质量软件的系统能力。</p></div>
+  <h3>9.1 延伸研究问题</h3>
+  <ol class="number-list"><li>如何证明一个 <code>spec.md</code> 对业务规则与异常状态足够完整？哪些部分可以机器验证，哪些必须由专家判定？</li><li>怎样把 <code>AC</code> 系统映射到 <code>Test Obligation</code>，并建立与 Oracle、测试层级、执行证据的双向追溯？</li><li>如何结合 AST / LSP / Call Graph / 数据流与 Feature 知识图，完成 Brownfield 变更影响传播？</li><li>怎样对 Reviewer / Verifier 进行独立性测试、错误注入与基准集验证？</li><li>如何用统一指标证明“前移拦截增加”最终带来了线上缺陷下降，而不是只增加了流程成本？</li></ol>
+  <h3 id="references">9.2 官方参考资料与引用边界</h3>
+  <p>本报告优先引用 Anthropic 官方资料。原文中的示例、做法与数字均有来源；本报告新设计的 Gate、Test Obligation、结构化 Schema 和 Android 案例均标为“分析 / 建议”。为方便离线查阅，这些完整链接会保留在 HTML 中，联网后可以跳转原文。</p>
+  <div class="references">
+    <div class="reference" id="ref-s1"><span>[S1]</span><div><a href="https://claude.com/resources/articles/the-ai-native-sdlc-playbook" target="_blank" rel="noopener noreferrer">The AI-native SDLC playbook ↗</a><p>Louis Claxton · Anthropic / Claude Resources · 2026-08-21 · 40 min</p><small>第一手来源：核心思想、六阶段、12 Plays、流程机制、示例与建议指标。</small></div></div>
+    <div class="reference" id="ref-s2"><span>[S2]</span><div><a href="https://claude.com/resources/articles/how-anthropic-secures-its-ai-native-software-development-lifecycle" target="_blank" rel="noopener noreferrer">How Anthropic secures its AI-native software development lifecycle ↗</a><p>Jason Clinton（Deputy CISO）· Anthropic / Claude Resources · 2026-07-21</p><small>内部实践补充：安全工程控制、代码生成占比、PR 审查变化、Agent 治理。</small></div></div>
+    <div class="reference" id="ref-s3"><span>[S3]</span><div><a href="https://academy.claude.com/courses/ai-native-sdlc-playbook" target="_blank" rel="noopener noreferrer">The AI-native SDLC playbook · Claude Academy ↗</a><p>Claude Academy · 14 课 / 12 项 Plays</p><small>按课程拆解，便于独立研究某项实践及其前置依赖。</small></div></div>
+    <div class="reference" id="ref-s4"><span>[S4]</span><div><a href="https://code.claude.com/docs/en/hooks" target="_blank" rel="noopener noreferrer">Claude Code Hooks Reference ↗</a><p>Claude Code Official Documentation</p><small>操作层规则、Hook 事件、阻断机制与系统实现的持续参考。</small></div></div>
+    <div class="reference" id="ref-s5"><span>[S5]</span><div><a href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener noreferrer">Claude Code Skills ↗</a><p>Claude Code Official Documentation</p><small>组织级 Skill 封装、触发与维护方式参考。</small></div></div>
+    <div class="reference" id="ref-s6"><span>[S6]</span><div><a href="https://code.claude.com/docs/en/sandboxing" target="_blank" rel="noopener noreferrer">Claude Code Sandboxing ↗</a><p>Claude Code Official Documentation</p><small>工具权限之外的文件系统与网络隔离相关指南。</small></div></div>
+  </div>
+  <div class="footer-note"><strong>文档说明</strong> · 本报告为基于 2026-10-14 可核对的官方资料所写的中文独立分析，不是 Anthropic 的官方翻译或授权发布材料。原文的产品名称、配置接口及功能状态可能持续变化，请以对应官方网页的最新内容为准。</div>
+</section>
+
+ </main>
+</div></div>
+<button class="floating-top" id="backToTop" aria-label="回到顶部" type="button">↑ 返回顶部</button>
+<script>
+(function(){
+ const sidebar=document.getElementById('sidebar'); const menu=document.getElementById('menuButton'); const search=document.getElementById('navSearch'); const links=Array.from(document.querySelectorAll('.toc-link')); const chapters=Array.from(document.querySelectorAll('.report-section')); const progress=document.getElementById('readingProgress'); const back=document.getElementById('backToTop'); const root=document.documentElement;
+ const setTheme=function(t){root.setAttribute('data-theme',t);try{localStorage.setItem('research-theme',t)}catch(e){}};
+ try{const s=localStorage.getItem('research-theme');if(s==='dark'||s==='light')setTheme(s)}catch(e){}
+ document.getElementById('themeSwitch').addEventListener('click',()=>setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+ document.getElementById('printButton').addEventListener('click',()=>window.print());
+ if(menu)menu.addEventListener('click',()=>sidebar.classList.toggle('open'));
+ document.addEventListener('keydown',function(e){if(e.key==='/'&&!e.ctrlKey&&!e.metaKey&&document.activeElement!==search&&document.activeElement.tagName!=='INPUT'){e.preventDefault();search.focus()}if(e.key==='Escape'){sidebar.classList.remove('open');search.blur()}});
+ links.forEach(link=>link.addEventListener('click',()=>sidebar.classList.remove('open')));
+ search.addEventListener('input',function(){const q=search.value.toLocaleLowerCase().trim();let visible=0;links.forEach((link,i)=>{const match=!q||(link.textContent+' '+chapters[i].innerText).toLocaleLowerCase().includes(q);link.style.display=match?'':'none';if(match)visible++});document.getElementById('noResults').style.display=visible?'none':'block'});
+ function onScroll(){const total=document.documentElement.scrollHeight-innerHeight;progress.style.width=(total>0?scrollY/total*100:0)+'%';back.classList.toggle('show',scrollY>500)}
+ window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+ back.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+ if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('active',l.dataset.target===e.target.id))}})},{rootMargin:'-10% 0px -75% 0px',threshold:0});chapters.forEach(c=>observer.observe(c))}
+ document.querySelectorAll('pre').forEach(pre=>{const b=document.createElement('button');b.className='copy-btn';b.type='button';b.textContent='复制';b.addEventListener('click',async()=>{const txt=pre.querySelector('code').textContent;try{await navigator.clipboard.writeText(txt);b.textContent='已复制'}catch(e){const sel=window.getSelection(),r=document.createRange();r.selectNodeContents(pre.querySelector('code'));sel.removeAllRanges();sel.addRange(r);b.textContent='请选择并复制'}setTimeout(()=>b.textContent='复制',1400)});pre.appendChild(b)});
+})();
+</script>
+</body>
+</html>

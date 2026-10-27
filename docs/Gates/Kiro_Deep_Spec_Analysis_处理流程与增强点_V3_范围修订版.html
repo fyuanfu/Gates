@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Kiro Deep Spec Analysis｜详细流程与增强位置 V3 · 职责边界修订</title>
+<style>
+:root{--ink:#252b26;--muted:#57675c;--line:#d9e4da;--green:#2a7455;--greenbg:#f0f8f1;--amber:#b36b16;--amberbg:#fff6e7;--red:#ad463d;--redbg:#fff1ed;--paper:#fffefa;--bg:#f7f8f2;--shadow:0 12px 32px rgba(36,60,42,.07)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);font:15px/1.55 'Noto Sans CJK SC','Microsoft Yahei',sans-serif;color:var(--ink)}.wrap{max-width:1440px;margin:auto;padding:42px 34px 58px}a{color:#316e54}h1,h2,h3,p{margin:0}header{padding:27px 32px 25px;background:linear-gradient(115deg,#fafbf1,#f0f9f2);border:1px solid #dbe5d9;border-radius:20px;box-shadow:var(--shadow)}.eyebrow{font-size:12px;letter-spacing:2px;font-weight:800;color:var(--green);margin-bottom:6px}h1{font-size:32px;line-height:1.28;letter-spacing:-.5px}header p{font-size:15px;color:var(--muted);margin-top:12px;max-width:1080px}.topline{display:flex;justify-content:space-between;align-items:start;gap:18px}.topmeta{font-size:12px;color:var(--muted);padding-top:6px;text-align:right;white-space:nowrap}.legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:20px;font-size:12px;font-weight:600}.legend b{border:1px solid #cedcd1;background:white;padding:6px 12px;border-radius:20px;font-size:12px;color:#345946}.legend .p0{background:var(--redbg);border-color:#ecc1b8;color:var(--red)}.legend .p1{background:var(--amberbg);border-color:#edcc9d;color:var(--amber)}.caption{color:var(--muted);font-size:12px;margin:12px 0 18px}.flow-shell{margin-top:24px}.milestone{text-align:center;display:flex;justify-content:center;align-items:center;gap:10px;margin:8px 0 0}.milestone .m{min-width:220px;background:#fff;border:1.5px solid #cddccf;padding:11px 20px;border-radius:12px;text-align:center;font-weight:700;font-size:14px}.milestone .m small{display:block;font-weight:400;color:#68786d;font-size:11px;margin-top:2px}.m.warn{border-color:#d8a96e;background:#fff8eb}.down{text-align:center;font-size:24px;font-weight:700;color:var(--green);height:34px;line-height:34px}.stage{display:grid;grid-template-columns:minmax(0, 1fr) 343px;gap:18px;padding:20px;margin:4px 0;border:1px solid #d9e3d7;background:var(--paper);border-radius:18px;box-shadow:var(--shadow)}.main{min-width:0}.stage-head{display:flex;align-items:center;gap:12px;margin-bottom:17px}.step-num{width:45px;height:45px;border-radius:13px;background:#e0f2e5;color:#236545;display:grid;place-items:center;font-size:18px;font-weight:900;flex-shrink:0}.stage-title h2{font-size:21px;line-height:1.3}.stage-title p{font-size:12px;color:var(--muted);margin-top:2px}.official{margin-left:auto;font-size:11px;font-weight:800;color:#2f7552;background:#e5f5e9;border-radius:20px;padding:4px 9px;white-space:nowrap}.nodes{display:grid;gap:8px;align-items:stretch}.nodes.cols3{grid-template-columns:repeat(3,minmax(0,1fr))}.nodes.cols4{grid-template-columns:repeat(4,minmax(0,1fr))}.node{border:1px solid #d9e6db;background:#fcfefa;padding:13px;border-radius:12px;min-height:102px;position:relative}.node h3{font-size:13.3px;line-height:1.4;margin-bottom:5px}.node p{font-size:11.8px;line-height:1.6;color:var(--muted)}.node .s{font-size:10px;font-weight:800;color:#2b7452;letter-spacing:.5px;margin-bottom:4px}.node.hot{border:1.7px solid #e2ae60;background:#fffaf0}.node.critical{border:1.8px solid #d58678;background:#fff8f5}.arrow-row{display:flex;align-items:center;justify-content:center;color:#417c5d;font-size:19px;height:27px}.with-arrows{display:flex;align-items:stretch;gap:8px}.with-arrows>.node{flex:1;min-width:0}.arrow-side{align-self:center;font-size:20px;color:#8eaa91;flex:0 0 auto}.fork{margin:12px 0 10px;border:1px dashed #b9ccb8;background:#f6faf5;border-radius:12px;padding:11px}.fork-title{font-weight:800;text-align:center;font-size:12px;margin-bottom:9px}.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.branch{background:white;border:1px solid #d5e2d5;border-radius:10px;padding:10px 11px}.branch h3{font-size:12px;margin-bottom:5px}.branch p{font-size:11px;color:var(--muted)}.branch.low{border-color:#a8d5b4;background:#f3fbf3}.branch.med{border-color:#d7b57c;background:#fffbef}.branch.high{border-color:#e1b4a8;background:#fff6f4}.mini-output{margin:12px 0 0;padding:9px 14px;border-radius:10px;border:1px solid #add2b6;background:#f1f9f2;color:#285d42;font-size:12px;font-weight:700;text-align:center}.aside{border-left:1px solid #e4e5d9;padding-left:18px;display:flex;flex-direction:column;gap:10px}.aside h3{font-size:13px;color:#6b5b44;margin:0 0 4px}.upgrade{background:#fffaf1;border:1.5px dashed #d6aa6c;border-radius:12px;padding:13px}.upgrade.high{background:#fff4f0;border-color:#d38c80}.upgrade .utop{display:flex;align-items:center;gap:7px;margin-bottom:7px}.mark{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:9px;background:#b97825;color:white;font-weight:900;font-size:13px}.high .mark{background:#b44c40}.pill{font-size:10px;letter-spacing:.5px;border:1px solid #dfbc82;border-radius:8px;padding:2px 7px;font-weight:900;color:#9a5b10}.high .pill{border-color:#dca89d;color:#a74137}.upgrade strong{font-size:13.5px}.upgrade p{font-size:11.7px;color:#655a4b;margin-top:5px;line-height:1.6}.upgrade .method{margin-top:8px;padding:8px 10px;background:#ffffffb8;border-radius:8px;font-size:11.5px;color:#4c5e50}.labeltag{display:inline-block;margin-right:4px;background:#eaf3eb;color:#39694b;font-size:10px;border-radius:4px;padding:1px 5px;font-weight:700}.dashes{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0 1px}.chip{border:1px solid #d6e0d6;background:#fcfffb;border-radius:18px;padding:5px 11px;font-size:12px;font-weight:700}.tagrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.tag{font-size:11px;border-radius:7px;padding:5px 9px;background:#eaf3ea;color:#37674c;font-weight:700}.decision{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:12px 0}.decision>.node{min-height:80px}.outro{border:1px solid #cadacb;background:#fff;border-radius:17px;padding:20px;margin-top:18px;box-shadow:var(--shadow)}.outro h2{font-size:20px}.outro p{color:var(--muted);margin-top:8px;font-size:13px}.outnodes{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:17px}.outnodes .box{flex:1;text-align:center;background:#edf5ee;border:1px solid #c1d6c5;border-radius:10px;padding:13px;font-weight:800;font-size:13px}.outnodes span{font-size:21px;color:#4e8163}table{border-collapse:collapse;width:100%;margin-top:15px;font-size:12.5px}th{background:#eaf2e9;text-align:left;color:#31644a}td,th{padding:10px 12px;border-bottom:1px solid #dee8dc;vertical-align:top}footer{color:#586a5d;font-size:12px;padding:23px 5px 0;line-height:1.7}footer a{word-break:break-word} .highlight{font-weight:800;color:#3b7553}.muted{color:var(--muted)}
+@media(max-width:850px){.wrap{padding:15px}.stage{grid-template-columns:1fr;padding:15px}.aside{border-left:0;border-top:1px solid #e4e5d9;padding-left:0;padding-top:12px}.with-arrows{flex-direction:column}.arrow-side{transform:rotate(90deg)}.nodes.cols3,.nodes.cols4,.tri{grid-template-columns:1fr 1fr}.outnodes{flex-wrap:wrap}.outnodes span{display:none}.topmeta{white-space:normal}h1{font-size:25px}}@media print{body{background:white}.wrap{max-width:100%;padding:5px}.stage{box-shadow:none;break-inside:avoid}header{box-shadow:none}footer{break-inside:avoid}}
+
+.legend .lg.s1{background:#eef9f1;border-color:#bfe0cb;color:#2f6f4f}.legend .lg.s2{background:#fff8ea;border-color:#edd3a0;color:#9a6817}.legend .lg.s3{background:#f5f0fb;border-color:#d6c3ea;color:#6f4fa3}
+.stage-s1{background:linear-gradient(180deg,#fffefa 0%,#fbfefb 100%);border-color:#cfe2d5}.stage-s2{background:linear-gradient(180deg,#fffdfa 0%,#fff9f0 100%);border-color:#ead6b1}.stage-s3{background:linear-gradient(180deg,#fffefe 0%,#faf7ff 100%);border-color:#dccdec}.stage-s4{background:linear-gradient(180deg,#fffefa 0%,#fdfbf7 100%);border-color:#ddd7c7}
+.stage-s1 .step-num{background:#dff2e5;color:#236545}.stage-s2 .step-num{background:#faecd0;color:#8b5f15}.stage-s3 .step-num{background:#eadff8;color:#6e4aa4}.stage-s4 .step-num{background:#ece7dd;color:#6d614d}
+.stage-s1 .official{background:#e7f5ea;color:#2f7552}.stage-s2 .official{background:#fff1d5;color:#8b6118}.stage-s3 .official{background:#efe6fb;color:#6d4aa0}.stage-s4 .official{background:#f0ebe2;color:#6b604e}
+.stage-s1 .node{background:#f5fbf7;border-color:#c9e2d0}.stage-s2 .node{background:#fffaf1;border-color:#edd8ad}.stage-s3 .node{background:#f8f5fd;border-color:#dccff0}.stage-s4 .node{background:#fbf9f5;border-color:#ddd4c7}
+.stage-s1 .node .s{color:#2b7452}.stage-s2 .node .s{color:#966714}.stage-s3 .node .s{color:#7751ab}.stage-s4 .node .s{color:#6e634f}
+.stage-s1 .node p{color:#54695c}.stage-s2 .node p{color:#74644c}.stage-s3 .node p{color:#655a78}.stage-s4 .node p{color:#695f52}
+.stage-s1 .arrow-side,.stage-s1 .arrow-row,.stage-s1 .down{color:#5d8b70}.stage-s2 .arrow-side,.stage-s2 .arrow-row,.stage-s2 .down{color:#b37a1f}.stage-s3 .arrow-side,.stage-s3 .arrow-row,.stage-s3 .down{color:#8a6cb6}.stage-s4 .arrow-side,.stage-s4 .arrow-row,.stage-s4 .down{color:#8c806a}
+.stage-s1 .fork{background:#f1f8f3;border-color:#c9decf}.stage-s2 .fork{background:#fff8ec;border-color:#e7d4b2}.stage-s3 .fork{background:#f7f3fd;border-color:#dacdf0}.stage-s4 .fork{background:#faf8f2;border-color:#ddd4c6}
+.stage-s1 .branch{border-color:#cce2d2}.stage-s2 .branch{border-color:#eadab9}.stage-s3 .branch{border-color:#ddcfef}.stage-s4 .branch{border-color:#dfd5c7}
+.stage-s1 .mini-output{background:#eef8f1;border-color:#b8d7c2;color:#285d42}.stage-s2 .mini-output{background:#fff7ea;border-color:#e4c88a;color:#835810}.stage-s3 .mini-output{background:#f3eefb;border-color:#cdb5eb;color:#674797}.stage-s4 .mini-output{background:#f7f3eb;border-color:#d7c9b3;color:#655944}
+
+/* V3 · upstream contract is explicitly OUTSIDE the analysis pipeline */
+.sc.green{color:#2c7650;font-weight:900}.sc.gold{color:#a36810;font-weight:900}.sc.purple{color:#7951ae;font-weight:900}
+.legend .lg.upstream{background:#edf3f8;color:#456a81;border-color:#c9d8e3}
+.boundary-card{max-width:100%;border:1.7px dashed #8fadc2;border-radius:17px;background:linear-gradient(130deg,#f3f8fc,#fffefd);padding:17px 22px;margin:8px 0 16px;box-shadow:0 3px 15px rgba(57,83,109,.045)}
+.boundary-top{display:flex;gap:14px;align-items:center;margin-bottom:7px}.boundary-top strong{font-size:17px}.external{font-size:11px;letter-spacing:1.2px;color:#3e657d;background:#dfebf3;border-radius:16px;padding:4px 10px;font-weight:900}
+.boundary-desc{font-size:12.5px;color:#4d626e;margin:5px 0 13px}.contract-line{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:9px 12px;border:1px solid #cedce5;border-radius:10px;background:#fff}
+.contract-label{font-size:12px;font-weight:900;color:#33566c}.contract-content{font-size:12px;color:#547085}.boundary-note{font-size:11.3px;color:#627987;margin-top:9px}
+.upstream-arrow{color:#51778e}
+.contract-aside{background:#f1f7fa;border:1.5px dashed #9fbecc;border-radius:12px;padding:12px 13px}.ctop{display:flex;align-items:center;gap:8px;margin-bottom:6px}.ctop strong{font-size:13px;color:#416276}.contract-icon{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:#d8e9f1;color:#416479;font-size:17px;font-weight:900}
+.contract-aside p{font-size:11.8px;color:#526b79;line-height:1.65}.contract-aside .method{background:#ffffffbd;font-size:11.4px;color:#486575;padding:8px 9px;margin-top:8px;border-radius:8px}
+.priority-red{color:#ad463d}.summary-boundary{margin-top:14px;border:1px solid #b5ccda;background:#f5f9fc;padding:12px 15px;border-radius:10px;font-size:12px;color:#506878;line-height:1.8}
+.stage-s3 .node.stage-judge{background:#f6f1fc}.stage-s2 .node.critical,.stage-s4 .node.critical{box-shadow:inset 4px 0 0 #ca7a63}.stage-s1 .node.hot,.stage-s2 .node.hot,.stage-s3 .node.hot{box-shadow:inset 4px 0 0 #dfb45b}
+@media(max-width:850px){.boundary-top{flex-wrap:wrap}.boundary-card{padding:14px}.contract-line{align-items:flex-start}}
+</style>
+</head>
+<body><div class="wrap">
+<header>
+<div class="topline"><div><div class="eyebrow">KIRO · REQUIREMENTS ANALYSIS · ARCHITECTURE VIEW</div><h1>Deep Spec Analysis：处理流程与增强位置（V3）</h1></div><div class="topmeta">基于官方文章与产品文档<br/>2026.10 · 职责边界修订版</div></div>
+<p>三个阶段继续采用<span class="sc green">绿色</span> / <span class="sc gold">琥珀色</span> / <span class="sc purple">紫色</span>区分；<strong>业务意图与范围的建立已移出内部分析流程</strong>，作为上游输入契约。右侧仅标注五项真正属于分析体系的增强建议。这是公开机制的逻辑重构，并非未公开的内部调度实现。</p>
+<div class="legend"><b class="lg upstream">上游输入契约（非增强点）</b><b class="lg s1">Stage 1 · 绿色</b><b class="lg s2">Stage 2 · 琥珀色</b><b class="lg s3">Stage 3 · 紫色</b><b>✓ 当前官方处理能力</b><b class="p0">● P0：优先补强</b><b class="p1">● P1：建议增强</b><b>↺ 用户可修订后再次分析</b></div>
+</header>
+<div class="flow-shell"><div class="boundary-card" id="upstream-contract">
+<div class="boundary-top"><span class="external">流程边界之外 · UPSTREAM</span><strong>业务意图与范围定义</strong></div>
+<div class="boundary-desc">由需求发起方 / 产品 / 业务负责人确认用户目标、业务价值、适用范围及必要业务约束。<b>不由 Deep Spec Analysis 重新制定。</b></div>
+<div class="contract-line"><div class="contract-label">输入契约（供后续分析引用）</div><div class="contract-content">已确认目标 · 范围边界 · 业务规则 · 来源与确认状态</div></div>
+<div class="boundary-note">资料缺失或存在争议时，记录澄清缺口；不能把 LLM 推测自动提升为已确认的业务事实。</div>
+</div><div class="down upstream-arrow">↓</div>
+<div class="milestone"><div class="m">用户需求 / Prompt <small>目标描述 + 可用的上游输入契约</small></div></div>
+<div class="down">↓</div>
+<div class="milestone"><div class="m">Kiro 生成 requirements.md <small>Story + EARS Acceptance Criteria</small></div></div>
+<div class="down">↓</div>
+<div class="milestone"><div class="m warn">选择 Analyze Requirements <small>可选；如跳过则直接进入 Design</small></div></div>
+<div class="down">↓</div>
+<section class="stage stage-s1" id="stage1">
+<div class="main"><div class="stage-head"><div class="step-num">01</div><div class="stage-title"><h2>Refinement · 需求精炼</h2><p>目标：在已知业务范围内精炼 AC、推断候选前提并寻找缺失行为</p></div><span class="official">官方已有</span></div>
+<div class="with-arrows">
+<div class="node"><div class="s">1.1 INPUT</div><h3>读取 User Story / AC 与输入约束</h3><p>以已给出的目标和范围为条件，检查现有需求；不在这里重新决定业务意图</p></div>
+<div class="arrow-side">→</div>
+<div class="node"><div class="s">1.2 REASON</div><h3>LLM 溯因推理</h3><p>从目标成功状态倒推必要前提、状态与条件</p></div>
+<div class="arrow-side">→</div>
+<div class="node"><div class="s">1.3 DISCOVER</div><h3>挑战前提及异常路径</h3><p>若条件不满足会怎样？是否已有 AC 覆盖？</p></div>
+</div><div class="arrow-row">↓</div>
+<div class="with-arrows">
+<div class="node"><div class="s">1.4 CHECK</div><h3>改进已有 AC</h3><p>EARS 模式、模糊量词、实现语言、可观察输入输出</p></div>
+<div class="arrow-side">→</div>
+<div class="node hot"><div class="s">1.5 OUTPUT · ①</div><h3>修订 AC + 待确认候选 AC</h3><p>改进表达、发现缺口；新增规则在确认前不得直接变成正式需求</p></div>
+</div>
+<div class="mini-output">输出：Refined EARS AC + 待确认候选 AC → Stage 2</div>
+</div>
+<aside class="aside"><h3>需要增强的位置</h3>
+
+<div class="contract-aside">
+<div class="ctop"><span class="contract-icon">↳</span><strong>输入契约 · 不是内部增强点</strong></div>
+<p>业务目标、范围和已确认约束来自上游。Kiro 分析中可检查 AC 是否偏离这些输入，但不承担业务目标的发现、评估和范围决策。</p>
+<div class="method">处理规则：<b>可引用、可质疑、可发起澄清；不可凭推测擅自改写业务边界。</b></div>
+</div>
+<div class="upgrade"><div class="utop"><span class="mark">①</span><span class="pill">P1</span><strong>候选 AC 的来源与确认机制</strong></div><p>溯因推理能发现遗漏，但也可能引入未经业务授权的规则，导致需求范围被隐性扩展。</p><div class="method"><span class="labeltag">增强方案</span>标记 Proposed / Confirmed，保存候选 AC 的推断依据、来源和影响范围；待业务确认后再写入正式规格。</div></div>
+</aside></section>
+<div class="down">↓</div>
+<section class="stage stage-s2" id="stage2">
+<div class="main"><div class="stage-head"><div class="step-num">02</div><div class="stage-title"><h2>Auto-formalization · 自动形式化</h2><p>目标：构造 SMT-LIB 逻辑模型，并主动发现语义歧义</p></div><span class="official">官方已有</span></div>
+<div class="nodes cols3">
+<div class="node"><div class="s">2.1 SCHEMA</div><h3>定义符号与实体关系</h3><p>Entity / State / Event / Input / Output；符号附自然语言描述</p></div>
+<div class="node"><div class="s">2.2 ASSERTIONS</div><h3>AC 转换为逻辑蕴含</h3><p>Guard → Response；将 EARS 转为形式化约束</p></div>
+<div class="node critical"><div class="s">2.3 BACKGROUND · ②</div><h3>生成背景断言</h3><p>LLM 多次抽样隐含领域知识，按照出现频率筛选</p></div>
+</div>
+<div class="arrow-row">↓</div>
+<div class="with-arrows">
+<div class="node"><div class="s">2.4 SAMPLE</div><h3>多次独立形式化</h3><p>同一 AC 生成多个候选逻辑解释</p></div><div class="arrow-side">→</div>
+<div class="node hot"><div class="s">2.5 CLUSTER · ③</div><h3>SMT 逻辑等价聚类</h3><p>对不同候选按语义等价分类，计算 Semantic Entropy</p></div>
+</div>
+<div class="fork"><div class="fork-title">2.6 语义熵分支（双阈值 low / high）</div><div class="tri">
+<div class="branch low"><h3>低熵：接受</h3><p>选多数语义簇的代表形式化模型 → 进入逻辑分析</p></div>
+<div class="branch med"><h3>中熵：澄清</h3><p>Semantic Diff → 找差异情境 → 用户选择解释 → 修订模型/需求</p></div>
+<div class="branch high"><h3>高熵：弃用</h3><p>形式化不稳定 → 不采用本次结果 → 要求重新表述 EARS</p></div>
+</div></div>
+<div class="mini-output">输出：Schema + AC Assertions + Background Assertions → Stage 3</div>
+</div>
+<aside class="aside"><h3>需要增强的位置</h3>
+<div class="upgrade high"><div class="utop"><span class="mark">②</span><span class="pill">P0 · 最高优先</span><strong>可信领域知识建模</strong></div><p>官方明确指出：LLM 生成并按频次筛选背景知识仍可能遗漏关键领域约束，导致不现实的反例、虚假冲突与错误完整性判断。</p><div class="method"><span class="labeltag">增强方案</span>以有出处的领域知识包替代纯抽样依赖；引入事实、Rule、State Transition、Invariant、适用范围及可信状态。</div></div>
+<div class="upgrade"><div class="utop"><span class="mark">③</span><span class="pill">P1</span><strong>形式化可信度校验</strong></div><p>“多次翻译一致”只能说明 LLM 输出稳定，不等于需求语义正确。</p><div class="method"><span class="labeltag">增强方案</span>校验符号覆盖、类型、来源映射及差异反例；对关键 AC 强制用户审查，不以低熵替代真值证据。</div></div>
+</aside></section>
+<div class="down">↓</div>
+<section class="stage stage-s3" id="stage3">
+<div class="main"><div class="stage-head"><div class="step-num">03</div><div class="stage-title"><h2>Logical Analysis · 逻辑分析</h2><p>目标：利用 SMT 求解器探索约束冲突、规则空白、允许和禁止的行为</p></div><span class="official">官方已有</span></div>
+<div class="nodes cols3">
+<div class="node"><div class="s">3.1 CONSISTENCY</div><h3>冲突检测</h3><p>触发条件同时成立时，输出约束是否互斥；定位最小冲突规则组</p></div>
+<div class="node hot"><div class="s">3.2 COMPLETENESS · ④</div><h3>完整性检测</h3><p>搜索没有具体规则覆盖的状态/条件组合</p></div>
+<div class="node hot"><div class="s">3.3 SCENARIO · ④</div><h3>行为情境探索</h3><p>采样 Accepted Scenario 与 Rejected Scenario</p></div>
+</div>
+<div class="arrow-row">↓</div>
+<div class="node stage-judge" style="min-height:0;margin:0 auto;max-width:88%"><div class="s">3.4 LLM JUDGE</div><h3>基于 User Story 过滤“令人意外”的行为场景</h3><p>减少向用户展示的场景数量；它是问题筛选器，不是正确性证明</p></div>
+<div class="arrow-row">↓</div>
+<div class="node" style="min-height:0"><div class="s">3.5 FINDINGS</div><h3>生成五类澄清问题</h3><div class="tagrow"><span class="tag">Ambiguity</span><span class="tag">Conflict</span><span class="tag">Completeness</span><span class="tag">Accepted Scenario</span><span class="tag">Rejected Scenario</span></div></div>
+<div class="mini-output">输出：具体情境 + 涉及的规则 + 解释 + A/B 修订选项</div>
+</div>
+<aside class="aside"><h3>需要增强的位置</h3>
+<div class="upgrade"><div class="utop"><span class="mark">④</span><span class="pill">P1</span><strong>时序、状态与风险场景增强</strong></div><p>一次性输入状态的组合检查无法天然保证真实跨事件流程、并发与重试行为都被充分探索。</p><div class="method"><span class="labeltag">增强方案</span>增加可达性模型、Transition、Bounded Temporal Properties、Invariant，以及历史缺陷风险模式；用风险排序与覆盖指标辅助 LLM Judge。</div></div>
+</aside></section>
+<div class="down">↓</div>
+<section class="stage stage-s4" id="stage4">
+<div class="main"><div class="stage-head"><div class="step-num">04</div><div class="stage-title"><h2>Human-in-the-loop · 澄清、修订与重分析</h2><p>将五类技术发现转为业务人员能够判断的行为选择</p></div><span class="official">官方已有</span></div>
+<div class="decision">
+<div class="node" style="min-height:0"><div class="s">CHOICE A</div><h3>Keep as-is</h3><p>保持当前需求</p></div>
+<div class="node" style="min-height:0"><div class="s">CHOICE B</div><h3>Change</h3><p>按建议修订行为要求</p></div>
+<div class="node" style="min-height:0"><div class="s">OTHER</div><h3>自定义 / 忽略 / Critic</h3><p>用户可额外解释；文章还提到可由 LLM Critic 选项</p></div>
+</div>
+<div class="arrow-row">↓</div>
+<div class="node critical" style="min-height:0"><div class="s">4.1 REWRITE · ⑤</div><h3>LLM 根据确认结果修订 requirements.md</h3><p>更新受影响的 EARS AC；用户可在修改后再次 Analyze Requirements，对相关要求及其相互作用重新检查</p></div>
+<div class="mini-output">输出：更新后的需求规格 → 设计阶段；也可再次分析 ↺</div>
+</div>
+<aside class="aside"><h3>需要增强的位置</h3>
+<div class="upgrade high"><div class="utop"><span class="mark">⑤</span><span class="pill">P0</span><strong>证据链、重分析与验证契约</strong></div><p>官方重点展示的是修改规格与生成澄清问题，文章未充分说明企业级版本化证据、回归判定及验证资产交接。</p><div class="method"><span class="labeltag">增强方案</span>保存 原始文本 → IR → SMT 查询 → 模型/反例 → 澄清选择 → 新 AC 的关系；输出 Oracle、Invariant、Test Obligation，并对未闭环的高风险问题阻断。</div></div>
+</aside></section>
+<div class="down">↓</div>
+<div class="milestone"><div class="m">高质量 requirements.md <small>已澄清的自然语言规格（非绝对正确性证明）</small></div></div>
+<div class="down">↓</div>
+<div class="outro"><h2>继续进入 Kiro Spec-driven Development</h2><div class="outnodes"><div class="box">Design<br/><small class="muted">design.md</small></div><span>→</span><div class="box">Tasks<br/><small class="muted">tasks.md</small></div><span>→</span><div class="box">Implementation<br/><small class="muted">code / testing</small></div></div><p>这是官方的后续阶段；图中的①～⑤是针对 Deep Spec Analysis 的建议增强点，并非宣称 Kiro 不具备其他产品级功能。</p></div>
+</div>
+<div class="outro"><h2>五项内部增强点 · 优先级速查</h2><table><thead><tr><th style="width:65px">序号</th><th style="width:90px">优先级</th><th style="width:175px">位置</th><th>建议新增能力</th><th>核心收益</th></tr></thead><tbody><tr><td>①</td><td>P1</td><td>Stage 1 输出</td><td>候选 AC 溯源、确认与范围控制</td><td>防止 AI 补全直接变成未授权业务规则</td></tr><tr><td>②</td><td><b class="priority-red">P0</b></td><td>Stage 2 · Background</td><td>可信领域知识包 / 规则 / 状态 / 不变量</td><td>减少不真实反例，提高逻辑结论可靠性</td></tr><tr><td>③</td><td>P1</td><td>Stage 2 · Formalization</td><td>形式化忠实度与语义映射校验</td><td>避免“低语义熵 = 正确”这一误判</td></tr><tr><td>④</td><td>P1</td><td>Stage 3 · Analysis</td><td>可达状态、时序、并发、风险场景探索</td><td>提升跨事件与高风险缺陷的发现能力</td></tr><tr><td>⑤</td><td><b class="priority-red">P0</b></td><td>澄清修订 / 输出</td><td>证据链、重验证、Oracle / Test Obligation</td><td>将需求分析成果持续传递给设计与验证</td></tr></tbody></table><div class="summary-boundary"><strong>范围调整说明：</strong>原增强点“输入：意图与范围证据”已移出内部增强列表，改为上游输入契约。它不是“不要检查意图与范围”：当上游提供可信约束时，分析仍可识别需求与既定边界的不一致；但业务意图的创建、论证和最终决策不属于本流程。</div></div>
+<footer>依据：<a href="https://kiro.dev/blog/deep-spec-analysis/">Kiro · Deep Spec Analysis 官方技术文章</a>；<a href="https://kiro.dev/docs/specs/analyze-requirements/">Kiro · Analyze Requirements 官方文档</a>。<br/>标注口径：仅把公开描述的机制列为“当前已有”；①～⑤为建议增强，不代表 Kiro 官方产品规划。<b>输入契约是分析前提，不列为内部缺口。</b> P0 表示建议优先建设，不代表实现成本最低。</footer>
+</div></body></html>

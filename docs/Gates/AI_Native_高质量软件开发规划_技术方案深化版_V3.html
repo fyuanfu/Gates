@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>AI-Native 高质量软件开发规划 · 技术方案深化版 V3</title><style>
+:root{--bg:#f8f8f5;--card:#fffefa;--ink:#1c3329;--sub:#51675a;--line:#dae6dc;--pale:#eef7ef;--green:#087859;--cyan:#126f72;--gold:#b17f38;--shadow:0 7px 24px rgba(21,68,47,.052)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.65 system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft Yahei',sans-serif}a{color:var(--green);text-decoration:none}a:hover{text-decoration:underline}.shell{max-width:1440px;margin:auto;padding:0 30px}.top{position:sticky;z-index:10;top:0;background:rgba(255,254,250,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}.top-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:12px 0}.brand{font-size:12px;font-weight:850;letter-spacing:1.2px;color:var(--green)}.nav{display:flex;gap:18px;font-size:12px;font-weight:750;flex-wrap:wrap}
+.hero{padding:42px 0 29px}.eyebrow{font-size:11px;letter-spacing:1.4px;font-weight:900;color:var(--green)}h1{font-size:clamp(31px,3.7vw,48px);line-height:1.24;margin:7px 0 10px;letter-spacing:-.9px}.lead{font-size:15px;color:#3e5b4b;margin:0;max-width:980px}.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:19px}.chip{display:inline-flex;padding:5px 9px;background:#edf6ee;color:#286449;border:1px solid #d3e7d7;border-radius:999px;font-weight:750;font-size:12px}.box{border:1px solid var(--line);background:var(--card);border-radius:15px;box-shadow:var(--shadow)}section{margin:12px 0 32px;scroll-margin-top:75px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:12px}.section-head h2{font-size:22px;margin:0}.aside{font-size:12px;color:var(--sub);margin:0}.target{padding:19px 22px;display:flex;align-items:center;gap:14px;justify-content:space-between;background:linear-gradient(110deg,#eaf6ec,#fffdfa)}.target b{font-size:17px;color:#1c6145}.target span{font-size:12px;color:#476852}
+.wavebar{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}.wave{padding:12px 13px;min-width:0;border-radius:11px;border:1px solid var(--line);background:#fffefa}.wave strong{color:var(--green);font-size:17px}.wave b{display:block;font-size:12px}.wave em{font-size:11px;display:block;color:var(--sub);font-style:normal}.wave p{font-size:11px;color:#567064;margin:4px 0 0}.overview{overflow:hidden}.ov-head,.ov-row{display:grid;grid-template-columns:154px repeat(5,minmax(0,1fr))}.ov-head{background:#eaf4ec;color:#285d43;font-size:12px;font-weight:800}.ov-head>div{padding:11px 10px}.ov-row{border-top:1px solid #e3eae3}.ov-row>div{padding:10px 10px;min-width:0;overflow-wrap:anywhere}.ov-row>div:first-child{background:#f5faf4}.ov-name{font-size:14px;font-weight:800;color:var(--green)}.ov-final{display:block;font-size:11px;color:var(--sub)}.ov-label{font-weight:750;color:#2d563f;font-size:12px;line-height:1.5}.ov-none{color:#a3afa6;font-size:11px}.ov-row:nth-child(even){background:#fcfdfb}
+.switch{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.filter{font:inherit;cursor:pointer;border:1px solid #bdd5c5;border-radius:8px;background:white;color:#27614b;padding:7px 10px;font-size:12px;font-weight:800}.filter.active{background:#087859;color:white;border-color:#087859}.filter:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid #0f8c67;outline-offset:2px}
+.stage{margin:13px 0 18px;overflow:hidden;scroll-margin-top:70px}.stage>summary{list-style:none;padding:17px 19px;cursor:pointer;background:#f1f8f0;border-bottom:1px solid var(--line)}.stage>summary::-webkit-details-marker{display:none}.stage-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.id{font-size:13px;color:var(--green);font-weight:900}.stage-top h3{margin:0;font-size:19px}.gate{font-size:10px;font-weight:800;padding:2px 8px;color:#286f4e;background:#e3f0e7;border-radius:5px}.caret{margin-left:auto;color:#577161;font-size:12px}.stage-desc{font-size:13px;color:#33513e;margin-top:4px}.finish{font-size:12px;color:#466651;margin-top:5px}.step-head,.step{display:grid;grid-template-columns:116px minmax(175px,1.15fr) minmax(180px,1.07fr) minmax(270px,1.65fr) minmax(230px,1.5fr);gap:0}.step-head{background:#edf5ed;font-weight:800;font-size:11px;color:#2c6447}.step-head>div,.step>div{padding:11px 13px;min-width:0}.step{border-top:1px solid #e3eae4;overflow-wrap:anywhere}.step:nth-of-type(even){background:#fffefa}.step>div{border-right:1px solid #f0f2ed}.step>div:last-child{border-right:0}.step:hover{background:#f9fcf8}.phase{display:inline-block;font-size:12px;font-weight:900;color:var(--green);background:#e7f4e9;padding:3px 9px;border-radius:6px}.phase-time{display:block;font-size:10px;color:var(--sub);margin-top:5px}.skill{font-weight:850;font-size:13px}.result{font-weight:750;color:#31543f;font-size:12.5px}.method,.accept{font-size:12px;color:#394f41}.artifact{margin-top:8px;font-size:11px;color:#426f52;padding-top:6px;border-top:1px dashed #d6e4d9}.empty{padding:20px;color:var(--sub);display:none}.footnote{font-size:12px;color:#5b7263;padding:0 0 30px}footer{border-top:1px solid var(--line);font-size:11px;color:#5d7465;padding:17px 0 25px}
+@media(max-width:1200px){.shell{padding:0 18px}.step-head,.step{grid-template-columns:87px 1.03fr 1fr 1.5fr 1.4fr}.step-head>div,.step>div{padding:10px 9px}.method,.accept{font-size:11.5px}.overview .ov-head,.overview .ov-row{grid-template-columns:126px repeat(5,minmax(0,1fr))}}
+@media(max-width:900px){.top-inner{align-items:flex-start}.nav{gap:10px}.wavebar{grid-template-columns:repeat(3,minmax(0,1fr))}.ov-head{display:none}.overview{border:0;box-shadow:none;background:transparent}.ov-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)!important;margin-bottom:9px}.ov-row>div:first-child{grid-column:1/-1;background:#edf7ef}.ov-row>div:not(:first-child){border-top:1px solid #e9efe8}.ov-row>div:nth-child(2)::before{content:'P0 基线';display:block;color:var(--green);font-size:11px;font-weight:850}.ov-row>div:nth-child(3)::before{content:'P1 闭环';display:block;color:var(--green);font-size:11px;font-weight:850}.ov-row>div:nth-child(4)::before{content:'P2 深化';display:block;color:var(--green);font-size:11px;font-weight:850}.ov-row>div:nth-child(5)::before{content:'P3 平台化';display:block;color:var(--green);font-size:11px;font-weight:850}.ov-row>div:nth-child(6)::before{content:'P4 进化';display:block;color:var(--green);font-size:11px;font-weight:850}.step-head{display:none}.step{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.step>div{border:0;padding:10px 14px}.step>div:nth-child(1){grid-column:1/-1;background:#f4faf3;border-bottom:1px solid #e3eae4}.step>div:nth-child(4){grid-column:1/-1}.step>div:nth-child(5){grid-column:1/-1;border-top:1px solid #eef2ed}.step>div:nth-child(2)::before{content:'建设的 AI 能力';display:block;font-size:10px;font-weight:850;color:var(--green)}.step>div:nth-child(3)::before{content:'本步能力目标';display:block;font-size:10px;font-weight:850;color:var(--green)}.step>div:nth-child(4)::before{content:'技术方案';display:block;font-size:10px;font-weight:850;color:var(--green)}.step>div:nth-child(5)::before{content:'验收规则';display:block;font-size:10px;font-weight:850;color:var(--green)}}
+@media(max-width:540px){.shell{padding:0 12px}.top{position:static}.top-inner{display:block}.nav{margin-top:6px;gap:13px}.hero{padding:24px 0 20px}h1{font-size:28px}.target{display:block;padding:15px}.target span{display:block;margin-top:7px}.section-head{display:block}.section-head h2{font-size:20px}.wavebar{grid-template-columns:repeat(2,minmax(0,1fr))}.ov-row{grid-template-columns:1fr}.stage>summary{padding:13px}.stage-top h3{font-size:16px}.stage-desc,.finish{font-size:12px}.step{grid-template-columns:1fr}.step>div:nth-child(n){grid-column:1/-1;padding:9px 12px}.step>div:nth-child(3){border-top:1px solid #edf2ee}.step>div:nth-child(4){border-top:1px solid #edf2ee}.step .skill,.step .result{font-size:12px}}
+@media print{.top,.switch{display:none}.shell{max-width:none;padding:0 8mm}.stage{break-before:page;box-shadow:none}.stage>summary{border-top:1px solid #b9d3c4}.step{break-inside:avoid}.stage .step{display:grid!important}.hero{padding:14px 0 0}.wavebar{break-inside:avoid}a{color:inherit;text-decoration:none}}
+
+
+.detail-link{display:block;margin-top:8px;color:#087859;font-weight:800;font-size:11px}.detail-intro{padding:13px 18px;margin-bottom:12px;color:#345542;font-size:12px}.tech-stage{margin:12px 0;overflow:hidden}.tech-stage>summary{display:flex;gap:12px;align-items:center;padding:14px 18px;background:#edf7ee;cursor:pointer}.tech-stage>summary b{font-size:17px}.tech-stage>summary small{font-size:11px;color:#698071;margin-left:auto}.stage-pill{background:#dff0e3;color:#147750;padding:3px 9px;border-radius:7px;font-size:12px;font-weight:900}.tech-inner{padding:13px}.play{border:1px solid #dce8df;border-radius:12px;margin:0 0 13px;background:white;scroll-margin-top:76px;overflow:hidden}.play-head{display:flex;gap:10px;align-items:center;padding:12px 14px;background:#f5faf5}.play-head h3{margin:0;font-size:14px}.play-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0}.play-grid>div{padding:11px 15px;border-top:1px solid #edf2ee;min-width:0}.play-grid>div:nth-child(odd){border-right:1px solid #edf2ee}.play label,.goal label{display:block;color:#147650;font-size:11px;font-weight:900}.play p,.goal p{margin:3px 0 0;color:#314a3c;font-size:12.5px}.play-grid .tech-fix{background:#eff8f0}.play-bottom{border-top:1px solid #e7efe8;background:#f9fbf7;padding:9px 14px;font-size:12px}.sources{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;font-size:11px}.d2-title{margin:20px 1px 10px;border-top:2px solid #d9e9d9;padding-top:14px}.d2-title h3{font-size:19px;margin:0}.d2-title p{font-size:12px;color:#526758}.goal{border:1px solid #cfe1d2;border-radius:11px;margin:9px 0;overflow:hidden;background:#fff}.goal-h{padding:9px 13px;background:#eaf5ec;display:flex;justify-content:space-between;gap:12px}.goal-h em{font-size:11px;font-style:normal;color:#396952}.goal-body{display:grid;grid-template-columns:1.1fr 1fr 1.4fr 1.1fr}.goal-body>div{padding:10px 12px;border-right:1px solid #edf1eb;min-width:0}.goal-body>div:last-child{border:0}.goal .covered{color:#187d53;margin-top:7px}.goal-fix{background:#f1f9f1}.case{background:#f1f7f0;border:1px solid #c8ddce;border-radius:12px;padding:16px;margin:15px 0}.case h3{margin:0 0 10px}.case-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.case-grid>div{padding:11px;border:1px solid #d7e6da;border-radius:8px;background:white}.case-grid b{font-size:12px;color:#236844}.case-grid p{font-size:12px;margin:4px 0}.case code{white-space:normal;overflow-wrap:anywhere}.ref-grid{display:flex;gap:8px 14px;flex-wrap:wrap;margin:7px 0}.ref-grid a{font-size:12px;font-weight:700}
+@media(max-width:1020px){.goal-body{grid-template-columns:repeat(2,minmax(0,1fr))}.goal-body>div{border-bottom:1px solid #edf1eb}.goal-body>div:nth-child(even){border-right:0}}
+@media(max-width:640px){.tech-inner{padding:9px}.play-grid,.goal-body,.case-grid{grid-template-columns:1fr}.play-grid>div,.goal-body>div{border-right:0!important;border-bottom:1px solid #eef2ed}.tech-stage>summary b{font-size:14px}.tech-stage>summary small{font-size:10px}.play p,.goal p{font-size:12px}}
+@media print{.tech-stage{break-before:page}.tech-stage .tech-inner{display:block!important}.play,.goal{break-inside:avoid}}
+</style></head>
+<body><header class="top"><div class="shell top-inner"><div class="brand">AI-NATIVE · 高质量软件交付规划 / V3.0</div><nav class="nav"><a href="#overview">全阶段总览</a><a href="#by-stage">逐阶段建设</a><a href="#technical">技术方案深化</a><a href="#rules">验收口径</a></nav></div></header><main class="shell">
+<section class="hero"><div class="eyebrow">CAPABILITY ROADMAP · 2026</div><h1>AI-Native 高质量软件开发规划</h1><p class="lead">以 <b>D1–D7 研发阶段</b> 为主线，在每个阶段明确分步建设的 <b>AI 能力、增量目标、技术方案与验收规则</b>；主计划保留简洁，具体技术实现通过跳转查看。</p><div class="chip-row"><span class="chip">7个研发阶段</span><span class="chip">5个建设波次</span><span class="chip">27项阶段能力增量</span><span class="chip">Gate1–Gate4</span></div></section>
+<div class="target box"><b>总目标：AI 正确性构建 + 独立验证 + 知识持续进化</b><span>各阶段可分不同步数建设；P0–P4 是统一波次，不要求每个阶段都填满。</span></div>
+<section id="overview"><div class="section-head"><h2>01 / 全阶段建设总览</h2><p class="aside">横向为统一波次；纵向为研发阶段。每格即该阶段本轮新增的 AI 能力。</p></div><div class="wavebar"><div class="wave"><strong>P0</strong><b>基线与可信底座</b><em>0–4周</em><p>冻结范围、样本、事实来源和质量基线</p></div><div class="wave"><strong>P1</strong><b>最小能力闭环</b><em>5–12周</em><p>先形成Gate1/Gate2可执行验证链</p></div><div class="wave"><strong>P2</strong><b>深化智能验证</b><em>3–6个月</em><p>提升推理、测试有效性和影响分析</p></div><div class="wave"><strong>P3</strong><b>跨阶段平台化</b><em>6–12个月</em><p>连接多阶段能力、门禁与独立证据</p></div><div class="wave"><strong>P4</strong><b>持续学习与优化</b><em>12–24个月</em><p>从缺陷和运行数据反馈提升有效性</p></div></div><div style="height:12px"></div><div class="overview box"><div class="ov-head"><div>研发阶段</div><div>P0 · 基线与可信底座</div><div>P1 · 最小能力闭环</div><div>P2 · 深化智能验证</div><div>P3 · 跨阶段平台化</div><div>P4 · 持续学习与优化</div></div><div class="ov-row"><div><a class="ov-name" href="#s-D1">D1 · 业务意图</a><span class="ov-final">Gate1</span></div><div><span class="ov-label">意图与验收基线整理</span></div><div><span class="ov-label">AI意图澄清与边界挑战</span></div><div><span class="ov-none">—</span></div><div><span class="ov-label">意图—规格—实现追溯</span></div><div><span class="ov-label">AI辅助目标偏差感知</span></div></div><div class="ov-row"><div><a class="ov-name" href="#s-D2">D2 · 需求规格</a><span class="ov-final">Gate1</span></div><div><span class="ov-label">需求质量金标与对象规范</span></div><div><span class="ov-label">AI需求理解与缺陷挑战</span></div><div><span class="ov-label">AI验证义务与有界形式化</span></div><div><span class="ov-label">需求门禁流程化</span></div><div><span class="ov-label">缺陷驱动需求知识进化</span></div></div><div class="ov-row"><div><a class="ov-name" href="#s-D3">D3 · 架构设计</a><span class="ov-final">Gate1</span></div><div><span class="ov-none">—</span></div><div><span class="ov-label">AI架构方案挑战与ADR</span></div><div><span class="ov-label">AI约束推理与设计验证</span></div><div><span class="ov-label">设计—实现偏差持续检查</span></div><div><span class="ov-none">—</span></div></div><div class="ov-row"><div><a class="ov-name" href="#s-D4">D4 · 编码实现</a><span class="ov-final">Gate2</span></div><div><span class="ov-label">代码缺陷与单测基线</span></div><div><span class="ov-label">AI代码符合性与单元测试</span></div><div><span class="ov-label">AI测试缺口与边界探索</span></div><div><span class="ov-label">AI验证契约与独立准出</span></div><div><span class="ov-label">AI缺陷反馈与测试策略优化</span></div></div><div class="ov-row"><div><a class="ov-name" href="#s-D5">D5 · 集成验收</a><span class="ov-final">Gate3</span></div><div><span class="ov-label">场景与回归资产基线</span></div><div><span class="ov-none">—</span></div><div><span class="ov-label">AI变更影响与回归推荐</span></div><div><span class="ov-label">AI复杂场景与系统验收</span></div><div><span class="ov-label">AI选测策略持续优化</span></div></div><div class="ov-row"><div><a class="ov-name" href="#s-D6">D6 · 发布运行</a><span class="ov-final">Gate4</span></div><div><span class="ov-label">发布与运行证据基线</span></div><div><span class="ov-none">—</span></div><div><span class="ov-none">—</span></div><div><span class="ov-label">AI发布风险与异常识别</span></div><div><span class="ov-label">AI故障定位与恢复辅助</span></div></div><div class="ov-row"><div><a class="ov-name" href="#s-D7">D7 · 维护演进</a><span class="ov-final">持续改进</span></div><div><span class="ov-label">缺陷与知识数据标准化</span></div><div><span class="ov-none">—</span></div><div><span class="ov-none">—</span></div><div><span class="ov-label">AI缺陷聚类与根因辅助分析</span></div><div><span class="ov-label">AI知识验证与自进化闭环</span></div></div></div></section>
+<section id="by-stage"><div class="section-head"><div><h2>02 / 每个研发阶段：分步建设 AI 能力</h2><p class="aside">每行包含建设能力、本步目标、技术方案、交付物及独立验收要求。</p></div><div aria-label="按波次筛选" class="switch"><button class="filter active" data-filter="all" type="button">全部波次</button><button class="filter" data-filter="P0" type="button">P0</button><button class="filter" data-filter="P1" type="button">P1</button><button class="filter" data-filter="P2" type="button">P2</button><button class="filter" data-filter="P3" type="button">P3</button><button class="filter" data-filter="P4" type="button">P4</button></div></div><details class="stage box" id="s-D1" open="">
+<summary><div class="stage-top"><span class="id">D1</span><h3>业务意图</h3><span class="gate">Gate1</span><span class="caret">展开 / 收起</span></div><div class="stage-desc"><b>质量目标：</b>确保用户真正要解决的问题、业务边界与验收结果得到确认</div><div class="finish"><b>最终 AI 能力：</b>AI辅助识别意图、边界、冲突和目标变更；真实意图最终由业务责任人确认</div></summary>
+<div class="step-head"><div>建设波次</div><div>建设的 AI 能力</div><div>本步能力目标</div><div>技术实现方案 / 交付物</div><div>能力验收规则</div></div>
+<div class="step" data-wave="P0">
+<div><span class="phase">P0</span><span class="phase-time">基线与可信底座</span></div>
+<div class="skill">意图与验收基线整理</div>
+<div class="result">明确业务目标、约束、关键用户任务及其责任人</div>
+<div class="method">归档访谈与业务事实 → 构造目标/范围/验收结果模板 → 对来源和版本建立追溯<div class="artifact"><b>交付：</b>业务目标基线、事实清单</div><a class="detail-link" href="#play-D1-P0">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>关键目标、外部事实、责任人均可定位；存在争议时明确未确认状态</div>
+</div><div class="step" data-wave="P1">
+<div><span class="phase">P1</span><span class="phase-time">最小能力闭环</span></div>
+<div class="skill">AI意图澄清与边界挑战</div>
+<div class="result">AI能主动提问，识别目标冲突、遗漏业务对象和范围歧义</div>
+<div class="method">业务访谈/PRD → LLM抽取目标与边界 → 生成澄清问题、替代解释 → 业务Owner确认<div class="artifact"><b>交付：</b>意图澄清单、范围决策记录</div><a class="detail-link" href="#play-D1-P1">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>冻结金标上评估问题发现效果；未经确认的推断不能写成正式业务约束</div>
+</div><div class="step" data-wave="P3">
+<div><span class="phase">P3</span><span class="phase-time">跨阶段平台化</span></div>
+<div class="skill">意图—规格—实现追溯</div>
+<div class="result">业务目标与AC、场景、代码和交付证据有稳定关联</div>
+<div class="method">目标ID → AC/Scenario → 设计/代码/验证证据关联图；AI检索断链和不一致<div class="artifact"><b>交付：</b>业务目标追溯链、差异清单</div><a class="detail-link" href="#play-D1-P3">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>抽样变更可双向追溯；目标变更引发影响评审和证据重验</div>
+</div><div class="step" data-wave="P4">
+<div><span class="phase">P4</span><span class="phase-time">持续学习与优化</span></div>
+<div class="skill">AI辅助目标偏差感知</div>
+<div class="result">识别实际用户行为与原定验收目标间的潜在偏差</div>
+<div class="method">用户反馈/使用数据 → 归因候选 → 业务目标差异报告 → 人工决策<div class="artifact"><b>交付：</b>目标偏差洞察、更新提案</div><a class="detail-link" href="#play-D1-P4">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>潜在偏差能追溯真实数据；业务规则变更必须人工批准</div>
+</div><div class="empty">本阶段在当前筛选波次下没有新增建设事项。</div>
+</details><details class="stage box" id="s-D2" open="">
+<summary><div class="stage-top"><span class="id">D2</span><h3>需求规格</h3><span class="gate">Gate1</span><span class="caret">展开 / 收起</span></div><div class="stage-desc"><b>质量目标：</b>完整、清楚、一致、可验证，并包含关键异常、边界与状态条件</div><div class="finish"><b>最终 AI 能力：</b>AI从PRD构建结构化需求、提出挑战并生成验证义务；形式化工具检查已建模约束</div></summary>
+<div class="step-head"><div>建设波次</div><div>建设的 AI 能力</div><div>本步能力目标</div><div>技术实现方案 / 交付物</div><div>能力验收规则</div></div>
+<div class="step" data-wave="P0">
+<div><span class="phase">P0</span><span class="phase-time">基线与可信底座</span></div>
+<div class="skill">需求质量金标与对象规范</div>
+<div class="result">有可重复评测的需求对象、缺陷分类、正负样本</div>
+<div class="method">冻结PRD样本 → 明确Story/AC/Scenario/Rule/State/Invariant schema → 建立缺陷金标<div class="artifact"><b>交付：</b>需求IR规范、金标语料</div><a class="detail-link" href="#play-D2-P0">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>来源定位、对象抽取和缺陷实例匹配均可重放</div>
+</div><div class="step" data-wave="P1">
+<div><span class="phase">P1</span><span class="phase-time">最小能力闭环</span></div>
+<div class="skill">AI需求理解与缺陷挑战</div>
+<div class="result">自动识别缺失、歧义、矛盾，枚举异常/边界并形成可审查候选</div>
+<div class="method">PRD → 结构化IR → 场景/规则补全 → 反例问题 → 证据溯源和澄清<div class="artifact"><b>交付：</b>IR、挑战报告、澄清列表</div><a class="detail-link" href="#play-D2-P1">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>分类型报告Precision/Recall与无缺陷样例误报；严重问题人工复核</div>
+</div><div class="step" data-wave="P2">
+<div><span class="phase">P2</span><span class="phase-time">深化智能验证</span></div>
+<div class="skill">AI验证义务与有界形式化</div>
+<div class="result">从AC反推Oracle、状态转换和不变量，并找出有限模型的反例</div>
+<div class="method">AC/Rule/State → Verification Contract → SMT-LIB/Z3有界检查 → 反例回写<div class="artifact"><b>交付：</b>验证契约、反例与检查证据</div><a class="detail-link" href="#play-D2-P2">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>每个正式结论都能追溯约束与求解器结果；不可形式化部分标注覆盖缺口</div>
+</div><div class="step" data-wave="P3">
+<div><span class="phase">P3</span><span class="phase-time">跨阶段平台化</span></div>
+<div class="skill">需求门禁流程化</div>
+<div class="result">变更PRD可自动触发范围化评审、风险定位和重验证</div>
+<div class="method">PRD Git Diff → 影响对象识别 → AI审查 + 确定性校验 → Gate1报告<div class="artifact"><b>交付：</b>CI检查、门禁与追溯报告</div><a class="detail-link" href="#play-D2-P3">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>变更有唯一审查批次、来源快照及状态；失败/缺证据不得误报通过</div>
+</div><div class="step" data-wave="P4">
+<div><span class="phase">P4</span><span class="phase-time">持续学习与优化</span></div>
+<div class="skill">缺陷驱动需求知识进化</div>
+<div class="result">把逃逸需求缺陷转化为可复用问题模式和检查策略</div>
+<div class="method">线上/测试缺陷 → 需求关联 → 候选风险模式 → 人工批准 → 回归评测<div class="artifact"><b>交付：</b>领域风险包、评测回归报告</div><a class="detail-link" href="#play-D2-P4">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>新增规则在保留集上有净收益；误报与新旧版本差异可查</div>
+</div><div class="empty">本阶段在当前筛选波次下没有新增建设事项。</div>
+</details><details class="stage box" id="s-D3" open="">
+<summary><div class="stage-top"><span class="id">D3</span><h3>架构设计</h3><span class="gate">Gate1</span><span class="caret">展开 / 收起</span></div><div class="stage-desc"><b>质量目标：</b>设计满足质量属性、架构约束，关键技术选择有可核实依据</div><div class="finish"><b>最终 AI 能力：</b>AI能识别设计风险、契约冲突与失效路径，并把设计决定转为可执行约束</div></summary>
+<div class="step-head"><div>建设波次</div><div>建设的 AI 能力</div><div>本步能力目标</div><div>技术实现方案 / 交付物</div><div>能力验收规则</div></div>
+<div class="step" data-wave="P1">
+<div><span class="phase">P1</span><span class="phase-time">最小能力闭环</span></div>
+<div class="skill">AI架构方案挑战与ADR</div>
+<div class="result">能对设计决策提出替代方案、假设、风险和验证计划</div>
+<div class="method">设计文档 + 质量属性 → AI审查接口、依赖与失效模式 → ADR及风险清单<div class="artifact"><b>交付：</b>ADR、架构风险与验证计划</div><a class="detail-link" href="#play-D3-P1">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>关键决策存在约束、权衡理由、验证方式和负责人；未决事项不隐藏</div>
+</div><div class="step" data-wave="P2">
+<div><span class="phase">P2</span><span class="phase-time">深化智能验证</span></div>
+<div class="skill">AI约束推理与设计验证</div>
+<div class="result">从设计抽取架构规则、契约与故障路径，发现违反约束的候选</div>
+<div class="method">设计/接口 → 契约建模 → ArchUnit/契约检查/故障注入候选 → AI结果解释<div class="artifact"><b>交付：</b>架构规则、契约检查结果</div><a class="detail-link" href="#play-D3-P2">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>已形式化约束能稳定检测故意构造的违反样本；范围限制明确</div>
+</div><div class="step" data-wave="P3">
+<div><span class="phase">P3</span><span class="phase-time">跨阶段平台化</span></div>
+<div class="skill">设计—实现偏差持续检查</div>
+<div class="result">随着代码演进发现架构漂移和契约失配</div>
+<div class="method">ADR/Design Contract ↔ 依赖图/接口/代码Diff → 差异比对 → 独立检查<div class="artifact"><b>交付：</b>架构漂移报告、代码门禁规则</div><a class="detail-link" href="#play-D3-P3">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>关键规则进入CI；违规样本被阻断且具备源证据</div>
+</div><div class="empty">本阶段在当前筛选波次下没有新增建设事项。</div>
+</details><details class="stage box" id="s-D4" open="">
+<summary><div class="stage-top"><span class="id">D4</span><h3>编码实现</h3><span class="gate">Gate2</span><span class="caret">展开 / 收起</span></div><div class="stage-desc"><b>质量目标：</b>实现符合需求及设计，单元级正确性、变更安全和验证证据可独立确认</div><div class="finish"><b>最终 AI 能力：</b>AI完成代码符合性分析、单元测试生成、测试缺口发现及可信代码准出</div></summary>
+<div class="step-head"><div>建设波次</div><div>建设的 AI 能力</div><div>本步能力目标</div><div>技术实现方案 / 交付物</div><div>能力验收规则</div></div>
+<div class="step" data-wave="P0">
+<div><span class="phase">P0</span><span class="phase-time">基线与可信底座</span></div>
+<div class="skill">代码缺陷与单测基线</div>
+<div class="result">有代表性代码变更、历史缺陷和测试有效性评测集</div>
+<div class="method">冻结Diff/缺陷修复样本 → 基线Lint、UT、覆盖率、既有门禁结果<div class="artifact"><b>交付：</b>代码评测集、质量基线</div><a class="detail-link" href="#play-D4-P0">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>可重放样本和基准结果；含无缺陷变更及误报测量</div>
+</div><div class="step" data-wave="P1">
+<div><span class="phase">P1</span><span class="phase-time">最小能力闭环</span></div>
+<div class="skill">AI代码符合性与单元测试</div>
+<div class="result">AI识别代码偏差、生成可执行UT及可靠断言</div>
+<div class="method">需求AC/设计约束 + Diff → AI代码审查/UT生成 → JUnit/Mockito + Lint/SAST独立执行<div class="artifact"><b>交付：</b>代码审查结果、UT、静态检查证据</div><a class="detail-link" href="#play-D4-P1">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>已知缺陷召回与误报可量化；新增UT可重复执行；失败证据可定位</div>
+</div><div class="step" data-wave="P2">
+<div><span class="phase">P2</span><span class="phase-time">深化智能验证</span></div>
+<div class="skill">AI测试缺口与边界探索</div>
+<div class="result">能发现弱断言、遗漏分支、异常与并发风险，补充有效测试</div>
+<div class="method">状态/输入约束 → 属性测试PBT → Mutation Testing → AI筛选存活变异体并补测<div class="artifact"><b>交付：</b>PBT/Mutation报告、增强测试集</div><a class="detail-link" href="#play-D4-P2">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>变异体杀伤率、有效新增用例与缺陷发现量可复核；防止无意义测试膨胀</div>
+</div><div class="step" data-wave="P3">
+<div><span class="phase">P3</span><span class="phase-time">跨阶段平台化</span></div>
+<div class="skill">AI验证契约与独立准出</div>
+<div class="result">每个高风险变更都有对应验证义务和可信状态</div>
+<div class="method">Change Manifest + AC/Contract → 验证计划 → 独立Harness执行 → PASS/FAIL/INCOMPLETE<div class="artifact"><b>交付：</b>Gate2门禁报告、验证证据链</div><a class="detail-link" href="#play-D4-P3">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>证据缺失、来源不一致、未执行不得PASS；任务及结果可重放</div>
+</div><div class="step" data-wave="P4">
+<div><span class="phase">P4</span><span class="phase-time">持续学习与优化</span></div>
+<div class="skill">AI缺陷反馈与测试策略优化</div>
+<div class="result">历史逃逸缺陷推动代码审查规则和单测能力升级</div>
+<div class="method">缺陷根因/风险模式 → AI候选测试策略 → 审核后入库 → 冻结集A/B评测<div class="artifact"><b>交付：</b>风险驱动测试包、效果报告</div><a class="detail-link" href="#play-D4-P4">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>严重漏检、误报、执行成本前后对比；无增益策略可回滚</div>
+</div><div class="empty">本阶段在当前筛选波次下没有新增建设事项。</div>
+</details><details class="stage box" id="s-D5" open="">
+<summary><div class="stage-top"><span class="id">D5</span><h3>集成验收</h3><span class="gate">Gate3</span><span class="caret">展开 / 收起</span></div><div class="stage-desc"><b>质量目标：</b>跨模块行为正确，受影响业务场景和高风险回归得到有效覆盖</div><div class="finish"><b>最终 AI 能力：</b>AI从代码变化推导功能和场景影响，生成并执行关键集成及端到端验证</div></summary>
+<div class="step-head"><div>建设波次</div><div>建设的 AI 能力</div><div>本步能力目标</div><div>技术实现方案 / 交付物</div><div>能力验收规则</div></div>
+<div class="step" data-wave="P0">
+<div><span class="phase">P0</span><span class="phase-time">基线与可信底座</span></div>
+<div class="skill">场景与回归资产基线</div>
+<div class="result">关键业务流、模块依赖、已有用例可关联</div>
+<div class="method">Feature/Scenario ↔ 测试资产映射；固化现有回归覆盖与缺陷样本<div class="artifact"><b>交付：</b>场景图、测试锚点索引</div><a class="detail-link" href="#play-D5-P0">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>关键场景与测试资产存在锚点；缺失测试明确标出</div>
+</div><div class="step" data-wave="P2">
+<div><span class="phase">P2</span><span class="phase-time">深化智能验证</span></div>
+<div class="skill">AI变更影响与回归推荐</div>
+<div class="result">从Diff识别受影响Feature/Scenario并选择高价值回归</div>
+<div class="method">Diff → AST/依赖图 → Feature锚点 → 风险模式 → 测试召回与排序<div class="artifact"><b>交付：</b>影响清单、回归选择与缺口</div><a class="detail-link" href="#play-D5-P2">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>冻结金标集评估影响召回、高风险漏选与冗余成本；未知关系不假装确定</div>
+</div><div class="step" data-wave="P3">
+<div><span class="phase">P3</span><span class="phase-time">跨阶段平台化</span></div>
+<div class="skill">AI复杂场景与系统验收</div>
+<div class="result">能构造跨模块、断网恢复、进程死亡、并发与恢复场景</div>
+<div class="method">AC/状态机 → AI生成系统场景 → 集成/契约/E2E环境执行 → 结果回写证据<div class="artifact"><b>交付：</b>Gate3场景证据、端到端报告</div><a class="detail-link" href="#play-D5-P3">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>关键旅程成功且故意注入故障可被检出；无法执行标记INCOMPLETE</div>
+</div><div class="step" data-wave="P4">
+<div><span class="phase">P4</span><span class="phase-time">持续学习与优化</span></div>
+<div class="skill">AI选测策略持续优化</div>
+<div class="result">在风险受控下优化用例集合和执行成本</div>
+<div class="method">缺陷逃逸 + 历史影响真值 → 更新场景风险排序与选择策略 → 影子运行评估<div class="artifact"><b>交付：</b>动态回归策略、效果追踪</div><a class="detail-link" href="#play-D5-P4">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>关键缺陷召回不退化；回归时间和逃逸风险均可量化</div>
+</div><div class="empty">本阶段在当前筛选波次下没有新增建设事项。</div>
+</details><details class="stage box" id="s-D6" open="">
+<summary><div class="stage-top"><span class="id">D6</span><h3>发布运行</h3><span class="gate">Gate4</span><span class="caret">展开 / 收起</span></div><div class="stage-desc"><b>质量目标：</b>变更可控、运行风险可感知、异常时可快速止损与恢复</div><div class="finish"><b>最终 AI 能力：</b>AI进行发布风险分析、异常聚合和故障诊断；执行与回滚由可靠护栏管控</div></summary>
+<div class="step-head"><div>建设波次</div><div>建设的 AI 能力</div><div>本步能力目标</div><div>技术实现方案 / 交付物</div><div>能力验收规则</div></div>
+<div class="step" data-wave="P0">
+<div><span class="phase">P0</span><span class="phase-time">基线与可信底座</span></div>
+<div class="skill">发布与运行证据基线</div>
+<div class="result">明确SLO、版本证据、灰度指标、回滚边界</div>
+<div class="method">发布记录 + 指标/日志/链路 + 回滚演练记录关联<div class="artifact"><b>交付：</b>发布基线、SLO及回滚清单</div><a class="detail-link" href="#play-D6-P0">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>关键服务有可观测指标与人工/自动回退路径</div>
+</div><div class="step" data-wave="P3">
+<div><span class="phase">P3</span><span class="phase-time">跨阶段平台化</span></div>
+<div class="skill">AI发布风险与异常识别</div>
+<div class="result">在灰度阶段识别异常趋势并给出风险处置建议</div>
+<div class="method">发布Diff + 质量门禁证据 + 运行遥测 → AI异常聚合 → SLO/阈值护栏决策<div class="artifact"><b>交付：</b>灰度风险报告、Gate4护栏记录</div><a class="detail-link" href="#play-D6-P3">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>用注入事故验证报警和止损；AI建议不绕过发布权限与确定性回滚条件</div>
+</div><div class="step" data-wave="P4">
+<div><span class="phase">P4</span><span class="phase-time">持续学习与优化</span></div>
+<div class="skill">AI故障定位与恢复辅助</div>
+<div class="result">能基于运行证据生成有依据的根因候选和修复策略</div>
+<div class="method">日志/Trace/变更 → 事件关联与AI诊断 → RCA候选 → 审核与受控演练<div class="artifact"><b>交付：</b>故障诊断报告、处置剧本</div><a class="detail-link" href="#play-D6-P4">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>根因假设带证据；高风险操作需审批；恢复时长、诊断精度持续跟踪</div>
+</div><div class="empty">本阶段在当前筛选波次下没有新增建设事项。</div>
+</details><details class="stage box" id="s-D7" open="">
+<summary><div class="stage-top"><span class="id">D7</span><h3>维护演进</h3><span class="gate">持续改进</span><span class="caret">展开 / 收起</span></div><div class="stage-desc"><b>质量目标：</b>相同失效持续减少，经验能沉淀为可验证、可复用的工程能力</div><div class="finish"><b>最终 AI 能力：</b>AI对缺陷与事故进行结构化归因，驱动知识提取、规则更新与持续评测</div></summary>
+<div class="step-head"><div>建设波次</div><div>建设的 AI 能力</div><div>本步能力目标</div><div>技术实现方案 / 交付物</div><div>能力验收规则</div></div>
+<div class="step" data-wave="P0">
+<div><span class="phase">P0</span><span class="phase-time">基线与可信底座</span></div>
+<div class="skill">缺陷与知识数据标准化</div>
+<div class="result">为历史经验建立可靠对象、版本、关联和事实标签</div>
+<div class="method">缺陷/事故/代码/需求 → 去重、ID映射、来源快照 → 分类标准<div class="artifact"><b>交付：</b>缺陷关联数据、知识对象模型</div><a class="detail-link" href="#play-D7-P0">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>抽样来源可追溯、标注可复核；推断不覆盖事实</div>
+</div><div class="step" data-wave="P3">
+<div><span class="phase">P3</span><span class="phase-time">跨阶段平台化</span></div>
+<div class="skill">AI缺陷聚类与根因辅助分析</div>
+<div class="result">识别重复失效模式、过程薄弱点，提取候选规则</div>
+<div class="method">缺陷描述/提交/测试 → 语义聚类 + ODC/RCA辅助 → 事实/规则/认知三层加工<div class="artifact"><b>交付：</b>失效模式库、根因候选、知识包</div><a class="detail-link" href="#play-D7-P3">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>聚类纯度、归因证据、人工复核通过率可量化</div>
+</div><div class="step" data-wave="P4">
+<div><span class="phase">P4</span><span class="phase-time">持续学习与优化</span></div>
+<div class="skill">AI知识验证与自进化闭环</div>
+<div class="result">经验证的经验转化为可执行规则和跨项目验证资产</div>
+<div class="method">候选规则 → 人审 → 自动检查/测试 → 回归评测 → 入库或回滚<div class="artifact"><b>交付：</b>版本化规则库、再评测报告</div><a class="detail-link" href="#play-D7-P4">查看子目标与补强方案 →</a></div>
+<div class="accept"><b>能力验收：</b>新规则证明净质量收益；重复缺陷、逃逸率、误报与复用效果持续观测</div>
+</div><div class="empty">本阶段在当前筛选波次下没有新增建设事项。</div>
+</details></section>
+<section id="technical"><div class="section-head"><div><h2>03 / 技术方案深化：子目标、覆盖边界与增量设计</h2><p class="aside">按 D1–D7 展开；每项对应原规划的P0–P4能力增量。这里将“已有实践可做什么”与“拟建设补强部分”明确区分。</p></div></div><div class="detail-intro box"><strong>统一拆解方式：</strong>质量子目标 → 已有实践及解决范围 → 尚未解决的边界 → 具体增强实现链路 → 独立验收证据。<br/><strong>状态说明：</strong>现有 prd-challenge-model / requirement-analysis 等为历史讨论中的方案及资产；其可用性或检出率需以真实工程评测为准。下文的组合方案属于建设建议，不代表厂商原生功能。</div><details class="tech-stage box"><summary><span class="stage-pill">D1</span><b>业务意图 · 分步能力实现细化</b><small>点击展开 / 收起</small></summary><div class="tech-inner"><article class="play" id="play-D1-P0"><div class="play-head"><span class="stage-pill">P0</span><h3>意图证据模型</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>INCOSE需求工程；现有目标/范围模板</p></div>
+<div><label>能解决的具体目标</label><p>能整理目标、受众和验收结果；并非自动理解真实意图</p></div>
+<div><label>尚未解决的问题</label><p>真实用户优先级、隐含利益关系和历史证据往往不完整</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>访谈/PRD/运营数据 → 事实提取 → 目标—用户—指标三元组 → 来源哈希、责任人及未确认假设分层</p></div>
+</div><div class="play-bottom"><b>验收：</b>目标ID可追溯到原始证据；未确认假设不能升级为正式要求<div class="sources"><a href="https://portal.incose.org/ItemDetail?Category=EBOOKS&amp;WebsiteKey=d4c31fa4-467a-4959-b48b-cae3ea93e516&amp;iProductCode=GUIDENEEDSREQ" rel="noopener noreferrer" target="_blank">INCOSE 需求指导 ↗</a></div></div></article><article class="play" id="play-D1-P1"><div class="play-head"><span class="stage-pill">P1</span><h3>多解释澄清与意图挑战</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>Kiro歧义分析思路、Spec Kit clarify</p></div>
+<div><label>能解决的具体目标</label><p>能从语言差异、互斥目标、边界不清处提出问题</p></div>
+<div><label>尚未解决的问题</label><p>AI无法替代业务Owner决定真实意图；参与者可能提供冲突事实</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>生成2–3个业务解释 → 场景差异演示 → 澄清问题优先级 → 责任人确认 → 目标与范围冻结</p></div>
+</div><div class="play-bottom"><b>验收：</b>抽样问题发现率、澄清采纳率和事实来源准确率；审批留痕<div class="sources"><a href="https://kiro.dev/blog/deep-spec-analysis/" rel="noopener noreferrer" target="_blank">Kiro 深度需求分析 ↗</a><a href="https://github.com/github/spec-kit/blob/main/docs/reference/agentic-sdd.md" rel="noopener noreferrer" target="_blank">Spec Kit 文档 ↗</a></div></div></article><article class="play" id="play-D1-P3"><div class="play-head"><span class="stage-pill">P3</span><h3>意图到交付证据图</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>Spec Kit跨产物分析、需求追溯模型</p></div>
+<div><label>能解决的具体目标</label><p>能建立工件之间的显式关联和变更检查</p></div>
+<div><label>尚未解决的问题</label><p>语义相似并非真实满足；复杂多对多关系需要证据</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>Goal→Story→AC→Scenario→Design→Code→Test→Evidence统一ID和版本；Diff触发逆向追溯缺口</p></div>
+</div><div class="play-bottom"><b>验收：</b>黄金样例的断链被检出；错误关联可被人工纠正并记录<div class="sources"><a href="https://github.com/github/spec-kit/blob/main/docs/reference/agentic-sdd.md" rel="noopener noreferrer" target="_blank">Spec Kit 文档 ↗</a></div></div></article><article class="play" id="play-D1-P4"><div class="play-head"><span class="stage-pill">P4</span><h3>反馈驱动意图偏差发现</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>SRE用户可感知指标、产品反馈分析</p></div>
+<div><label>能解决的具体目标</label><p>能发现指标与原目标不一致的候选</p></div>
+<div><label>尚未解决的问题</label><p>因果归属不能仅依据相关性；新意图需重新授权</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>体验指标+工单/访谈聚类→候选目标偏差→业务核对→调整请求→影响再评估</p></div>
+</div><div class="play-bottom"><b>验收：</b>每条偏差有原始指标和样本，业务变更由负责人批准<div class="sources"><a href="https://sre.google/sre-book/embracing-risk/" rel="noopener noreferrer" target="_blank">Google SRE ↗</a><a href="https://opentelemetry.io/docs/concepts/observability-primer/" rel="noopener noreferrer" target="_blank">OpenTelemetry 概览 ↗</a></div></div></article></div></details><details class="tech-stage box" open=""><summary><span class="stage-pill">D2</span><b>需求规格 · 分步能力实现细化</b><small>点击展开 / 收起</small></summary><div class="tech-inner"><article class="play" id="play-D2-P0"><div class="play-head"><span class="stage-pill">P0</span><h3>需求IR和缺陷金标</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>Kiro EARS；已规划 requirement-analysis IR；Spec Kit checklist</p></div>
+<div><label>能解决的具体目标</label><p>可建立Story/AC/Scenario/Rule/State/Invariant及来源锚点</p></div>
+<div><label>尚未解决的问题</label><p>自然语言抽取可能漏条件，金标口径可能漂移</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>PRD版本快照→原子需求拆分→typed IR与溯源→缺陷金标和无缺陷对照集→双人一致性仲裁</p></div>
+</div><div class="play-bottom"><b>验收：</b>对象抽取精确率/召回率、ID稳定性、正负样本重放通过<div class="sources"><a href="https://kiro.dev/blog/deep-spec-analysis/" rel="noopener noreferrer" target="_blank">Kiro 深度需求分析 ↗</a><a href="https://github.com/github/spec-kit/blob/main/docs/reference/agentic-sdd.md" rel="noopener noreferrer" target="_blank">Spec Kit 文档 ↗</a></div></div></article><article class="play" id="play-D2-P1"><div class="play-head"><span class="stage-pill">P1</span><h3>需求语义、场景挑战与发现</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>Kiro refine/auto-formalization；prd-challenge-model 风险挑战</p></div>
+<div><label>能解决的具体目标</label><p>支持歧义/约束冲突、前置条件反推、已有模型下部分未定义情形发现</p></div>
+<div><label>尚未解决的问题</label><p>隐藏业务对象、跨Feature影响、模型外状态、领域规则缺失会形成漏检</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>需求IR→成功状态溯因→场景维度枚举→Risk Pattern补充→可达/未覆盖反例→Scope Guard和澄清→人审</p></div>
+</div><div class="play-bottom"><b>验收：</b>分类P/R、严重场景漏检、误报；每个候选有来源/假设/反证和复现条件<div class="sources"><a href="https://kiro.dev/blog/deep-spec-analysis/" rel="noopener noreferrer" target="_blank">Kiro 深度需求分析 ↗</a><a href="https://github.com/Z3Prover/z3" rel="noopener noreferrer" target="_blank">Z3 SMT Solver ↗</a><a href="https://github.com/github/spec-kit/blob/main/docs/reference/agentic-sdd.md" rel="noopener noreferrer" target="_blank">Spec Kit 文档 ↗</a></div></div></article><article class="play" id="play-D2-P2"><div class="play-head"><span class="stage-pill">P2</span><h3>形式化推理与验证义务</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>Kiro多次形式化与SMT；Z3；Verification Contract</p></div>
+<div><label>能解决的具体目标</label><p>可为已形式化约束发现矛盾、语义分歧、未定义状态</p></div>
+<div><label>尚未解决的问题</label><p>模型正确性和背景知识权威性无法由SAT/UNSAT保证；Oracle常需业务决定</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>多候选形式化→等价聚类/冲突Witness→HARD事实与HYPOTHESIS隔离→AC映射Oracle→验证义务→回译重验</p></div>
+</div><div class="play-bottom"><b>验收：</b>Solver状态/反例可重放；错误背景假设不导致自动阻断；义务可追溯到AC<div class="sources"><a href="https://kiro.dev/blog/deep-spec-analysis/" rel="noopener noreferrer" target="_blank">Kiro 深度需求分析 ↗</a><a href="https://github.com/Z3Prover/z3" rel="noopener noreferrer" target="_blank">Z3 SMT Solver ↗</a></div></div></article><article class="play" id="play-D2-P3"><div class="play-head"><span class="stage-pill">P3</span><h3>变更增量审查与可信Gate1</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>Spec Kit clarify/analyze；现有挑战工作流</p></div>
+<div><label>能解决的具体目标</label><p>能在版本化需求上重复分析，输出差异与修复建议</p></div>
+<div><label>尚未解决的问题</label><p>LLM结论漂移、上下文污染、报告篡改、部分检查失败可能误报成功</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>PRD Git Diff→影响IR对象→增量+周期全量分析→证据快照→Finding资格审查→COMPLETED/PARTIAL/FAILED独立呈现</p></div>
+</div><div class="play-bottom"><b>验收：</b>篡改/丢证据/异常退出负测必被检出；未完成检查不允许READY<div class="sources"><a href="https://github.com/github/spec-kit/blob/main/docs/reference/agentic-sdd.md" rel="noopener noreferrer" target="_blank">Spec Kit 文档 ↗</a></div></div></article><article class="play" id="play-D2-P4"><div class="play-head"><span class="stage-pill">P4</span><h3>缺陷驱动领域知识更新</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>风险模式库、Spotify Soundcheck事实/检查思想</p></div>
+<div><label>能解决的具体目标</label><p>能将重复缺陷转为检查候选与风险规则</p></div>
+<div><label>尚未解决的问题</label><p>知识会过时，规则可能误报；历史样本可能产生偏差</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>缺陷→需求根因→事实/规则/假设分类→规则草案→冻结集回归→审批→版本化发布和回滚</p></div>
+</div><div class="play-bottom"><b>验收：</b>新增规则相对基线有净收益；回滚后结果可重现<div class="sources"><a href="https://backstage.spotify.com/faqs" rel="noopener noreferrer" target="_blank">Spotify Soundcheck ↗</a></div></div></article><div class="d2-title"><h3>D2 专项：10个需求质量子目标与 Kiro 方案映射</h3><p>Kiro 原生能力以其官方文档为依据；改进方案是拟建设 requirement-analysis Skill 的增强设计。不可将“理论可检测”理解为“已经在当前项目验证”。</p></div><div class="goal"><div class="goal-h"><strong>S01 需求结构化</strong><em>P0–P1</em></div><div class="goal-body"><div><label>现有方案与可覆盖的子目标</label><p>Kiro：EARS精炼；requirement-analysis：Story/AC/Scenario/Rule/State/Invariant IR</p><p class="covered">✓ 自然语言分解、可观察结果改写</p></div><div><label>剩余缺口</label><p>跨段落指代、多源冲突、提取真实性</p></div><div class="goal-fix"><label>具体技术补强链路</label><p>原文哈希+原子需求抽取+typed IR+每个对象来源/状态分层</p></div><div><label>验收依据</label><p>对象级P/R、溯源准确率、人工复核一致性</p></div></div></div><div class="goal"><div class="goal-h"><strong>S02 语义歧义</strong><em>P1–P2</em></div><div class="goal-body"><div><label>现有方案与可覆盖的子目标</label><p>Kiro：多次自动形式化、逻辑等价分组、语义分歧</p><p class="covered">✓ 发现同一AC多种逻辑解释的候选</p></div><div><label>剩余缺口</label><p>专业术语/隐含语境可能被同一种错误理解</p></div><div class="goal-fix"><label>具体技术补强链路</label><p>多候选IR/SMT比较→语义diff→二选一澄清→高不确定性弃权</p></div><div><label>验收依据</label><p>歧义召回/误报；澄清后语义分歧收敛</p></div></div></div><div class="goal"><div class="goal-h"><strong>S03 约束冲突</strong><em>P2</em></div><div class="goal-body"><div><label>现有方案与可覆盖的子目标</label><p>Kiro逻辑分析 + Z3；现有Challenge跨需求扫描</p><p class="covered">✓ 在已建模条件下找冲突与不可同时满足规则</p></div><div><label>剩余缺口</label><p>形式化错误、背景假设不实会误报</p></div><div class="goal-fix"><label>具体技术补强链路</label><p>只把HARD权威约束作为强断言→SAT/UNSAT+minimal core→反例回译</p></div><div><label>验收依据</label><p>冲突Witness可重放；误报归因清楚</p></div></div></div><div class="goal"><div class="goal-h"><strong>S04 前置条件/异常遗漏</strong><em>P1</em></div><div class="goal-body"><div><label>现有方案与可覆盖的子目标</label><p>Kiro基于成功状态的溯因精炼；prd-challenge-model风险模式</p><p class="covered">✓ 发现成功路径缺失的前置条件、失败分支</p></div><div><label>剩余缺口</label><p>真实业务异常、第三方行为、故障路径不一定在LLM知识中</p></div><div class="goal-fix"><label>具体技术补强链路</label><p>成功结果→必需前置→阻断原因→异常动作/期望→AC覆盖比对→风险包补充</p></div><div><label>验收依据</label><p>金标遗漏分类型召回；每个候选含阻断条件</p></div></div></div><div class="goal"><div class="goal-h"><strong>S05 状态与跨场景遗漏</strong><em>P1–P2</em></div><div class="goal-body"><div><label>现有方案与可覆盖的子目标</label><p>Kiro完整性逻辑查询 + Accepted/Rejected Scenario；状态建模</p><p class="covered">✓ 发现已定义模型内的未规定行为、意外允许/禁止行为</p></div><div><label>剩余缺口</label><p>未建模状态、跨Feature/多账号/进程生命周期及组合爆炸</p></div><div class="goal-fix"><label>具体技术补强链路</label><p>状态×事件×通道×账号×网络×生命周期维度→风险驱动组合→可达性过滤→模型外盲区报告</p></div><div><label>验收依据</label><p>高风险金标场景召回、已评估维度覆盖、未知状态单列</p></div></div></div><div class="goal"><div class="goal-h"><strong>S06 不变量/并发/重试</strong><em>P2</em></div><div class="goal-body"><div><label>现有方案与可覆盖的子目标</label><p>Z3有界SMT；需求级反例生成</p><p class="covered">✓ 检查有界规则冲突和可违反的不变量</p></div><div><label>剩余缺口</label><p>任意长轨迹、真实并发交错、外部服务协议难穷尽</p></div><div class="goal-fix"><label>具体技术补强链路</label><p>显式State/Transition/Invariants→Z3有界查询→对并发/时序补状态机或模型检查→注入故障</p></div><div><label>验收依据</label><p>给定界限内找到故意植入的不变量违反；标明界限</p></div></div></div><div class="goal"><div class="goal-h"><strong>S07 验证义务与Oracle</strong><em>P2</em></div><div class="goal-body"><div><label>现有方案与可覆盖的子目标</label><p>Kiro可测试性精炼；Spec Kit checklist；Verification Contract设计</p><p class="covered">✓ 促使AC更可观察，可生成测试候选</p></div><div><label>剩余缺口</label><p>正确预期结果/环境依赖可能仍未确定</p></div><div class="goal-fix"><label>具体技术补强链路</label><p>每个AC生成Precondition/Event/Expected/Oracle/Evidence→标注AUTO/HUMAN/UNKNOWN</p></div><div><label>验收依据</label><p>每个关键AC都有已确认Oracle或明确缺口，非法PASS不出现</p></div></div></div><div class="goal"><div class="goal-h"><strong>S08 非功能需求具体化</strong><em>P1–P2</em></div><div class="goal-body"><div><label>现有方案与可覆盖的子目标</label><p>Kiro约束冲突分析；INCOSE指标化写法</p><p class="covered">✓ 将模糊性能、安全、容量要求转为有条件约束</p></div><div><label>剩余缺口</label><p>测试环境和业务负载难在规格文本中推断</p></div><div class="goal-fix"><label>具体技术补强链路</label><p>质量场景：刺激/环境/对象/可量化响应/测量方法→指标Owner确认</p></div><div><label>验收依据</label><p>所有关键NFR有单位、阈值、测量窗口、环境</p></div></div></div><div class="goal"><div class="goal-h"><strong>S09 意图/范围正确性</strong><em>P1–P3</em></div><div class="goal-body"><div><label>现有方案与可覆盖的子目标</label><p>prd-challenge-model Scope Guard + Disproof；业务负责人决策</p><p class="covered">✓ 可过滤与正式范围无关的挑战，要求证据</p></div><div><label>剩余缺口</label><p>无法由形式逻辑证明真实业务意图</p></div><div class="goal-fix"><label>具体技术补强链路</label><p>HARD/FACT/HYPOTHESIS分别入模→候选Finding资格审查→业务Owner确认</p></div><div><label>验收依据</label><p>未经授权扩范围不得自动写回PRD；误报可复盘</p></div></div></div><div class="goal"><div class="goal-h"><strong>S10 完整追溯与可信门禁</strong><em>P3</em></div><div class="goal-body"><div><label>现有方案与可覆盖的子目标</label><p>Spec Kit跨工件分析、Requirement Analysis来源映射</p><p class="covered">✓ 检查部分断链与工件一致性</p></div><div><label>剩余缺口</label><p>Agent自审、自我批准、失败检查状态可能伪通过</p></div><div class="goal-fix"><label>具体技术补强链路</label><p>版本快照→Finding/Decision/重分析→AC→验证义务→Gate1证据链</p></div><div><label>验收依据</label><p>失败、部分执行、缺少证据必不能READY，重跑可追溯</p></div></div></div><div class="case"><h3>贯穿示例 · Gallery 云相册网络恢复后重复上传</h3><div class="case-grid"><div><b>输入的明确需求</b><p>网络恢复后自动继续上传中断的照片。</p></div><div><b>容易遗漏的质量子目标</b><p>同一逻辑照片/账号在断网、进程死亡、WorkManager 重试、重复回调、账号切换下是否生成重复云端资产。</p></div><div><b>Kiro能辅助的部分</b><p>从“成功上传”溯因推导阻断条件；若显式建模“重试 + 唯一资源”规则，使用逻辑查询找冲突、未定义状态及意外允许行为。</p></div><div><b>必须额外补强</b><p>引入上传工作队列状态与历史风险知识、账号/网络/进程/重试场景维度、服务端幂等协议事实、设备级故障注入；明确 UNKNOWN 业务规则。</p></div><div><b>候选不变量</b><p><code>同一逻辑照片 + 同一账号 + 重试序列 → 最终云端资产数 ≤ 1</code>（应由业务确认是否为正式规则）。</p></div><div><b>验收</b><p>历史漏场景金标、重复上传注入样本被检测；每条结果提供状态轨迹和来源，未确定的幂等语义不得自动写成正式AC。</p></div></div></div></div></details><details class="tech-stage box"><summary><span class="stage-pill">D3</span><b>架构设计 · 分步能力实现细化</b><small>点击展开 / 收起</small></summary><div class="tech-inner"><article class="play" id="play-D3-P1"><div class="play-head"><span class="stage-pill">P1</span><h3>质量属性驱动设计挑战</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>ADR；ArchUnit领域架构规则</p></div>
+<div><label>能解决的具体目标</label><p>能列出依赖/边界/权衡及架构约束</p></div>
+<div><label>尚未解决的问题</label><p>LLM“好方案”可能缺容量/异常路径真实证据</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>Quality Scenario(刺激/环境/响应/指标)→ADR候选→故障树/反例设计→设计Owner审批</p></div>
+</div><div class="play-bottom"><b>验收：</b>关键决策有输入假设、可验证指标、备选方案和负责人<div class="sources"><a href="https://www.archunit.org/userguide/html/000_Index.html" rel="noopener noreferrer" target="_blank">ArchUnit 用户指南 ↗</a></div></div></article><article class="play" id="play-D3-P2"><div class="play-head"><span class="stage-pill">P2</span><h3>设计规则形式化与对抗验证</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>ArchUnit、Pact契约测试、Z3</p></div>
+<div><label>能解决的具体目标</label><p>对可编码的依赖规则、接口契约及部分状态约束可自动验证</p></div>
+<div><label>尚未解决的问题</label><p>性能容量、时序竞态、外部故障并非全部可静态证明</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>接口/ADR→可执行架构测试、契约测试与状态约束→故障注入场景→结果与设计差异归档</p></div>
+</div><div class="play-bottom"><b>验收：</b>每条强制规则至少一条故意违规负例；CI稳定复现<div class="sources"><a href="https://www.archunit.org/userguide/html/000_Index.html" rel="noopener noreferrer" target="_blank">ArchUnit 用户指南 ↗</a><a href="https://docs.pact.io/" rel="noopener noreferrer" target="_blank">Pact Contract Testing ↗</a><a href="https://github.com/Z3Prover/z3" rel="noopener noreferrer" target="_blank">Z3 SMT Solver ↗</a></div></div></article><article class="play" id="play-D3-P3"><div class="play-head"><span class="stage-pill">P3</span><h3>持续架构漂移分析</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>ArchUnit规则和跨工件一致性检查</p></div>
+<div><label>能解决的具体目标</label><p>能发现部分包依赖违规、接口不匹配</p></div>
+<div><label>尚未解决的问题</label><p>运行时动态依赖和组织约定难以从代码全量推断</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>Design/ADR ID→规则仓库→代码结构解析→变更影响与例外审批→Gate2证据</p></div>
+</div><div class="play-bottom"><b>验收：</b>规则违规精准定位，合法例外经审批并有到期策略<div class="sources"><a href="https://www.archunit.org/userguide/html/000_Index.html" rel="noopener noreferrer" target="_blank">ArchUnit 用户指南 ↗</a><a href="https://github.com/github/spec-kit/blob/main/docs/reference/agentic-sdd.md" rel="noopener noreferrer" target="_blank">Spec Kit 文档 ↗</a></div></div></article></div></details><details class="tech-stage box"><summary><span class="stage-pill">D4</span><b>编码实现 · 分步能力实现细化</b><small>点击展开 / 收起</small></summary><div class="tech-inner"><article class="play" id="play-D4-P0"><div class="play-head"><span class="stage-pill">P0</span><h3>代码与单测评测资产</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>JUnit/PIT、静态扫描、真实缺陷样本</p></div>
+<div><label>能解决的具体目标</label><p>能对代码缺陷检测和测试效力建可重放基线</p></div>
+<div><label>尚未解决的问题</label><p>仅代码覆盖率不能代表测试有效性</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>Diff+Fix对+无缺陷对照→标签归档→测试覆盖/Mutation/静态工具结果→独立基线</p></div>
+</div><div class="play-bottom"><b>验收：</b>分缺陷类型统计漏报/误报；结果可重放<div class="sources"><a href="https://pitest.org/" rel="noopener noreferrer" target="_blank">PIT Mutation Testing ↗</a><a href="https://github.com/OWASP/DevSecOpsGuideline/blob/master/current-version/2-Process/2-2-Develop/2-2-3-Secure-Code-Review.md" rel="noopener noreferrer" target="_blank">OWASP安全代码审查 ↗</a></div></div></article><article class="play" id="play-D4-P1"><div class="play-head"><span class="stage-pill">P1</span><h3>AI实现符合性与有效UT生成</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>JUnit、Android Lint/CodeQL、OWASP审查流程</p></div>
+<div><label>能解决的具体目标</label><p>能发现局部静态问题并生成执行级单测</p></div>
+<div><label>尚未解决的问题</label><p>同一AI生成代码与测试会共享误解，断言易验证实现而非需求</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>AC/Oracle先行→代码Diff/调用图→风险点→独立Agent生成UT与Mock→构建/执行/断言校验→证据归档</p></div>
+</div><div class="play-bottom"><b>验收：</b>UT必须失败于故意违例实现、通过于基准；缺证据不判PASS<div class="sources"><a href="https://github.com/OWASP/DevSecOpsGuideline/blob/master/current-version/2-Process/2-2-Develop/2-2-3-Secure-Code-Review.md" rel="noopener noreferrer" target="_blank">OWASP安全代码审查 ↗</a><a href="https://pitest.org/" rel="noopener noreferrer" target="_blank">PIT Mutation Testing ↗</a></div></div></article><article class="play" id="play-D4-P2"><div class="play-head"><span class="stage-pill">P2</span><h3>AI测试缺口与反例探索</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>PIT Mutation Testing、PBT思想</p></div>
+<div><label>能解决的具体目标</label><p>能找出部分弱断言与边界条件遗漏</p></div>
+<div><label>尚未解决的问题</label><p>Mutation存活不一定是真缺陷，测试生成可能无效/不稳定</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>覆盖信息→风险分支→变异体/状态约束→筛选等价与无效变异→生成属性/边界测试→回归</p></div>
+</div><div class="play-bottom"><b>验收：</b>有效新增测试数、故障杀伤率、稳定性与执行成本联合报告<div class="sources"><a href="https://pitest.org/" rel="noopener noreferrer" target="_blank">PIT Mutation Testing ↗</a></div></div></article><article class="play" id="play-D4-P3"><div class="play-head"><span class="stage-pill">P3</span><h3>变化驱动验证契约与可信准出</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>Spec Kit converge、OWASP审查、独立CI</p></div>
+<div><label>能解决的具体目标</label><p>可基于工件证据检查“实现完成”的条件</p></div>
+<div><label>尚未解决的问题</label><p>通过一次测试不意味着全部义务已覆盖；证据可能过期</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>change-manifest→验证义务集合→匹配测试/静态证据→独立运行→签名及commit绑定→PASS/FAIL/INCOMPLETE</p></div>
+</div><div class="play-bottom"><b>验收：</b>未验证/未执行/版本不一致不得通过，审计样本100%可重放<div class="sources"><a href="https://github.com/github/spec-kit/blob/main/docs/reference/agentic-sdd.md" rel="noopener noreferrer" target="_blank">Spec Kit 文档 ↗</a><a href="https://github.com/OWASP/DevSecOpsGuideline/blob/master/current-version/2-Process/2-2-Develop/2-2-3-Secure-Code-Review.md" rel="noopener noreferrer" target="_blank">OWASP安全代码审查 ↗</a></div></div></article><article class="play" id="play-D4-P4"><div class="play-head"><span class="stage-pill">P4</span><h3>缺陷反哺审查和单测策略</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>Mutation回归和历史缺陷分类</p></div>
+<div><label>能解决的具体目标</label><p>能把高频漏检类型变成新测试资产</p></div>
+<div><label>尚未解决的问题</label><p>新增检查可能显著增加误报/构建时长</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>逃逸缺陷→root-cause→失效模式→候选检查/UT模板→A/B离线评测→批准上线</p></div>
+</div><div class="play-bottom"><b>验收：</b>漏检下降同时误报/构建成本未超预算；可回滚<div class="sources"><a href="https://pitest.org/" rel="noopener noreferrer" target="_blank">PIT Mutation Testing ↗</a></div></div></article></div></details><details class="tech-stage box"><summary><span class="stage-pill">D5</span><b>集成验收 · 分步能力实现细化</b><small>点击展开 / 收起</small></summary><div class="tech-inner"><article class="play" id="play-D5-P0"><div class="play-head"><span class="stage-pill">P0</span><h3>场景与测试锚点</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>Spec Kit场景工件、Pact接口契约</p></div>
+<div><label>能解决的具体目标</label><p>可以给已知场景、契约与测试提供关联</p></div>
+<div><label>尚未解决的问题</label><p>真实跨模块影响路径需要增量维护</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>Feature→Scenario→Test资产索引+版本；关系来源与置信度分级</p></div>
+</div><div class="play-bottom"><b>验收：</b>锚点抽样准确率，缺失测试清晰列出<div class="sources"><a href="https://docs.pact.io/" rel="noopener noreferrer" target="_blank">Pact Contract Testing ↗</a><a href="https://github.com/github/spec-kit/blob/main/docs/reference/agentic-sdd.md" rel="noopener noreferrer" target="_blank">Spec Kit 文档 ↗</a></div></div></article><article class="play" id="play-D5-P2"><div class="play-head"><span class="stage-pill">P2</span><h3>AI变更影响与回归选择</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>依赖图/静态数据流、测试锚点</p></div>
+<div><label>能解决的具体目标</label><p>从代码依赖估计受影响模块并推荐测试</p></div>
+<div><label>尚未解决的问题</label><p>调用依赖≠业务影响；反射/配置/跨服务边界易漏</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>Diff→AST符号锚点→调用/数据流→Feature/Scenario→Risk Pattern→测试候选排序→盲区报告</p></div>
+</div><div class="play-bottom"><b>验收：</b>场景召回、高严重缺陷漏选率、缩减收益在冻结集可复核<div class="sources"><a href="https://github.com/github/spec-kit/blob/main/docs/reference/agentic-sdd.md" rel="noopener noreferrer" target="_blank">Spec Kit 文档 ↗</a></div></div></article><article class="play" id="play-D5-P3"><div class="play-head"><span class="stage-pill">P3</span><h3>AI跨模块行为验收</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>Pact契约测试、场景BDD、故障注入</p></div>
+<div><label>能解决的具体目标</label><p>能运行已明确的集成/端到端场景</p></div>
+<div><label>尚未解决的问题</label><p>无法保证真实用户所有路径覆盖，真实环境不确定</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>关键旅程/状态机→组合场景生成→契约+设备环境→故障注入→独立Oracle执行→Gate3证据</p></div>
+</div><div class="play-bottom"><b>验收：</b>断网/进程死亡/并发样本中的注入缺陷被检出；不可运行标未完成<div class="sources"><a href="https://docs.pact.io/" rel="noopener noreferrer" target="_blank">Pact Contract Testing ↗</a></div></div></article><article class="play" id="play-D5-P4"><div class="play-head"><span class="stage-pill">P4</span><h3>风险感知回归优化</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>历史缺陷、风险排序、选择策略</p></div>
+<div><label>能解决的具体目标</label><p>在保持高风险覆盖时可减少冗余执行</p></div>
+<div><label>尚未解决的问题</label><p>动态分布漂移会破坏历史预测</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>缺陷反馈→影响金标更新→策略影子对比→多阈值回归守卫→灰度扩大</p></div>
+</div><div class="play-bottom"><b>验收：</b>高风险召回不退化且真实时长收益明确<div class="sources"><a href="https://pitest.org/" rel="noopener noreferrer" target="_blank">PIT Mutation Testing ↗</a></div></div></article></div></details><details class="tech-stage box"><summary><span class="stage-pill">D6</span><b>发布运行 · 分步能力实现细化</b><small>点击展开 / 收起</small></summary><div class="tech-inner"><article class="play" id="play-D6-P0"><div class="play-head"><span class="stage-pill">P0</span><h3>发布与可靠性基线</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>Google SRE SLO/错误预算、OpenTelemetry</p></div>
+<div><label>能解决的具体目标</label><p>提供运行状态和发布安全的可验证基础</p></div>
+<div><label>尚未解决的问题</label><p>指标不等同用户体验；不同版本难关联</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>版本ID→日志/Trace/指标+关键体验SLI→SLO/回滚演练记录→门禁锚点</p></div>
+</div><div class="play-bottom"><b>验收：</b>一条发布链能追踪到关键SLI、告警与回滚动作<div class="sources"><a href="https://opentelemetry.io/docs/concepts/observability-primer/" rel="noopener noreferrer" target="_blank">OpenTelemetry 概览 ↗</a><a href="https://sre.google/sre-book/embracing-risk/" rel="noopener noreferrer" target="_blank">Google SRE ↗</a></div></div></article><article class="play" id="play-D6-P3"><div class="play-head"><span class="stage-pill">P3</span><h3>AI变更风险与灰度异常分析</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>SRE错误预算、OpenTelemetry遥测</p></div>
+<div><label>能解决的具体目标</label><p>能辅助发现发布后异常与相关变更</p></div>
+<div><label>尚未解决的问题</label><p>异常检测误报和混杂因素，AI不应直接越权执行</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>Diff+质量证据+灰度指标→变化点分析→假设/证据分级→确定性SLO阈值守卫→审批处置</p></div>
+</div><div class="play-bottom"><b>验收：</b>演练中故障可预警和阻断，AI无法绕过回滚/权限守卫<div class="sources"><a href="https://opentelemetry.io/docs/concepts/observability-primer/" rel="noopener noreferrer" target="_blank">OpenTelemetry 概览 ↗</a><a href="https://sre.google/sre-book/embracing-risk/" rel="noopener noreferrer" target="_blank">Google SRE ↗</a></div></div></article><article class="play" id="play-D6-P4"><div class="play-head"><span class="stage-pill">P4</span><h3>AI RCA与恢复辅助</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>OpenTelemetry traces/logs/metrics，事故事后复盘</p></div>
+<div><label>能解决的具体目标</label><p>能压缩调查信息和排列根因假设</p></div>
+<div><label>尚未解决的问题</label><p>仅相关时间线不等于因果证明；自动修复危险</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>事件归并→变更和遥测相关性→故障树/反事实实验→RCA候选→人工确认→受控执行</p></div>
+</div><div class="play-bottom"><b>验收：</b>候选附证据，回溯RCA准确度与MTTR，对高风险操作有审批记录<div class="sources"><a href="https://opentelemetry.io/docs/concepts/observability-primer/" rel="noopener noreferrer" target="_blank">OpenTelemetry 概览 ↗</a><a href="https://sre.google/sre-book/embracing-risk/" rel="noopener noreferrer" target="_blank">Google SRE ↗</a></div></div></article></div></details><details class="tech-stage box"><summary><span class="stage-pill">D7</span><b>维护演进 · 分步能力实现细化</b><small>点击展开 / 收起</small></summary><div class="tech-inner"><article class="play" id="play-D7-P0"><div class="play-head"><span class="stage-pill">P0</span><h3>知识事实、规则、经验三层数据</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>Spotify Soundcheck facts/checks/tracks机制</p></div>
+<div><label>能解决的具体目标</label><p>能够分离事实数据与质量标准，不直接解决推理真实性</p></div>
+<div><label>尚未解决的问题</label><p>缺陷跨工件关联和版本源头不完整</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>需求/设计/提交/测试/缺陷/事故→实体抽取和ID关联→事实与假设分层→版本化索引</p></div>
+</div><div class="play-bottom"><b>验收：</b>抽样来源核验成功；知识更新影响范围可查<div class="sources"><a href="https://backstage.spotify.com/faqs" rel="noopener noreferrer" target="_blank">Spotify Soundcheck ↗</a></div></div></article><article class="play" id="play-D7-P3"><div class="play-head"><span class="stage-pill">P3</span><h3>AI缺陷聚类与有证据RCA</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>ODC分类和相似度聚类方法、事件因果图</p></div>
+<div><label>能解决的具体目标</label><p>可识别近似重复缺陷，辅助提炼过程问题</p></div>
+<div><label>尚未解决的问题</label><p>语义相近不代表根因相同，ODC类别不是因果结论</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>缺陷+diff+测试证据→语义聚类→ODC标签→原因假设→对照证据及人工确认→规则提议</p></div>
+</div><div class="play-bottom"><b>验收：</b>聚类纯度、根因人工核准率和证据完整性可量化<div class="sources"><a href="https://backstage.spotify.com/faqs" rel="noopener noreferrer" target="_blank">Spotify Soundcheck ↗</a></div></div></article><article class="play" id="play-D7-P4"><div class="play-head"><span class="stage-pill">P4</span><h3>经验证知识到可执行质量规则</h3></div>
+<div class="play-grid">
+<div><label>已有实践 / 参考机制</label><p>Soundcheck事实/检查/追踪机制、持续评测</p></div>
+<div><label>能解决的具体目标</label><p>能把确认的事实转成可重复的质量检查</p></div>
+<div><label>尚未解决的问题</label><p>模型漂移、误报和业务版本变化可能使旧规则失效</p></div>
+<div class="tech-fix"><label>拟建设的技术改进方案</label><p>候选风险模式→规则Schema→确定性检查/Agent调用→金标离线评测→影子部署→受控准出→下线回滚</p></div>
+</div><div class="play-bottom"><b>验收：</b>每次规则变更有版本、增益证据、误报预算和失效回滚<div class="sources"><a href="https://backstage.spotify.com/faqs" rel="noopener noreferrer" target="_blank">Spotify Soundcheck ↗</a></div></div></article></div></details><div class="box" style="padding:15px 19px;margin-top:12px"><b>研究与工程参考（已核对官方来源）：</b><div class="ref-grid"><a href="https://kiro.dev/blog/deep-spec-analysis/" rel="noopener noreferrer" target="_blank">Kiro 深度需求分析 ↗</a><a href="https://github.com/github/spec-kit/blob/main/docs/reference/agentic-sdd.md" rel="noopener noreferrer" target="_blank">Spec Kit 文档 ↗</a><a href="https://github.com/Z3Prover/z3" rel="noopener noreferrer" target="_blank">Z3 SMT Solver ↗</a><a href="https://www.archunit.org/userguide/html/000_Index.html" rel="noopener noreferrer" target="_blank">ArchUnit 用户指南 ↗</a><a href="https://docs.pact.io/" rel="noopener noreferrer" target="_blank">Pact Contract Testing ↗</a><a href="https://pitest.org/" rel="noopener noreferrer" target="_blank">PIT Mutation Testing ↗</a><a href="https://opentelemetry.io/docs/concepts/observability-primer/" rel="noopener noreferrer" target="_blank">OpenTelemetry 概览 ↗</a><a href="https://sre.google/sre-book/embracing-risk/" rel="noopener noreferrer" target="_blank">Google SRE ↗</a><a href="https://backstage.spotify.com/faqs" rel="noopener noreferrer" target="_blank">Spotify Soundcheck ↗</a><a href="https://github.com/OWASP/DevSecOpsGuideline/blob/master/current-version/2-Process/2-2-Develop/2-2-3-Secure-Code-Review.md" rel="noopener noreferrer" target="_blank">OWASP安全代码审查 ↗</a><a href="https://portal.incose.org/ItemDetail?Category=EBOOKS&amp;WebsiteKey=d4c31fa4-467a-4959-b48b-cae3ea93e516&amp;iProductCode=GUIDENEEDSREQ" rel="noopener noreferrer" target="_blank">INCOSE 需求指导 ↗</a></div><p class="aside">链接支持“所列实践有对应技术机制”，不代表这些项目直接提供整套 AI-Native 端到端方案；团队建设成熟度、召回率与工期均待实测。</p></div></section><section id="rules"><div class="section-head"><h2>04 / 统一验收口径</h2></div><div class="box" style="padding:16px 20px"><b>工程交付验收：</b>输入/输出契约、工具与CI接入、失败态处理、版本化证据、可重放测试齐备。<br/><b>AI能力效果验收：</b>冻结金标上的分类型 Precision / Recall、严重漏检与误报、独立验证覆盖、执行成本和人工介入；阈值在 P0 基线建立后冻结。<br/><b>准出规则：</b>关键验证未执行、失败或证据无效时，不得报告 PASS； AI 推断不能代替业务负责人确认和确定性验证。<br/><b>实施责任：</b>各阶段明确业务/研发/测试/平台负责人；优先实现最小闭环，再通过 P2–P4 扩展覆盖和成熟度。</div></section>
+<p class="footnote">波次周期为规划建议，不是已承诺排期；同一阶段可以跨波次演进。研发阶段：D1业务意图、D2需求规格、D3架构设计、D4编码实现、D5集成验收、D6发布运行、D7维护演进。P0–P4表示建设波次，与Gate1–Gate4质量门禁不是同一概念。</p></main><footer><div class="shell">AI-Native 高质量软件开发规划 · 分阶段AI能力建设版 V3.0 · 2026-10-23</div></footer>
+<script>
+(function(){
+  const btns=document.querySelectorAll('[data-filter]');
+  function change(w){
+   for(const b of btns){const selected=b.dataset.filter===w;b.classList.toggle('active',selected);b.setAttribute('aria-pressed',selected?'true':'false');}
+   for(const sec of document.querySelectorAll('.stage')){let n=0;for(const row of sec.querySelectorAll('.step')){const show=w==='all'||row.dataset.wave===w;row.style.display=show?'':'none';if(show)n++;}sec.querySelector('.empty').style.display=n?'none':'block';if(w!=='all'&&n)sec.open=true;}
+  }
+  btns.forEach(b=>b.addEventListener('click',()=>change(b.dataset.filter)));
+  change('all');
+})();
+</script><script>document.querySelectorAll('a.detail-link').forEach(function(a){a.addEventListener('click',function(){const id=a.getAttribute('href').slice(1);const target=document.getElementById(id);if(target){const parent=target.closest('details.tech-stage');if(parent)parent.open=true;}});});</script></body></html>

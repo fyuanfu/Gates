@@ -66,3 +66,27 @@ When a fresh-context runner is available:
 5. Report Recall, Precision, verdict accuracy, false positives on clean cases, and inter-run variance.
 
 Any Skill change motivated by holdout failure invalidates that holdout attempt. Move the exposed case into dev and replace it with a new unseen holdout case.
+
+## Frozen semantic baseline
+
+The current semantic acceptance baseline is:
+
+```text
+branch: technical-challenge-model-semantic-baseline-v1
+sha: fda6916c0121823b8fe012f11b4ad619b8f98878
+```
+
+Machine-readable metadata lives in `semantic/baseline.json`.
+
+The semantic harness adds:
+
+```text
+build_semantic_batch.py
+record_semantic_run.py
+aggregate_semantic_results.py
+semantic/curator-guide.md
+semantic/runner-contract.md
+```
+
+A production sealed holdout MUST split public case input from the evaluator-only oracle. Use `semantic/public-cases-template.json` and keep the real oracle outside the model-visible repository/workspace. The existing `holdout/cases.json` remains a contaminated regression candidate set for this authoring session and must not be used to claim unseen acceptance.
+

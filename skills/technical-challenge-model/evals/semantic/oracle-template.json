@@ -1,0 +1,18 @@
+{
+  "cases": [
+    {
+      "case_id": "sealed-001",
+      "expected": {
+        "must_detect": [
+          {"type": "IDEMPOTENCY_GAP"}
+        ],
+        "must_not_detect": [],
+        "allowed_verdicts": ["BLOCKED"],
+        "expected_requirement_gap_count": 0,
+        "expected_evidence_gap_count": 0,
+        "expected_open_decision_count": 0,
+        "scope_expansion_forbidden": true
+      }
+    }
+  ]
+}

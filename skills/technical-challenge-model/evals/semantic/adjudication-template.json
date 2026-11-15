@@ -1,0 +1,8 @@
+{
+  "case-id/run-01/F-001": {
+    "label": "invalid",
+    "scope_expansion": false,
+    "failure_class": "F_ADJUDICATION",
+    "reason": "Replace with expert rationale."
+  }
+}

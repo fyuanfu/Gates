@@ -24,7 +24,7 @@ Apply a Requirement Quality Gate (RGQ) to approved product scope. Review require
 1. Resolve all requirement artifacts and the requested review scope. Do not silently ignore unsupported or inaccessible inputs.
 2. Create a fresh output directory. Use `prd-challenge-model-output` unless the user selects another path.
 3. Read [contracts.md](references/contracts.md) and [workflow.md](references/workflow.md) completely.
-4. Read [prompts.md](references/prompts.md) before semantic review. Read [severity.md](references/severity.md) before assigning severity.
+4. Read [prompts.md](references/prompts.md) before semantic review. Execute its mandatory method dispatch: [semantic-methods.md](references/semantic-methods.md) M1–M4, and [challenge-methods.md](references/challenge-methods.md) M5–M6 when the relevant role runs. Read [severity.md](references/severity.md) before assigning severity. Keep a source-block inventory and concise method outcomes in `analysis-notes.md` within the run directory; do not add fields to review.json.
 5. Read [risk-patterns.json](references/risk-patterns.json) only after a matching deterministic risk signal fires. Read [risk-patterns-android.json](references/risk-patterns-android.json) only when Android is explicitly in scope and a matching Android risk signal fires.
 6. Normalize the invocation into the input object from `contracts.md`. Assign stable IDs, hash exact artifact bytes, and calculate the input fingerprint exactly as specified there.
 
@@ -47,7 +47,7 @@ Execute these stages in order:
 13. qualify candidates and discard enhancements, preferences, and unsupported guesses;
 14. actively search for disproof;
 15. classify candidates as CONFIRMED, REJECTED, NEEDS_CONTEXT, OBSERVATION, or DROPPED;
-16. execute the Traceability Guard over typed Requirement, Slice, Rule, Constraint, NFR, and verification relations;
+16. execute the Traceability Guard over typed Requirement, Slice, Rule, Constraint, NFR, and verification relations; route any new candidate through steps 12–15 before continuing;
 17. deduplicate confirmed findings and assign P0-P3 severity;
 18. execute the Completion Guard;
 19. write the Canonical Review Model to `<output_dir>/review.json`;
@@ -83,10 +83,13 @@ Run from the skill directory:
 
 ```bash
 python3 scripts/validate_review.py <output_dir>/review.json --pre-adjudication
+python3 scripts/verify_sources.py <output_dir>/review.json --source <authorized_absolute_artifact_path>
 python3 scripts/adjudicate_review.py <output_dir>/review.json
 python3 scripts/validate_review.py <output_dir>/review.json
 python3 scripts/render_review.py <output_dir>/review.json <output_dir>/review.md
 ```
+
+Repeat `--source` for every originally authorized invocation artifact; do not derive the allowlist from model-generated review.json. The source verifier checks UTF-8 direct-text formats, exact byte hashes, original requirement text and evidence excerpts (line endings may normalize). For other formats or non-UTF-8 input, do not claim literal verification succeeded: this enhancement currently fails closed unless a supported trusted text-source path is supplied as the reviewed artifact. If verification fails, correct demonstrably erroneous references or record blocking `CRITICAL_EVIDENCE_UNAVAILABLE`/`INPUT_FINGERPRINT_INVALID`, remove unsupported confirmed findings, adjudicate incomplete, and retain the verifier diagnostic. Never claim successful completion while the source check fails. The canonical schema remains 2.0.0; always run a fresh review on this enhanced revision, never reuse pre-enhancement Verdicts.
 
 If any command fails, record the corresponding blocking execution issue when a valid JSON result can still be produced, re-adjudicate to `review_incomplete`, and retry validation/rendering. If no valid JSON can be produced, report execution failure and do not claim that the Gate ran successfully.
 
@@ -97,7 +100,7 @@ Return:
 1. the final Verdict;
 2. the P0/P1 count and IDs;
 3. answer-required Open Questions and blocking Execution Issues, clearly separated;
-4. paths to `review.json` and `review.md`;
+4. paths to `review.json`, `review.md`, and `analysis-notes.md`;
 5. a short statement that PASS means the completed review found no confirmed P0/P1, not that the product is globally development-ready.
 
 Do not install, modify, or rewrite this skill while using it.

@@ -21,7 +21,7 @@ The only Finding dimensions are `COMPLETENESS`, `CLARITY`, and `CONSISTENCY`. Co
 
 ## Fixed pipeline
 
-Execute in order:
+Execute in order. The coordinator must apply the role-specific procedures in `semantic-methods.md` (M1–M4) and `challenge-methods.md` (M5–M6); the table defines stage boundaries, not the full analysis algorithm.
 
 | Stage | Output | Stop condition |
 |---|---|---|
@@ -126,7 +126,9 @@ When missing product information itself already makes implementation or verifica
 
 ## Traceability and completion
 
-After candidate resolution, run the Traceability Guard over typed relations. Derive, but do not persist, missing Behavior sources, orphan ACs, incomplete Behavior Verification, and unlinked supporting Slices. A derived gap is a candidate, not automatic proof of a defect.
+After initial candidate resolution, run the Traceability Guard over typed relations. Route all newly discovered candidates back through P14–P17 before P19; never confirm a traceability gap directly. Derive, but do not persist, missing Behavior sources, orphan ACs, incomplete Behavior Verification, and unlinked supporting Slices. A derived gap is a candidate, not automatic proof of a defect.
+
+Before setting Completion Guard, reconcile the source-block inventory against the actual source, ensure selected techniques have concrete explored conditions and outcomes (or justified exclusions), and verify literal source evidence with `scripts/verify_sources.py` using the original authorized absolute paths. The working notes provide auditability but are not proof of semantic correctness. Do not treat agent-authored booleans as proof of execution.
 
 Set `INCOMPLETE` only for execution failure: missing/unreadable required input, unresolved boundary, unassigned Requirement, unresolved Slice Integrity, missing required scan/challenge/global/traceability stage, invalid evidence or fingerprint, context exhaustion, or failed validation/rendering. Every incomplete result needs a blocking Execution Issue.
 

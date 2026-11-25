@@ -1,0 +1,160 @@
+{
+  "status": "PROVISIONAL_SYNTHETIC_NOT_EXPERT_GOLD",
+  "notes": "Seed labels cover specific target roots only. A human must adjudicate additional valid findings and confirm severity before using as gold. Do not expose expected or reject labels to reviewers.",
+  "cases": [
+    {
+      "id": "C01",
+      "scope": "Edit and save one existing note.",
+      "prd": "Saving an edited note must persist the new content. On tapping Save, the app returns to the list and shows Saved even if the save operation fails.",
+      "expected": [
+        {
+          "id": "D1",
+          "severity": "P1",
+          "root": "False success and return despite save failure contradict successful persistence promise"
+        }
+      ],
+      "reject": [
+        "Require offline synchronization",
+        "Require a database technology"
+      ]
+    },
+    {
+      "id": "C02",
+      "scope": "Edit and save one existing note.",
+      "prd": "On successful save, the modified content is persisted and the list displays the new version. On failure, remain in the editor with the modified content intact and display a failure message. The user can try again.",
+      "expected": [],
+      "reject": [
+        "Missing failure handling",
+        "Missing draft preservation",
+        "Missing process-death recovery outside scope"
+      ]
+    },
+    {
+      "id": "C03",
+      "scope": "Delete notes; sharing already exists.",
+      "prd": "Owners may permanently delete any of their notes, including shared notes. No shared note may be deleted by any user. Deleting a permitted note removes it from the user's list.",
+      "expected": [
+        {
+          "id": "D1",
+          "severity": "P1",
+          "root": "Owner of shared note is simultaneously permitted and prohibited from deleting it"
+        }
+      ],
+      "reject": [
+        "Add trash bin"
+      ]
+    },
+    {
+      "id": "C04",
+      "scope": "Delete notes; sharing already exists.",
+      "prd": "Owners may delete unshared notes. Shared notes cannot be deleted by any user. Nonowners cannot delete notes. Deleting a permitted note removes it from the list; rejected requests leave notes unchanged and show failure.",
+      "expected": [],
+      "reject": [
+        "Permission contradiction between disjoint conditions",
+        "Trash bin"
+      ]
+    },
+    {
+      "id": "C05",
+      "scope": "Upload a file, maximum file size policy.",
+      "prd": "A file smaller than 10 MB is accepted; files greater than 10 MB are rejected. MB is defined as 1,000,000 bytes. Rejected requests show the limit; accepted uploads report success only after persistence. Failures leave the original file available for retry and show failure.",
+      "expected": [
+        {
+          "id": "D1",
+          "severity": "P2",
+          "root": "Exactly 10 MB is not assigned an outcome"
+        }
+      ],
+      "reject": [
+        "Undefined unit",
+        "Missing upload failure handling"
+      ]
+    },
+    {
+      "id": "C06",
+      "scope": "Delete notes; sharing already exists.",
+      "prd": "No shared note may be deleted by default. Exception: owners may delete their shared notes; this exception takes precedence. Only owners may delete unshared notes. Successful deletion removes the note; disallowed deletion leaves it unchanged and reports denial.",
+      "expected": [],
+      "reject": [
+        "Conflict already resolved by explicit precedence"
+      ]
+    },
+    {
+      "id": "C07",
+      "scope": "Search notes with an agreed performance threshold.",
+      "prd": "Search results must reflect matching titles. No matches returns an empty result. Failed search reports failure and keeps the query for retry. Search response time must be at most 300 ms; no environment, dataset size, start/end event or aggregation is specified.",
+      "expected": [
+        {
+          "id": "D1",
+          "severity": "P2",
+          "root": "Performance oracle has missing material measurement conditions"
+        }
+      ],
+      "reject": [
+        "Prescribe indexing implementation"
+      ]
+    },
+    {
+      "id": "C08",
+      "scope": "One user may submit a single payment; retry after uncertain result is supported.",
+      "prd": "A user submits a payment and receives confirmation only when accepted. Timeout permits retry of the same payment. A user must be charged exactly once per intended payment, including retries after timeout; confirmed rejection leaves funds unchanged and displays failure.",
+      "expected": [],
+      "reject": [
+        "Duplicate charge requirement missing",
+        "Prescribe idempotency key"
+      ]
+    },
+    {
+      "id": "C09",
+      "scope": "A user edits the same note with overlapping saves explicitly supported.",
+      "prd": "Each save may finish asynchronously; a user may start another save before the first completes. Successful saves persist the submitted revision and display Saved. Failed saves retain the corresponding edit and report failure. The latest user-submitted successful revision must remain the current note, but if an older save finishes later, its older revision becomes current.",
+      "expected": [
+        {
+          "id": "D1",
+          "severity": "P1",
+          "root": "Explicit latest-intent invariant contradicts late older completion rule"
+        }
+      ],
+      "reject": [
+        "Require a queue or lock"
+      ]
+    },
+    {
+      "id": "C10",
+      "scope": "Read and display online notes only.",
+      "prd": "An authorized user opens a note while online; the current title and body are displayed. If unavailable, display an error and allow retry. Offline access and editing are explicitly excluded.",
+      "expected": [],
+      "reject": [
+        "Offline access",
+        "Editing",
+        "Synchronization"
+      ]
+    },
+    {
+      "id": "C11",
+      "scope": "Delete note under specified ownership.",
+      "prd": "The owner can delete their note; a deleted note is removed from the list and cannot be opened again. If the deletion fails, the note is unchanged and failure is shown. Other users cannot delete that note.",
+      "expected": [],
+      "reject": [
+        "Must use soft delete",
+        "Must offer recovery for explicitly permanent removal",
+        "Require AC separately when observable result is explicit"
+      ]
+    },
+    {
+      "id": "C12",
+      "scope": "One note may be shared only with permitted recipients.",
+      "prd": "When sharing is requested, recipients with permission can open the note and recipients without permission cannot. Sharing success requires the authorized recipient to be able to open it. A later section states: sharing is considered successful whenever the invite is sent, even if the authorized recipient cannot open the note.",
+      "expected": [
+        {
+          "id": "D1",
+          "severity": "P1",
+          "root": "Two incompatible definitions of successful sharing permit false success"
+        }
+      ],
+      "reject": [
+        "Demand particular invite protocol"
+      ]
+    }
+  ]
+}

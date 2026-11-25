@@ -4,112 +4,279 @@
     {
       "id": "RP-ASYNC-RETRY-001",
       "name": "uncertain_result_retry_duplicates_effect",
-      "applicable_slice_types": ["BEHAVIOR"],
-      "trigger_signals": ["ASYNC_OPERATION", "RETRY"],
+      "applicable_slice_types": [
+        "BEHAVIOR"
+      ],
+      "trigger_signals": [
+        "ASYNC_OPERATION",
+        "RETRY"
+      ],
       "failure_mechanism": "The first operation may have succeeded although the client observed an uncertain result; retry repeats the side effect.",
       "user_or_business_impact": "Duplicate data or duplicate business action.",
       "challenge_question": "If the first operation actually succeeds but the client retries after an uncertain result, what requirement prevents a duplicate effect?",
-      "tags": ["async", "retry", "idempotency"]
+      "tags": [
+        "async",
+        "retry",
+        "idempotency"
+      ]
     },
     {
       "id": "RP-FALSE-SUCCESS-001",
       "name": "client_success_before_durable_completion",
-      "applicable_slice_types": ["BEHAVIOR", "BUSINESS_RULE"],
-      "trigger_signals": ["USER_VISIBLE_SUCCESS_FAILURE", "EXTERNAL_DEPENDENCY", "PERSISTENT_STATE"],
+      "applicable_slice_types": [
+        "BEHAVIOR",
+        "BUSINESS_RULE"
+      ],
+      "trigger_signals": [
+        "USER_VISIBLE_SUCCESS_FAILURE",
+        "EXTERNAL_DEPENDENCY",
+        "PERSISTENT_STATE"
+      ],
       "failure_mechanism": "The client reports completion before the authoritative system durably accepts the result.",
       "user_or_business_impact": "The user believes the goal succeeded although the authoritative state is missing.",
       "challenge_question": "Which authoritative completion event permits the success message, and can it occur before durable success?",
-      "tags": ["false-success", "persistence"]
+      "tags": [
+        "false-success",
+        "persistence"
+      ]
     },
     {
       "id": "RP-PARTIAL-001",
       "name": "partial_success_collapsed_to_total_success",
-      "applicable_slice_types": ["BEHAVIOR"],
-      "trigger_signals": ["MULTI_STEP_OPERATION", "USER_VISIBLE_SUCCESS_FAILURE"],
+      "applicable_slice_types": [
+        "BEHAVIOR"
+      ],
+      "trigger_signals": [
+        "MULTI_STEP_OPERATION",
+        "USER_VISIBLE_SUCCESS_FAILURE"
+      ],
       "failure_mechanism": "A multi-item or multi-stage operation completes only partly but exposes a single success state.",
       "user_or_business_impact": "Missing results are hidden and the user cannot recover correctly.",
       "challenge_question": "How is partial completion represented, reported, and recovered without being mistaken for total success?",
-      "tags": ["partial-success", "batch"]
+      "tags": [
+        "partial-success",
+        "batch"
+      ]
     },
     {
       "id": "RP-RECOVERY-001",
       "name": "interruption_recovery_state_divergence",
-      "applicable_slice_types": ["BEHAVIOR", "BUSINESS_RULE"],
-      "trigger_signals": ["LIFECYCLE_CHANGE", "EXTERNAL_DEPENDENCY", "PERSISTENT_STATE"],
+      "applicable_slice_types": [
+        "BEHAVIOR",
+        "BUSINESS_RULE"
+      ],
+      "trigger_signals": [
+        "LIFECYCLE_CHANGE",
+        "EXTERNAL_DEPENDENCY",
+        "PERSISTENT_STATE"
+      ],
       "failure_mechanism": "Interruption and later recovery leave client and authoritative states on different transitions.",
       "user_or_business_impact": "The resumed UI or process exposes stale, duplicated, or contradictory state.",
       "challenge_question": "After interruption and recovery, which state is authoritative and which transition restores consistency?",
-      "tags": ["recovery", "state"]
+      "tags": [
+        "recovery",
+        "state"
+      ]
     },
     {
       "id": "RP-IDENTITY-001",
       "name": "identity_switch_changes_data_ownership",
-      "applicable_slice_types": ["BEHAVIOR", "BUSINESS_RULE"],
-      "trigger_signals": ["IDENTITY_CONTEXT_CHANGE", "PERSISTENT_STATE"],
+      "applicable_slice_types": [
+        "BEHAVIOR",
+        "BUSINESS_RULE"
+      ],
+      "trigger_signals": [
+        "IDENTITY_CONTEXT_CHANGE",
+        "PERSISTENT_STATE"
+      ],
       "failure_mechanism": "Queued or cached work completes after the active account or identity changes.",
       "user_or_business_impact": "Data is exposed to or written under the wrong identity.",
       "challenge_question": "What happens to in-flight and cached work when identity changes before completion?",
-      "tags": ["identity", "ownership"]
+      "tags": [
+        "identity",
+        "ownership"
+      ]
     },
     {
       "id": "RP-DELETE-001",
       "name": "delete_side_effects_diverge_across_stores",
-      "applicable_slice_types": ["BEHAVIOR", "BUSINESS_RULE"],
-      "trigger_signals": ["DESTRUCTIVE_ACTION", "PERSISTENT_STATE"],
+      "applicable_slice_types": [
+        "BEHAVIOR",
+        "BUSINESS_RULE"
+      ],
+      "trigger_signals": [
+        "DESTRUCTIVE_ACTION",
+        "PERSISTENT_STATE"
+      ],
       "failure_mechanism": "Deletion semantics differ between local, cloud, synchronized, or shared representations.",
       "user_or_business_impact": "Unexpected data retention or irreversible loss.",
       "challenge_question": "For every authoritative copy, what is deleted, retained, synchronized, recoverable, and shown to the user?",
-      "tags": ["delete", "sync", "data-loss"]
+      "tags": [
+        "delete",
+        "sync",
+        "data-loss"
+      ]
     },
     {
       "id": "RP-LIFECYCLE-001",
       "name": "lifecycle_transition_loses_or_repeats_result",
-      "applicable_slice_types": ["BEHAVIOR"],
-      "trigger_signals": ["LIFECYCLE_CHANGE", "REPEATED_ACTION"],
+      "applicable_slice_types": [
+        "BEHAVIOR"
+      ],
+      "trigger_signals": [
+        "LIFECYCLE_CHANGE",
+        "REPEATED_ACTION"
+      ],
       "failure_mechanism": "A lifecycle transition replays an action or loses its result while the user goal remains active.",
       "user_or_business_impact": "Duplicate operations, lost completion, or stale feedback.",
       "challenge_question": "Can pause, resume, recreation, or restart repeat the action or lose the completed result?",
-      "tags": ["lifecycle", "repeat"]
+      "tags": [
+        "lifecycle",
+        "repeat"
+      ]
     },
     {
       "id": "RP-NFR-001",
       "name": "nfr_without_measurement_context",
-      "applicable_slice_types": ["NFR", "CONSTRAINT"],
-      "trigger_signals": ["LOAD_SENSITIVE", "ENVIRONMENT_SENSITIVE", "TIME_BOUND", "CAPACITY_BOUND"],
+      "applicable_slice_types": [
+        "NFR",
+        "CONSTRAINT"
+      ],
+      "trigger_signals": [
+        "LOAD_SENSITIVE",
+        "ENVIRONMENT_SENSITIVE",
+        "TIME_BOUND",
+        "CAPACITY_BOUND"
+      ],
       "failure_mechanism": "A threshold lacks dataset, environment, start/end points, or observation definition.",
       "user_or_business_impact": "Implementation and verification can both claim incompatible compliance results.",
       "challenge_question": "Under what data scale and environment, measured from which event to which event, is the threshold judged?",
-      "tags": ["nfr", "measurement"]
+      "tags": [
+        "nfr",
+        "measurement"
+      ]
     },
     {
       "id": "RP-DATA-EFFECT-001",
       "name": "data_effect_undefined_across_representations",
-      "applicable_slice_types": ["BEHAVIOR", "BUSINESS_RULE"],
-      "trigger_signals": ["DATA_MUTATION", "PERSISTENT_STATE"],
+      "applicable_slice_types": [
+        "BEHAVIOR",
+        "BUSINESS_RULE"
+      ],
+      "trigger_signals": [
+        "DATA_MUTATION",
+        "PERSISTENT_STATE"
+      ],
       "failure_mechanism": "A mutation defines the primary result but leaves cached, synchronized, shared, or derived representations unspecified.",
       "user_or_business_impact": "Users observe stale, duplicated, exposed, or irreversibly lost data.",
       "challenge_question": "Within the approved operation, which representations change, remain unchanged, become stale, or can be recovered?",
-      "tags": ["data-effect", "cache", "sync"]
+      "tags": [
+        "data-effect",
+        "cache",
+        "sync"
+      ]
     },
     {
       "id": "RP-PERMISSION-001",
       "name": "permission_denial_or_revocation_has_no_behavior",
-      "applicable_slice_types": ["BEHAVIOR", "BUSINESS_RULE"],
-      "trigger_signals": ["PERMISSION_BOUNDARY"],
+      "applicable_slice_types": [
+        "BEHAVIOR",
+        "BUSINESS_RULE"
+      ],
+      "trigger_signals": [
+        "PERMISSION_BOUNDARY"
+      ],
       "failure_mechanism": "The required permission is denied, partially granted, or revoked while the behavior remains reachable.",
       "user_or_business_impact": "The feature fails silently, exposes misleading success, or accesses data outside user consent.",
       "challenge_question": "What user-visible state applies when the in-scope permission is denied, partial, or revoked before completion?",
-      "tags": ["permission", "privacy", "failure"]
+      "tags": [
+        "permission",
+        "privacy",
+        "failure"
+      ]
     },
     {
       "id": "RP-CONCURRENCY-001",
       "name": "concurrent_actions_break_single_operation_rules",
-      "applicable_slice_types": ["BEHAVIOR", "BUSINESS_RULE"],
-      "trigger_signals": ["CONCURRENCY", "REPEATED_ACTION"],
+      "applicable_slice_types": [
+        "BEHAVIOR",
+        "BUSINESS_RULE"
+      ],
+      "trigger_signals": [
+        "CONCURRENCY",
+        "REPEATED_ACTION"
+      ],
       "failure_mechanism": "Two in-scope actions overlap and apply incompatible transitions or duplicate a non-repeatable effect.",
       "user_or_business_impact": "The final state depends on timing and can include duplication, overwrite, or contradictory feedback.",
       "challenge_question": "If two allowed actions overlap, which ordering and final state does the requirement authorize?",
-      "tags": ["concurrency", "ordering", "state"]
+      "tags": [
+        "concurrency",
+        "ordering",
+        "state"
+      ]
+    },
+    {
+      "id": "RP-BOUNDARY-001",
+      "name": "adjacent_boundary_classes_undefined",
+      "applicable_slice_types": [
+        "BEHAVIOR",
+        "BUSINESS_RULE",
+        "CONSTRAINT",
+        "NFR"
+      ],
+      "trigger_signals": [
+        "TIME_BOUND",
+        "CAPACITY_BOUND"
+      ],
+      "failure_mechanism": "An in-scope threshold has a missing or conflicting equality case, unit or rounding decision, allowing different outcomes for the same value.",
+      "user_or_business_impact": "A valid request may be rejected or an invalid request accepted; compliance may depend on interpretation.",
+      "challenge_question": "Compare just below, exactly at, and just above the stated boundary. Which rule applies to each feasible class? Check units and rounding only when they affect the promised result.",
+      "tags": [
+        "boundary",
+        "partition",
+        "measurement"
+      ]
+    },
+    {
+      "id": "RP-RULE-OVERLAP-001",
+      "name": "exception_and_default_rules_overlap",
+      "applicable_slice_types": [
+        "BEHAVIOR",
+        "BUSINESS_RULE"
+      ],
+      "trigger_signals": [
+        "PERMISSION_BOUNDARY",
+        "IDENTITY_CONTEXT_CHANGE"
+      ],
+      "failure_mechanism": "Two independently stated permission or ownership rules apply to the same feasible actor/object context and authorize incompatible effects without precedence.",
+      "user_or_business_impact": "An authorized action may be blocked or an unauthorized action allowed.",
+      "challenge_question": "Construct a feasible condition where both rules apply. Are their outcomes compatible, or is there an authoritative precedence or exclusion?",
+      "tags": [
+        "rule",
+        "permission",
+        "decision-table"
+      ]
+    },
+    {
+      "id": "RP-STALE-RESULT-001",
+      "name": "late_result_overwrites_newer_intent",
+      "applicable_slice_types": [
+        "BEHAVIOR",
+        "BUSINESS_RULE"
+      ],
+      "trigger_signals": [
+        "ASYNC_OPERATION",
+        "CONCURRENCY",
+        "DATA_MUTATION"
+      ],
+      "failure_mechanism": "Two in-scope operations on the same object complete in an order different from user intent, while the requirement leaves the authoritative final result undefined.",
+      "user_or_business_impact": "A newer edit or selection is overwritten or the feedback reflects stale state.",
+      "challenge_question": "If the older operation completes after the newer operation, which observable result and object state are required? Only explore when concurrent or outstanding actions are supported by source.",
+      "tags": [
+        "ordering",
+        "data-effect",
+        "state"
+      ]
     }
   ]
 }
